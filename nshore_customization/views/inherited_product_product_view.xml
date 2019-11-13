@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherited view of Product Product view -->
+    <record id="inherited_product_form_view" model="ir.ui.view">
+        <field name="name">product.product.form.inherit</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lst_price']" position="after">
+                <field name="product_ref" />
+                <field name="net_cost" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherited view of Product Pricelist view -->
+    <record id="inherited_product_pricelist_item_form_view" model="ir.ui.view">
+        <field name="name">product.pricelist.item.form.inherited</field>
+        <field name="model">product.pricelist.item</field>
+        <field name="inherit_id" ref="product.product_pricelist_item_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[3]//div" position="inside">
+                <span attrs="{'invisible':[('base', '!=', 'net_cost')]}">Net Cost  -  </span>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

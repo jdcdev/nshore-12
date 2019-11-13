@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_layout_open_purchase_order">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.basic_layout">
+                    <div class="header" style="padding-top:25px !important;">
+                        <div class="col-xs-9">
+                            <h3>
+                                <t t-esc="o.company_id.name" />
+                            </h3>
+                        </div>
+                        <div class="col-xs-3">
+                            <span t-if="o.company_id.street" t-field="o.company_id.street" />
+                            <span t-field="o.company_id.street2" />
+                            <br />
+                            <span t-field="o.company_id.city" />, <span t-field="o.company_id.state_id" />, <span t-field="o.company_id.country_id" /><br /><span t-field="o.company_id.zip" /><br />
+                        </div>
+                        <div class="col-xs-12">
+                            <style type="text/css">
+                                table {
+                                    border-collapse:separate;
+                                    border:solid black 3px;
+                                    border-radius:20px;
+                                    -moz-border-radius:6px;
+                                }
+                                td:first-child, th:first-child {
+                                     border-left: none;
+                                }
+                            </style>
+                            <br/><br/>
+                            <div name="invoice_address" class="col-xs-12" style=" margin-bottom: 20px;">
+                                <div class="col-xs-4">
+                                    <table width="100%">
+                                        <tr>
+                                            <th style='padding: 5px;'>
+                                                <strong>Billing Address</strong>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <td style='padding: 5px;'>
+                                                <address t-esc="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}" />
+                                                <div t-if="o.partner_id.vat" class="mt16">
+                                                    <t t-esc="o.company_id.country_id.vat_label or 'TIN'" />: <span t-field="o.partner_id.vat" /></div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-xs-4">
+                                    <table width="100%">
+                                        <tr>
+                                            <th style='padding: 5px;'>
+                                                <strong>Shipping Address</strong>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <td style='padding: 5px;'>
+                                                <address t-esc="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}" />
+                                                <div t-if="o.partner_id.vat" class="mt16">
+                                                    <t t-esc="o.company_id.country_id.vat_label or 'TIN'" />: <span t-field="o.partner_id.vat"/></div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-xs-4">
+                                    <h4>Open Purchase Orders</h4><br/><br/>
+                                    Date<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%m/%d/%Y')"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page">
+                        <br/><br/><br/><br/><br/>
+                        <div class="oe_structure">
+                            <div style='margin-top:100px;'>
+                                <table class="table table-condensed"
+                                        style="border-left:solid white 1px;border-right:solid white 1px;border-bottom:solid white 1px;">
+                                    <t t-set="total_sig" t-value="0"/>
+                                    <t t-set="total_cal" t-value="0"/>
+                                    <t t-set="total_res" t-value="0"/>
+                                    <thead>
+                                        <tr style="background-color:black;color:white">
+                                            <th>Invoice #</th>
+                                            <th>Date</th>
+                                            <th>Total</th>
+                                            <th>Paid</th>
+                                            <th>Balance Due</th>
+                                        </tr>
+                                        <tr>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="o.invoice_ids" t-as="b">
+                                            <td>
+                                                <t t-esc="b.id"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="b.create_date"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="b.amount_total_signed"/>
+                                                <t t-set="total_sig"
+                                                    t-value="total_sig+b.amount_total_signed"/>
+                                            </td>
+                                            <td>
+                                                <t t-if="b.state == 'draft'">
+                                                    0
+                                                    <t t-set="total_cal"
+                                                        t-value="total_cal+0"/>
+                                                </t>
+                                                <t t-if="b.state != 'draft'">
+                                                    <span t-esc="b.amount_total_signed - b.residual"
+                                                          t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                                    <t t-set="total_cal"
+                                                        t-value="total_cal+(b.amount_total_signed - b.residual)"/>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <t t-if="b.state == 'draft'">
+                                                    <span t-esc="b.amount_total_signed"
+                                                          t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                                    <t t-set="total_res"
+                                                        t-value="total_res+b.amount_total_signed"/>
+                                                </t>
+                                                <t t-if="b.state != 'draft'">
+                                                    <span t-esc="b.amount_total_signed"
+                                                          t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                                    <t t-set="total_res"
+                                                        t-value="total_res+b.amount_total_signed"/>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tbody>
+                                        <tr style="background-color:black;color:white">
+                                            <td colspan="5">&#160;</td>
+                                        </tr>
+                                    </tbody>
+                                    <tr>
+                                        <td colspan="2"></td>
+                                        <td>
+                                            <span t-esc="total_sig"
+                                                  t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="total_cal"
+                                                  t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="total_res"
+                                                  t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer">
+                        <center>
+                            Page
+                            <span class="page"/>
+                            of
+                            <span class="topage"/>
+                        </center>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_open_purchase_order">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="nshore_customization.report_layout_open_purchase_order"/>
+            </t>
+        </t>
+    </template>
+
+
+</odoo>

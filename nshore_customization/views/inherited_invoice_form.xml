@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+
+        <record id="view_customer_invoice_form_inherit_nshore"
+                model="ir.ui.view">
+            <field name="name">account.invoice.form.nshore</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="attributes">
+                     <attribute name="context">{'product_search': True}</attribute>
+                 </xpath>
+                <xpath expr="//field[@name='partner_id']"
+                       position="attributes">
+                    <attribute name="domain">[('is_company', '=', True)]</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='quantity']"
+                       position="attributes">
+                    <attribute name="widget">integer</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']"
+                        position="attributes">
+                    <attribute name="style">width:30%</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_supplier_invoice_form_inherit_nshore" model="ir.ui.view">
+            <field name="name">account.invoice.supplier.form.nshore</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']"
+                       position="attributes">
+                    <attribute name="domain">[('is_company', '=', True)]</attribute>
+                </xpath>
+                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="attributes">
+                     <attribute name="context">{'product_search': True, 'partner_id': parent.partner_id}</attribute>
+                 </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='quantity']"
+                       position="attributes">
+                    <attribute name="widget">integer</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']"
+                        position="attributes">
+                    <attribute name="style">width:30%</attribute>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

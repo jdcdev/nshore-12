@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_payment_updated_inherited" inherit_id="account.report_payment_receipt">
+            <xpath expr="//t[1]" position="replace">
+                <!-- <xpath expr="//t[@t-call='web.external_layout']" position="replace"> -->
+                <div class="header" style="padding-top:25px !important;">
+                    <div class="col-xs-9">
+                        <h3>
+                            <t t-esc="o.company_id.name" />
+                        </h3>
+                    </div>
+                    <div class="col-xs-3">
+                        <span t-if="o.company_id.street" t-field="o.company_id.street" />
+                        <span t-field="o.company_id.street2" />
+                        <br />
+                        <span t-field="o.company_id.city" />, <span t-field="o.company_id.state_id" />, <span t-field="o.company_id.country_id" /><br /><span t-field="o.company_id.zip" /><br /></div>
+                </div>
+                <div class="article o_report_layout_standard" style="margin-top:30px !important;">
+                    <div class="page">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <table class="table table-condensed" style="width:280px;display: inline-block; border: 0.5px solid black ;margin-right:10px;border-radius: 25px !important;">
+                                    <thead>
+                                        <tr style="border-bottom:1px solid black;">
+                                            <th>
+                                                <strong>Billing Address</strong>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="border-bottom:1px solid black;">
+                                            <td style="border-bottom:1px solid black !important;">
+                                                <address t-field="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}" />
+                                                <div t-if="o.partner_id.vat" class="mt16">
+                                                    <t t-esc="o.company_id.country_id.vat_label or 'TIN'" />: <span t-field="o.partner_id.vat" /></div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table class="table table-condensed" style="width:280px;display: inline-block;border: 0.5px solid black;margin-right:20px;border-radius: 25px;">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <strong>Mailing Address</strong>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="border-bottom:1px solid black;">
+                                            <td>
+                                                <address t-field="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}" />
+                                                <div t-if="o.partner_id.vat" class="mt16">
+                                                    <t t-esc="o.company_id.country_id.vat_label or 'TIN'" />: <span t-field="o.partner_id.vat" /></div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table class="table table-condensed" style="width:280px;display: inline-block;" border="0">
+                                    <tbody>
+                                        <tr style="border: none !important;">
+                                            <td style="font-size:30px;border: none !important;" border="0" colspan="2">
+                                                <h2>
+                                                    <span>Payment Receipt</span>
+                                                </h2>
+                                            </td>
+                                        </tr>
+                                        <tr style="border: none !important;">
+                                            <td style="border: none !important;">
+                                                <strong>Number</strong>
+                                            </td>
+                                            <td style="border: none !important;">
+                                                <strong>
+                                                    <span t-field="o.name" />
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: none !important;">
+                                                <strong>Date</strong>
+                                            </td>
+                                            <td style="border: none !important;">
+                                                <strong>
+                                                    <t t-esc="o.payment_date" />
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: none !important;">
+                                                <strong>Amount</strong>
+                                            </td>
+                                            <td style="border: none !important;">
+                                                <strong>
+                                                    <span t-field="o.amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}" />
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                        <tr style="border: 0px;">
+                                            <td style="border: none !important;">
+                                                <strong>Type</strong>
+                                            </td>
+                                            <td style="border: none !important;">
+                                                <strong>
+                                                    <t t-esc="o.journal_id.name" />
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                        <tr style="border: 0px;">
+                                            <td style="border: none !important;">
+                                                <strong>Account Balance</strong>
+                                            </td>
+                                            <td style="border: none !important;">
+                                                <strong>
+                                                    <span t-field="o.partner_id.credit" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}" />
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr style="background-color:black;color:white">
+                                    <th>Invoice No</th>
+                                    <th>Invoice Date</th>
+                                    <th class="text-right">Invoice Old Balance</th>
+                                    <th class="text-right">Term Discount</th>
+                                    <th class="text-right">Payment Amount</th>
+                                    <th class="text-right">Invoice New Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.invoice_ids" t-as="inv">
+                                    <td>
+                                        <span t-field="inv.number" />
+                                    </td>
+                                    <td>
+                                        <span t-field="inv.date_invoice" />
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="inv.amount_total" />
+                                    </td>
+                                    <td>
+                                        <span></span>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="inv.amount_total - inv.residual" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}" />
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="inv.residual" />
+                                    </td>
+                                </tr>
+
+                                <tr style="top:850px !important; page-break-inside: avoid;border-top:10px solid black !important;">
+                                    <td>
+                                        <span></span>
+                                    </td>
+                                    <td>
+                                        <span></span>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="sum(line.amount_total for line in o.invoice_ids)" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" />
+                                    </td>
+                                    <td>
+                                        <span></span>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="sum(line.amount_total - line.residual for line in o.invoice_ids)" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" />
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="sum(line.residual for line in o.invoice_ids)" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                    </div>
+                </div>
+                <div class="footer" style="font-size: 16px !important;">
+                    <div class="col-xs-4 col-xs-offset-3 text-right" style="top:120px;">
+                        <ul class="list-inline">
+                            <li>Page</li>
+                            <li>
+                                <span class="page" />
+                            </li>
+                            <li>of</li>
+                            <li>
+                                <span class="topage" />
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+    </data>
+</odoo>

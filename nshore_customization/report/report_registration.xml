@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <report 
+            id="custom_customer_statement"
+            model="res.partner"
+            string="Customer Statement"
+            report_type="qweb-pdf"
+            name="nshore_customization.report_customer_statement"
+            file="nshore_customization.report_customer_statement"
+        />
+
+        <report 
+            id="daily_monthly_invoices"
+            model="account.invoice"
+            string="Daily/Monthly Invoices"
+            report_type="qweb-pdf"
+            name="nshore_customization.report_daily_monthly_invoices"
+            file="nshore_customization.report_daily_monthly_invoices"
+            menu="False"
+        />
+
+        <report 
+            id="daily_monthly_payment"
+            model="account.payment"
+            string="Daily/Monthly Payment"
+            report_type="qweb-pdf"
+            name="nshore_customization.report_daily_monthly_payment"
+            file="nshore_customization.report_daily_monthly_payment"
+            menu="False"
+        />
+
+        <report 
+            id="daily_monthly_returns"
+            model="account.invoice"
+            string="Daily/Monthly Returns"
+            report_type="qweb-pdf"
+            name="nshore_customization.report_daily_monthly_returns"
+            file="nshore_customization.report_daily_monthly_returns"
+            menu="False"
+        />
+
+        <report
+            string="Inventory"
+            id="stock.action_report_inventory"
+            model="stock.inventory"
+            report_type="qweb-pdf"
+            name="nshore_customization.report_inventory_adjustment"
+            file="nshore_customization.report_inventory_adjustment"
+        />
+
+        <report
+            string="Open Purchase Order"
+            id="open_purchase_order"
+            model="purchase.order"
+            report_type="qweb-pdf"
+            name="nshore_customization.report_open_purchase_order"
+            file="nshore_customization.report_open_purchase_order"
+        />
+
+        <record id="paperformat_inventory_listing" model="report.paperformat">
+            <field name="name">Inventory Listing</field>
+            <field name="default" eval="True"/>
+            <field name="format">Letter</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">23</field>
+            <field name="margin_bottom">15</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">18</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <report
+            id="action_report_inventory_listing"
+            string="Master Inventory Listing"
+            model="product.category"
+            report_type="qweb-pdf"
+            name="nshore_customization.report_inventory_listing"
+            file="nshore_customization.report_inventory_listing"
+            paperformat="nshore_customization.paperformat_inventory_listing"
+            menu="False"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+   <record id="aboutus" model="ir.ui.view">
+      <field name="name">About us</field>
+      <field name="type">qweb</field>
+      <field name="key">website.aboutus</field>
+      <field name="inherit_id" ref="website.aboutus"/>
+      <field name="arch" type="xml">
+         <div id="wrap" position='replace'>
+            <div id="wrap">
+               <div class="header-banner">
+                  <div class="banner about-banner">
+                     <div class="banner-content inner-pages">
+                        <a href="#" class="common-btn">ABOUT US</a>
+                     </div>
+                  </div>
+               </div>
+               <section class="about-content">
+                  <div class="container">
+                     <div class="about-container">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
+                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. </p>
+                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. </p>
+                     </div>
+                  </div>
+               </section>
+            </div>
+         </div>
+      </field>
+   </record>
+</odoo>
