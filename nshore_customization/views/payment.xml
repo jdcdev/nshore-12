@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <template id="report_payment_updated_inherited" inherit_id="account.report_payment_receipt">
+        <template id="account.report_payment_receipt_document">
             <xpath expr="//t[1]" position="replace">
-                <!-- <xpath expr="//t[@t-call='web.external_layout']" position="replace"> -->
                 <div class="header" style="padding-top:25px !important;">
                     <div class="col-xs-9">
                         <h3>
@@ -16,7 +14,7 @@
                         <br />
                         <span t-field="o.company_id.city" />, <span t-field="o.company_id.state_id" />, <span t-field="o.company_id.country_id" /><br /><span t-field="o.company_id.zip" /><br /></div>
                 </div>
-                <div class="article o_report_layout_standard" style="margin-top:30px !important;">
+                <div class="o_report_layout_standard" style="margin-top:30px !important;">
                     <div class="page">
                         <div class="row">
                             <div class="col-xs-12">
@@ -194,5 +192,4 @@
                 </div>
             </xpath>
         </template>
-    </data>
 </odoo>

@@ -18,7 +18,6 @@
             report_type="qweb-pdf"
             name="nshore_customization.report_daily_monthly_invoices"
             file="nshore_customization.report_daily_monthly_invoices"
-            menu="False"
         />
 
         <report 
@@ -28,7 +27,6 @@
             report_type="qweb-pdf"
             name="nshore_customization.report_daily_monthly_payment"
             file="nshore_customization.report_daily_monthly_payment"
-            menu="False"
         />
 
         <report 
@@ -38,7 +36,6 @@
             report_type="qweb-pdf"
             name="nshore_customization.report_daily_monthly_returns"
             file="nshore_customization.report_daily_monthly_returns"
-            menu="False"
         />
 
         <report
