@@ -2,8 +2,6 @@
 <odoo>
     <data>
         <template id="report_invoice_document_updated" inherit_id="account.report_invoice_document">
-            <!-- <xpath expr="//t[@t-call='web.external_layout']" position="replace"> -->
-            <!-- <xpath expr="//t[@t-set='o']" position="replace"> -->
             <xpath expr="//t[1]" position="replace">
                 <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})" />
                 <div class="header" style="padding-top:25px !important;">
@@ -251,11 +249,5 @@
                 </div>
             </xpath>
         </template>
-<!-- 
-        <template id="report_invoice_document_with_payments_extend" inherit_id="account.report_invoice_document_with_payments" primary="True">
-            <xpath expr="//div[@id='total']" position="replace">
-
-            </xpath>
-        </template> -->
     </data>
 </odoo>

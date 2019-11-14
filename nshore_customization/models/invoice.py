@@ -5,6 +5,8 @@ from odoo.http import request
 class CustomPopMessage(models.TransientModel):
     _name = "custom.pop.message"
 
+    _description = 'Custom Pop Message'
+
     message = fields.Html('Message')
     user_name = fields.Char('User Name')
     password = fields.Char('Password')

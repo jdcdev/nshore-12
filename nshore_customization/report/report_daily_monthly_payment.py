@@ -6,6 +6,8 @@ from odoo import api, models
 class ReportDailyMonthlyPayment(models.AbstractModel):
     _name = 'report.nshore_customization.report_daily_monthly_payment'
 
+    _description = 'Report Daily Monthly Payment'
+
     def get_detail(self, payment_data, date_format):
         data = []
         if payment_data:

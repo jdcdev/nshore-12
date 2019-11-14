@@ -6,6 +6,8 @@ from odoo import api, fields, models
 class DailyMonthlyPayment(models.TransientModel):
     _name = "daily.monthly.payment"
 
+    _description = 'Daily Monthly Payement'
+
     from_date = fields.Date('From Date')
     to_date = fields.Date('To Date')
 

@@ -7,6 +7,8 @@ from odoo import api, models
 class payroll_advice_report(models.AbstractModel):
     _name = 'report.nshore_customization.report_inventory_listing'
 
+    _description = 'Report Inventory Listening'
+
     def get_product_details(self, categories):
         product_data = []
         products = self.env['product.product']

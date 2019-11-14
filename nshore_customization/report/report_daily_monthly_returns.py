@@ -6,6 +6,8 @@ from odoo import api, models
 class ReportDailyMonthlyReturns(models.AbstractModel):
     _name = 'report.nshore_customization.report_daily_monthly_returns'
 
+    _description = 'Report Daily Monthly Returns'
+
     def get_detail(self, invoice_data, date_format):
         data = []
         if invoice_data:

@@ -7,6 +7,8 @@ from odoo import api, models
 class payroll_advice_report(models.AbstractModel):
     _name = 'report.nshore_customization.report_customer_statement'
 
+    _description = 'Report Customer Statement'
+
     def get_invoice_details(self, docids, date_format):
         partner = self.env['res.partner'].browse(docids)
         data = []

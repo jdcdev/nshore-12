@@ -6,6 +6,8 @@ from odoo import api, fields, models
 class DailyMonthlyReturns(models.TransientModel):
     _name = "daily.monthly.returns"
 
+    _description = 'Daily Monthly Returns'
+
     from_date = fields.Date('From Date')
     to_date = fields.Date('To Date')
 
