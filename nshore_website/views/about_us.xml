@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-   <record id="aboutus" model="ir.ui.view">
-      <field name="name">About us</field>
-      <field name="type">qweb</field>
-      <field name="key">website.aboutus</field>
-      <field name="inherit_id" ref="website.aboutus"/>
-      <field name="arch" type="xml">
-         <div id="wrap" position='replace'>
+    <template id="aboutus" inherit_id="website.aboutus">
+        <xpath expr="//div[@id='wrap']" position="replace">
             <div id="wrap">
                <div class="header-banner">
                   <div class="banner about-banner">
@@ -25,7 +20,6 @@
                   </div>
                </section>
             </div>
-         </div>
-      </field>
-   </record>
+        </xpath>
+    </template>
 </odoo>
