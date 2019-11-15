@@ -13,7 +13,7 @@
         'data/nshore_website_data.xml',
         'views/template.xml',
         'views/home.xml',
-        'views/about_us.xml',
+        # 'views/about_us.xml',
         'views/website_crm_templates.xml',
     ],
     'installable': True,
