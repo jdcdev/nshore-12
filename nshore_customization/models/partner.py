@@ -8,7 +8,7 @@ import datetime
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    over_credit = fields.Boolean('Allow Over Credit?')
+    over_credit = fields.Boolean('Allow Over Credit?', default=True)
     allow_supervisor = fields.Boolean('Allow Supervisor', default=False)
     fax = fields.Char(string="Fax")
     invoice_start_date = fields.Date('Invoice Start Date')
