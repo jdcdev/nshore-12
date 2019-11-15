@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <template id="report_daily_monthly_invoices">
+    <template id="report_daily_monthly_invoices_1">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.basic_layout">
@@ -92,8 +92,10 @@
                                           t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                     <div style="border:1px solid black;height:0px;"></div>
                                     <br/>
-                                    <t t-esc="lines_total_data[0].get('invoice_total_amount')"
-                                       t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    <t t-if="lines_total_data">
+                                        <t t-esc="lines_total_data[0].get('invoice_total_amount')"
+                                           t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    </t>
                                     <div style="border:1px solid black;height:0px;"></div>
                                     <br/>
                                     <div style="border:1px solid black;height:0px;"></div>
@@ -103,8 +105,10 @@
                                           t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                     <div style="border:1px solid black;height:0px;"></div>
                                     <br/>
-                                    <t t-esc="lines_total_data[0].get('discount_total_amount')"
-                                       t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    <t t-if="lines_total_data">
+                                        <t t-esc="lines_total_data[0].get('discount_total_amount')"
+                                           t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    </t>
                                     <div style="border:1px solid black;height:0px;"></div>
                                     <br/>
                                     <div style="border:1px solid black;height:0px;"></div>
@@ -114,8 +118,10 @@
                                           t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                     <div style="border:1px solid black;height:0px;"></div>
                                     <br/>
-                                    <t t-esc="lines_total_data[0].get('amount_tax_total')"
-                                       t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    <t t-if="lines_total_data">
+                                        <t t-esc="lines_total_data[0].get('amount_tax_total')"
+                                           t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    </t>
                                     <div style="border:1px solid black;height:0px;"></div>
                                     <br/>
                                     <div style="border:1px solid black;height:0px;"></div>
@@ -125,8 +131,10 @@
                                           t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                     <div style="border:1px solid black;height:0px;"></div>
                                     <br/>
-                                    <t t-esc="lines_total_data[0].get('total')"
-                                       t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    <t t-if="lines_total_data">
+                                        <t t-esc="lines_total_data[0].get('total')"
+                                           t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    </t>
                                     <div style="border:1px solid black;height:0px;"></div>
                                     <br/>
                                     <div style="border:1px solid black;height:0px;"></div>
