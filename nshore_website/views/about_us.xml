@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="aboutus" inherit_id="website.aboutus">
-        <xpath expr="//div[@id='wrap']" position="replace">
+        <xpath expr="//t[1]" position="replace">
+            <t name="About us" t-name="website.aboutus">
+            <t t-call="website.layout">
             <div id="wrap">
                <div class="header-banner">
                   <div class="banner about-banner">
@@ -20,6 +22,8 @@
                   </div>
                </section>
             </div>
+            </t>
+        </t>
         </xpath>
     </template>
 </odoo>
