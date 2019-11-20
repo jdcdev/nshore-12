@@ -4,7 +4,7 @@ from odoo import api, models
 
 
 class ReportDailyMonthlyReturns(models.AbstractModel):
-    _name = 'report.nshore_customization.report_daily_monthly_returns'
+    _name = 'report.nshore_customization.report_daily_monthly_returns_1'
 
     _description = 'Report Daily Monthly Returns'
 
@@ -23,8 +23,7 @@ class ReportDailyMonthlyReturns(models.AbstractModel):
                         invoice_line.price_unit * invoice_line.quantity
                     discount_amount += invoice_line.discount
                 invoice_data.update({
-                    'date': datetime.strptime(
-                        invoice.date_invoice, '%Y-%m-%d').strftime(
+                    'date': invoice.date_invoice.strftime(
                         date_format),
                     'number': invoice.number or invoice.id,
                     'cust_no': invoice.partner_id.id,
@@ -48,8 +47,7 @@ class ReportDailyMonthlyReturns(models.AbstractModel):
                  ('type', 'in', ['out_refund', 'in_refund'])
                  ])
             for invoice in invoice_rec:
-                data.append(datetime.strptime(
-                    invoice.date_invoice, '%Y-%m-%d').strftime(
+                data.append(invoice.date_invoice.strftime(
                     date_format))
             data = list(set(data))
         return data
@@ -87,7 +85,7 @@ class ReportDailyMonthlyReturns(models.AbstractModel):
         return data
 
     @api.model
-    def get_report_values(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
         lang_code = self.env.context.get('lang') or 'en_US'
         lang = self.env['res.lang']
         lang_id = lang._lang_get(lang_code)
@@ -112,4 +110,5 @@ class ReportDailyMonthlyReturns(models.AbstractModel):
             'lines_total_data': lines_total_data,
             'get_detail_date': get_detail_date,
             'get_detail_total_loop': get_detail_total_loop,
+            'currency_id': self.env.user.company_id.currency_id
         }

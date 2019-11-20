@@ -22,8 +22,7 @@ class ReportDailyMonthlyInvoices(models.AbstractModel):
                         invoice_line.price_unit * invoice_line.quantity
                     discount_amount += invoice_line.discount
                 invoice_data.update({
-                    'date': datetime.strptime(
-                        invoice.date_invoice, '%Y-%m-%d').strftime(
+                    'date': invoice.date_invoice.strftime(
                         date_format),
                     'number': invoice.number or invoice.id,
                     'cust_no': invoice.partner_id.id,
@@ -57,7 +56,7 @@ class ReportDailyMonthlyInvoices(models.AbstractModel):
         return data
 
     @api.model
-    def get_report_values(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
         lang_code = self.env.context.get('lang') or 'en_US'
         lang = self.env['res.lang']
         lang_id = lang._lang_get(lang_code)
@@ -70,12 +69,13 @@ class ReportDailyMonthlyInvoices(models.AbstractModel):
                 'to_date')]
         lines_data = self.get_detail(invoice_data, date_format)
         lines_total_data = self.get_total_detail()
-        return {
+        vals = {
             'doc_ids': register_ids,
             'doc_model': 'account.invoice',
             'data': data,
-            'docs': invoice,
             'date': datetime.now().strftime(date_format),
             'lines_data': lines_data,
             'lines_total_data': lines_total_data,
+            'currency_id': self.env.user.company_id.currency_id
         }
+        return vals

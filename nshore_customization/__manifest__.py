@@ -7,8 +7,8 @@
     'author': 'JDC system',
     'summary': 'Nshore Customization',
     'depends': [
-        'sale_management', 'account_reports', 'sale_margin',
-        'report_qweb_element_page_visibility', 'mail', 'contacts', 'web',
+        'sale_management', 'account_reports', 'sale_margin'
+        , 'mail', 'contacts', 'web',
         'stock', 'purchase','point_of_sale', 'account'
     ],
     'data': [

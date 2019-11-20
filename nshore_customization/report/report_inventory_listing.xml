@@ -3,12 +3,10 @@
 
     <template id="custom_layout_report">
         <div class="header">
-            <span
-                    style="font-family:Liberation Serif;float:left;font-weight:bold;font-size: 28px;padding-top:5px; padding-bottom:5px;width:50%;!important;">
+            <span style="font-family:Liberation Serif;float:left;font-weight:bold;font-size: 28px;padding-top:5px; padding-bottom:5px;width:50%;!important;">
                 Master Inventory Listing
             </span>
-            <span
-                    style="font-family:Liberation Serif;float:right;font-size:18px;padding-top:5px;!important;">
+            <span style="font-family:Liberation Serif;float:right;font-size:18px;padding-top:5px;!important;">
                 <t t-esc="date"/>
             </span>
             <style type="text/css">
@@ -198,7 +196,7 @@
                                            t-value="all_value + total_value"/>
                                     </tr>
                                 </td>
-                            </tr>
+                            </tr><br/><br/>
                         </table>
                     </t>
                     <span style="float:left;font-weight:bold;font-size: 24px;padding-top:25px;width:50%;!important;">

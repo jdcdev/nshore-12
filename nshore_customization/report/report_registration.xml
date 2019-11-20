@@ -16,8 +16,9 @@
             model="account.invoice"
             string="Daily/Monthly Invoices"
             report_type="qweb-pdf"
-            name="nshore_customization.report_daily_monthly_invoices_1"
-            file="nshore_customization.report_daily_monthly_invoices_1"
+            name="nshore_customization.report_daily_monthly_invoices"
+            file="nshore_customization.report_daily_monthly_invoices"
+            menu="False"
         />
 
         <report 
@@ -27,6 +28,7 @@
             report_type="qweb-pdf"
             name="nshore_customization.report_daily_monthly_payment_1"
             file="nshore_customization.report_daily_monthly_payment_1"
+            menu="False"
         />
 
         <report 
@@ -36,6 +38,7 @@
             report_type="qweb-pdf"
             name="nshore_customization.report_daily_monthly_returns_1"
             file="nshore_customization.report_daily_monthly_returns_1"
+            menu="False"
         />
 
         <report
@@ -47,6 +50,20 @@
             file="nshore_customization.report_inventory_adjustment"
         />
 
+        <record id="paperformat_open_purchase_order" model="report.paperformat">
+            <field name="name">Purchase Order Paperformat</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">70</field>
+            <field name="margin_bottom">15</field>
+            <field name="margin_left">0</field>
+            <field name="margin_right">0</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">65</field>
+            <field name="dpi">90</field>
+        </record>
+
         <report
             string="Open Purchase Order"
             id="open_purchase_order"
@@ -54,6 +71,7 @@
             report_type="qweb-pdf"
             name="nshore_customization.report_open_purchase_order"
             file="nshore_customization.report_open_purchase_order"
+            paperformat="nshore_customization.paperformat_open_purchase_order"
         />
 
         <record id="paperformat_inventory_listing" model="report.paperformat">

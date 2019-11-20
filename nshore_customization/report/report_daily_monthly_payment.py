@@ -4,7 +4,7 @@ from odoo import api, models
 
 
 class ReportDailyMonthlyPayment(models.AbstractModel):
-    _name = 'report.nshore_customization.report_daily_monthly_payment'
+    _name = 'report.nshore_customization.report_daily_monthly_payment_1'
 
     _description = 'Report Daily Monthly Payment'
 
@@ -17,9 +17,7 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
             for payment in payment_rec:
                 payment_data = {}
                 payment_data.update({
-                    'date': datetime.strptime(
-                        payment.payment_date, '%Y-%m-%d').strftime(
-                        date_format),
+                    'date': payment.payment_date.strftime(date_format),
                     'payment_no': payment.name or payment.id,
                     'cust_no': payment.partner_id.id,
                     'cust_name': payment.partner_id.name,
@@ -38,9 +36,7 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
                 [('payment_date', '>=', payment_data[0]),
                  ('payment_date', '<=', payment_data[1])])
             for payment in payment_rec:
-                data.append(datetime.strptime(
-                    payment.payment_date, '%Y-%m-%d').strftime(
-                    date_format))
+                data.append(payment.payment_date.strftime(date_format))
             data = list(set(data))
         return data
 
@@ -63,15 +59,14 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
         return total
 
     @api.model
-    def get_report_values(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
         lang_code = self.env.context.get('lang') or 'en_US'
         lang = self.env['res.lang']
         lang_id = lang._lang_get(lang_code)
         date_format = lang_id.date_format
-        register_ids = self.env.context.get('active_ids', [])
-        payment = self.env['account.payment'].browse(register_ids)
+
         payment_data = []
-        if data['form'].get('from_date') and data['form'].get('to_date'):
+        if data.get('form') and data['form'].get('from_date') and data['form'].get('to_date'):
             payment_data = [data['form'].get('from_date'), data['form'].get(
                 'to_date')]
         lines_data = self.get_detail(payment_data, date_format)
@@ -79,13 +74,12 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
         get_detail_total = self.get_detail_total()
         get_date_loop = self.get_date_loop(payment_data)
         return {
-            'doc_ids': register_ids,
             'doc_model': 'account.payment',
             'data': data,
-            'docs': payment,
             'date': datetime.now().strftime(date_format),
             'lines_data': lines_data,
             'lines_data_date': lines_data_date,
             'get_detail_total': get_detail_total,
             'get_date_loop': get_date_loop,
+            'currency_id': self.env.user.company_id.currency_id
         }

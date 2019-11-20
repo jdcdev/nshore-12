@@ -50,7 +50,7 @@ class payroll_advice_report(models.AbstractModel):
         return product_data
 
     @api.model
-    def get_report_values(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
         docids = self.env['product.category'].search([]).ids
         docs = self.env['product.category'].browse(docids)
         return {

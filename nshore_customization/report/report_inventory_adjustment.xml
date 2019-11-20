@@ -2,89 +2,91 @@
 <odoo>
     <template id="report_layout_inventory_adjustment">
         <t t-call="web.html_container">
+            <div class="header" style="padding-top:7px !important;">
+                <div class="row mt32 mb32">
+                    <div class="col-8 bm-2">
+                        <h3>
+                            <t t-esc="docs[0].company_id.name" />
+                        </h3>
+                    </div>
+                    <div class="col-8 bm-4">
+                        <span t-if="docs[0].company_id.street" t-field="docs[0].company_id.street" />
+                        <span t-field="docs[0].company_id.street2" />
+                        <span t-field="docs[0].company_id.city" />, <br /><span t-field="docs[0].company_id.state_id" />, <span t-field="docs[0].company_id.country_id" />-<span t-field="docs[0].company_id.zip" /><br />
+                            Phone: <span t-field="docs[0].company_id.phone" /><br />
+                            Email: <span t-field="docs[0].company_id.email" /><br /><span t-field="docs[0].company_id.website" /><br /></div>
+                </div>
+            </div>
             <t t-foreach="docs" t-as="o">
-                <t t-call="web.basic_layout">
-                    <div class="header" style="padding-top:25px !important;">
-                        <div class="col-xs-9">
-                            <h3>
-                                <t t-esc="o.company_id.name" />
-                            </h3>
-                        </div>
-                        <div class="col-xs-3">
-                            <span t-if="o.company_id.street" t-field="o.company_id.street" />
-                            <span t-field="o.company_id.street2" />
-                            <br />
-                            <span t-field="o.company_id.city" />, <span t-field="o.company_id.state_id" />, <span t-field="o.company_id.country_id" /><br /><span t-field="o.company_id.zip" /><br /></div>
+                <div style="page-break-before: always;" />
+                <div class="page">
+                    <div style="float:right;">
+                        <table>
+                            <tr>
+                                <td colspan="2">
+                                    <h2>Inventory Adjustment</h2>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h4>Number</h4>
+                                </td>
+                                <td>
+                                    <h4>
+                                        <span t-field="o.id" />
+                                    </h4>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h4>Date</h4>
+                                </td>
+                                <td>
+                                    <h4>
+                                        <span t-field="o.date" t-field-options="{'widget': 'date'}" />
+                                    </h4>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
-                    <div class="page">
-                        <div style="float:right;">
-                            <table>
-                                <tr>
-                                    <td colspan="2">
-                                        <h2>Inventory Adjustment</h2>
+                    <div>
+                        <br />
+                        <br />
+                        <br />
+                        <table width="100%">
+                            <thead>
+                                <tr style="background-color:black;color:white">
+                                    <th width="33.33%">Product</th>
+                                    <th width="33.33%">Quantity</th>
+                                    <th width="33.33%">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.line_ids" t-as="l">
+                                    <td>
+                                        <t t-esc="l.product_id.default_code" />
+                                    </td>
+                                    <td>
+                                        <t t-esc="l.product_qty" />
+                                    </td>
+                                    <td>
+                                        <span t-field="l.product_id" />
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <h4>Number</h4>
-                                    </td>
-                                    <td>
-                                        <h4><span t-field="o.id"/></h4>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <h4>Date</h4>
-                                    </td>
-                                    <td>
-                                        <h4><span t-field="o.date" t-field-options="{'widget': 'date'}"/></h4>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div>
-                            <br/><br/><br/>
-                            <table width="100%">
-                                <thead>
-                                    <tr style="background-color:black;color:white">
-                                        <th width="33.33%">Product</th>
-                                        <th width="33.33%">Quantity</th>
-                                        <th width="33.33%">Description</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr t-foreach="o.line_ids" t-as="l">
-                                        <td>
-                                            <t t-esc="l.product_id.default_code"/>
-                                        </td>
-                                        <td>
-                                            <t t-esc="l.product_qty"/>
-                                        </td>
-                                        <td>
-                                            <span t-field="l.product_id"/>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="footer">
-                        <center>
-                            Page
-                            <span class="page"/>
-                            of
-                            <span class="topage"/>
-                        </center>
-                    </div>
-                </t>
+                </div>
             </t>
+            <div class="footer">
+                <center>Page<span class="page" />of<span class="topage"/></center>
+            </div>
         </t>
     </template>
-
     <template id="report_inventory_adjustment">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
-                <t t-call="nshore_customization.report_layout_inventory_adjustment"/>
+                <t t-call="nshore_customization.report_layout_inventory_adjustment" />
             </t>
         </t>
     </template>
