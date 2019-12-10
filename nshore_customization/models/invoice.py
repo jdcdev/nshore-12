@@ -69,6 +69,9 @@ class AccountInvoice(models.Model):
 
     validated_by = fields.Many2one(
         'res.users', string="Validated By", track_visibility='always')
+    date_invoice = fields.Date(string='Invoice Date',
+        readonly=True, states={'draft': [('readonly', False)]}, index=True,
+        help="Keep empty to use the current date", copy=False, default=fields.Date.today())
 
     @api.multi
     def action_invoice_open(self):

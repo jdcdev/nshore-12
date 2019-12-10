@@ -73,40 +73,40 @@
                                 <span t-if="o.type == 'in_invoice'">Vendor Bill</span>
                             </h2>
                             <div class="row">
-                                <div class="col-6">
+                                <div class="col-5">
                                     <strong>Number</strong>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-7">
                                     <strong>
                                         <t t-esc="o.number" />
                                     </strong>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-6">
+                                <div class="col-5">
                                     <strong>Date</strong>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-7">
                                     <strong>
                                         <t t-esc="o.date_invoice" />
                                     </strong>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-6">
+                                <div class="col-5">
                                     <div name="reference">
                                         <strong>Reference</strong>
                                     </div>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-7">
                                     <strong><t t-esc="o.partner_id.ref" /></strong>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-6">
+                                <div class="col-5">
                                     <strong>Terms</strong>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-7">
                                     <strong><t t-esc="o.payment_term_id.name" /></strong>
                                 </div>
                             </div>
@@ -183,9 +183,20 @@
                     </div>
                     <div class="row">
                         <div class="col-3"/>
-                        <div class="col-3"/>
-                        <div class="col-3"/>
-                        <div class="col-3"/>
+                        <div class="col-3"><!-- <span t-esc="amount_by_group"/> --></div>
+                        <!-- <div class="col-3"/>
+                        <div class="col-3"/> -->
+                        <t t-set="tax_val" t-value="0"/>
+                        <t t-foreach="o.amount_by_group" t-as="amount_by_group">
+                            <t t-set="amount_group" t-value="int(amount_by_group[1])" />
+                            <t t-set="tax_val" t-value="tax_val + amount_group"/>
+                        </t>
+                        <div class="col-3">
+                            <strong>Sales Tax</strong>
+                        </div>
+                        <div class="col-3 text-right">
+                            <t t-esc="tax_val" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                        </div>
                         <!-- <t t-foreach="o.amount_by_group" t-as="amount_by_group">
                             <div class="col-4">
                                     <t t-if="len(o.tax_line_ids) == 1 and o.amount_untaxed == amount_by_group[2]">
@@ -208,7 +219,7 @@
                                 </div>
                             </t> -->
                     </div>
-                    <div class="row">
+                    <div class="row" id="inv_total">
                         <div class="col-3"/>
                         <div class="col-3"/>
                         <div class="col-3">
@@ -218,6 +229,12 @@
                             <span t-field="o.amount_total" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" />
                         </div>
                     </div>
+                    <t t-set="payments_vals" t-value="o._get_payments_vals()"/>
+                    <t t-set="payment_total" t-value="0"/>
+                    <t t-foreach="payments_vals" t-as="payment_vals">
+                        <t t-set="payment_value" t-value="int(payment_vals['amount'])" />
+                        <t t-set="payment_total" t-value="payment_total + payment_value"/>
+                    </t>
                     <div class="row">
                         <div class="col-3"/>
                         <div class="col-3"/>
@@ -225,7 +242,7 @@
                             <strong>Payments</strong>
                         </div>
                         <div class="col-3 text-right">
-                            <span t-field="o.amount_total" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" />
+                            <span t-esc="payment_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                         </div>
                     </div>
                     <div class="row">
@@ -237,7 +254,7 @@
                             <strong>Invoice Balance</strong>
                         </div>
                         <div class="col-3 text-right">
-                            <span t-field="o.amount_total" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" />
+                            <span t-field="o.residual" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" />
                         </div>
                     </div>
                 
@@ -257,15 +274,18 @@
             <field name="format">A4</field>
             <field name="orientation">Portrait</field>
             <field name="margin_top">70</field>
-            <field name="margin_bottom">35</field>
-            <field name="margin_left">0</field>
-            <field name="margin_right">0</field>
+            <field name="margin_bottom">43</field>
+            <field name="margin_left">2</field>
+            <field name="margin_right">2</field>
             <field name="header_line" eval="False" />
             <field name="header_spacing">65</field>
             <field name="dpi">90</field>
         </record>
 
         <record id="account.account_invoices" model="ir.actions.report">
+            <field name="paperformat_id" ref="nshore_customization.paperformat_invoice"/>
+        </record>
+        <record id="account.account_invoices_without_payment" model="ir.actions.report">
             <field name="paperformat_id" ref="nshore_customization.paperformat_invoice"/>
         </record>
     </data>
