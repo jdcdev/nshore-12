@@ -27,6 +27,10 @@
                         position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='discount']"
+                        position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
             </field>
         </record>
 
@@ -51,6 +55,10 @@
                     <attribute name="invisible">1</attribute>
                 </xpath>
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='invoice_line_tax_ids']"
+                        position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='discount']"
                         position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
