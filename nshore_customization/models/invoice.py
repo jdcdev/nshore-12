@@ -98,3 +98,14 @@ class AccountInvoice(models.Model):
                 }
             else:
                 return super(AccountInvoice, self).action_invoice_open()
+
+
+class AccountInvoiceLine(models.Model):
+    _inherit = "account.invoice.line"
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name') == False:
+                vals_list = [i for i in vals_list if not (i['name'] == False)]
+        return super(AccountInvoiceLine, self).create(vals_list)
