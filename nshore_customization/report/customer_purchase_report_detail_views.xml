@@ -129,10 +129,9 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td>
+                                                <td colspan="2">
                                                     <strong><span t-esc="categ"/></strong>
                                                 </td>
-                                                <td/>
                                                 <td/>
                                                 <td/>
                                                 <td class="text-right">
