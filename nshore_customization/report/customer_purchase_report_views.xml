@@ -17,21 +17,22 @@
                                  border-left: none;
                             }
                         </style>
-                        <table class="table">
-                            
-                            <tr>
-                                <td/>
-                                <td/>
-                                <td/>
-                                <td colspan="4">
-                                    _________Report Peroid ________________
-                                </td>
-                                <td colspan="3">
-                                    _____Previous Peroid ______
-                                </td>
-                                <td/>
-                                <td/>
-                            </tr>
+                        <table class="table" width="100%">
+                            <t t-if="docs['comparsion'] == True">
+                                <tr>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td colspan="4">
+                                        _________Report Peroid ________________
+                                    </td>
+                                    <td colspan="3">
+                                        _____Previous Peroid ______
+                                    </td>
+                                    <td/>
+                                    <td/>
+                                </tr>
+                            </t>
                             <tr style="font-size:12px;">
                                 <th><u>Cust #</u></th>
                                 <th><u>Name</u></th>
