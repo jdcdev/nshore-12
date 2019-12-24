@@ -7,7 +7,7 @@
     'author': 'JDC system',
     'summary': 'Nshore Customization',
     'depends': [
-        'sale_management', 'account_reports', 'sale_margin'
+        'sale', 'sale_management', 'account_reports', 'sale_margin'
         , 'mail', 'contacts', 'web',
         'stock', 'purchase','point_of_sale', 'account'
     ],
