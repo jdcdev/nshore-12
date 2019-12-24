@@ -50,6 +50,78 @@
             file="nshore_customization.report_inventory_adjustment"
         />
 
+        <record id="paperformat_customer_purchase" model="report.paperformat">
+            <field name="name">Customer Purchases Report</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">35</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">30</field>
+            <field name="dpi">80</field>
+        </record>
+
+        <record id="paperformat_customer_purchase_detail" model="report.paperformat">
+            <field name="name">Customer Purchases Report</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">5</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="dpi">80</field>
+        </record>
+
+        <report
+        id="action_customer_purchase"
+        string="Customer Purchases Summary"
+        model="customer.purchases"
+        report_type="qweb-pdf"
+        paperformat="nshore_customization.paperformat_customer_purchase"
+        name="nshore_customization.report_customer_purchase"
+        file="nshore_customization.report_customer_purchase"
+        menu="False"/>
+
+        <report
+        id="action_customer_purchase_detail"
+        string="Customer Purchases Detail"
+        model="customer.purchases"
+        report_type="qweb-pdf"
+        paperformat="nshore_customization.paperformat_customer_purchase_detail"
+        name="nshore_customization.report_customer_purchase_detail"
+        file="nshore_customization.report_customer_purchase_detail"
+        menu="False"/>
+
+        <report
+        id="action_customer_purchase_html"
+        string="Customer Purchases Summary HTML"
+        model="customer.purchases"
+        report_type="qweb-html"
+        paperformat="nshore_customization.paperformat_customer_purchase"
+        name="nshore_customization.report_customer_purchase"
+        file="nshore_customization.report_customer_purchase"
+        menu="False"/>
+
+        <report
+        id="action_customer_purchase_detail_html"
+        string="Customer Purchases Detail HTML"
+        model="customer.purchases"
+        report_type="qweb-html"
+        paperformat="nshore_customization.paperformat_customer_purchase_detail"
+        name="nshore_customization.report_customer_purchase_detail"
+        file="nshore_customization.report_customer_purchase_detail"
+        menu="False"/>
+
         <record id="paperformat_open_purchase_order" model="report.paperformat">
             <field name="name">Purchase Order Paperformat</field>
             <field name="default" eval="False"/>

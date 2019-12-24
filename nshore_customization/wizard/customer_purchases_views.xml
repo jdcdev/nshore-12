@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="dispatch_wizard_form_view" model="ir.ui.view">
+        <field name="name">customer.purchases.form</field>
+        <field name="model">customer.purchases</field>
+        <field name="arch" type="xml">
+            <form>
+                <group string="Customer Selection">
+                    <group>
+                        <field name="pho_no" attrs="{'readonly': [('customer', '=', True)]}"/>
+                        <field name="area_code" attrs="{'readonly': [('customer', '=', True)]}"/>
+                    </group>
+                    <group>
+                        <field name="partner_id" attrs="{'readonly': [('customer', '=', True)]}"/>
+                        <field name="customer" />
+                    </group> 
+                </group>
+                <group string="Product Selection">
+                    <group>
+                        <field name="product_id" attrs="{'readonly': [('product', '=', True)]}"/>
+                        <field name="product_category_id" attrs="{'readonly': [('product', '=', True)]}"/>
+                    </group>
+                    <group>
+                        <field name="partner_vendor_id" attrs="{'readonly': [('product', '=', True)]}"/>
+                        <field name="product"/>
+                    </group>
+                </group>
+                <group string="Date Range">
+                    <group>
+                        <field name="start_date" attrs="{'required': [('dates', '=', False)]}"/>
+                    </group>
+                    <group>
+                        <field name="end_date" attrs="{'required': [('dates', '=', False)]}"/>
+                        <field name="dates"/>
+                    </group>
+                    <group>
+                        <field name="summary"/>
+                        <field name="comparsion" attrs="{'readonly': [('summary', '!=', True)]}"/>
+                        <field name="screen_view"/>
+                    </group>
+                </group>
+                <footer>
+                    <button string="Print" name="print_report" type="object" class="btn-primary" />
+                    <button string="Cancel" class="btn-default" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <act_window name="Customer Purchases" res_model="customer.purchases" view_mode="form" id="customer_purchases_action" target="new" />
+    <!-- Menu Item -->
+    <menuitem id="customer_report" parent="account.menu_finance_reports" name="Customer Purchases" action="customer_purchases_action" />
+</odoo>
