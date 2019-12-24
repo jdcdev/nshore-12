@@ -45,10 +45,10 @@
                                         <td/>
                                         <td/>
                                         <td colspan="4">
-                                            __________Peroid ____________
+                                            ______Peroid ____________
                                         </td>
                                         <td colspan="2">
-                                            ____Gross Profit ______
+                                            ____Gross Profit _____
                                         </td>
                                         <td/>
                                     </tr>
@@ -136,19 +136,19 @@
                                                 <td/>
                                                 <td class="text-right">
                                                     <div style="border:1px solid black;"></div>
-                                                    <span t-esc="grand_total_amount_purchased" t-options="{'widget': 'monetary','display_currency': currency_id}"/>
+                                                    <b><span t-esc="grand_total_amount_purchased" t-options="{'widget': 'monetary','display_currency': currency_id}"/></b>
                                                     <div style="border:1px solid black;"></div>
                                                 </td>
                                                 <td/>
                                                 <td/>
                                                 <td class="text-right">
                                                     <div style="border:1px solid black;"></div>
-                                                    <span t-esc="grand_total_gross_profit" t-options="{'widget': 'monetary','display_currency': currency_id}"/>
+                                                    <b><span t-esc="grand_total_gross_profit" t-options="{'widget': 'monetary','display_currency': currency_id}"/></b>
                                                     <div style="border:1px solid black;"></div>
                                                 </td>
                                                 <td class="text-right">
                                                     <div style="border:1px solid black;"></div>
-                                                    <span t-esc="grand_total_profit_margin"/>%
+                                                    <b><span t-esc="grand_total_profit_margin"/>%</b>
                                                     <div style="border:1px solid black;"></div>
                                                 </td>
                                                 <td/>
@@ -163,19 +163,19 @@
                                             <td/>
                                             <td/>
                                             <td class="text-right">
-                                                <span t-esc="final_total_amount_purchased" t-options="{'widget': 'monetary','display_currency': currency_id}"/>
+                                                <b><span t-esc="final_total_amount_purchased" t-options="{'widget': 'monetary','display_currency': currency_id}"/></b>
                                                 <div style="border:1px solid black;"></div>
                                                 <div style="border:1px solid black;margin-top:1px;"></div>
                                             </td>
                                             <td/>
                                             <td/>
                                             <td class="text-right">
-                                                <span t-esc="final_total_gross_profit" t-options="{'widget': 'monetary','display_currency': currency_id}"/>
+                                                <b><span t-esc="final_total_gross_profit" t-options="{'widget': 'monetary','display_currency': currency_id}"/></b>
                                                 <div style="border:1px solid black;"></div>
                                                 <div style="border:1px solid black ;margin-top:1px;"></div>
                                             </td>
                                             <td class="text-right">
-                                                <span t-esc="final_total_profit_margin"/>%
+                                                <b><span t-esc="final_total_profit_margin"/>%</b>
                                                 <div style="border:1px solid black;"></div>
                                                 <div style="border:1px solid black !important;margin-top:1px;"></div>
                                             </td>
