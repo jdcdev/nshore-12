@@ -91,10 +91,10 @@
                                             <tr t-foreach="partner_dict[partner][categ]" t-as="rec_data">
                                                 <t t-set="grand_total_amount_purchased" t-value="grand_total_amount_purchased+rec_data['total_amount_purchased']"/>
                                                 <t t-set="grand_total_gross_profit" t-value="grand_total_gross_profit+rec_data['total_gross_profit']"/>
-                                                <t t-set="grand_total_profit_margin" t-value="grand_total_profit_margin+rec_data['total_profit_margin']"/>
+                                                <t t-set="grand_total_profit_margin" t-value="float('%.2f'%(grand_total_profit_margin+rec_data['total_profit_margin']))"/>
                                                 <t t-set="final_total_amount_purchased" t-value="final_total_amount_purchased + rec_data['total_amount_purchased']"/>
                                                 <t t-set="final_total_gross_profit" t-value="final_total_gross_profit + rec_data['total_gross_profit']"/>
-                                                <t t-set="final_total_profit_margin" t-value="final_total_profit_margin + rec_data['total_profit_margin']"/>
+                                                <t t-set="final_total_profit_margin" t-value="float('%.2f'%(final_total_profit_margin + rec_data['total_profit_margin']))"/>
                                                 <td>
                                                     <span t-esc="rec_data['default_code']"/>
                                                 </td>
@@ -148,7 +148,7 @@
                                                 </td>
                                                 <td class="text-right">
                                                     <div style="border:1px solid black;"></div>
-                                                    <b><span t-esc="grand_total_profit_margin"/>%</b>
+                                                    <b><span t-esc="grand_total_profit_margin" t-options='{"widget": "float", "precision": 2}'/>%</b>
                                                     <div style="border:1px solid black;"></div>
                                                 </td>
                                                 <td/>
@@ -175,7 +175,7 @@
                                                 <div style="border:1px solid black ;margin-top:1px;"></div>
                                             </td>
                                             <td class="text-right">
-                                                <b><span t-esc="final_total_profit_margin"/>%</b>
+                                                <b><span t-esc="final_total_profit_margin" t-options='{"widget": "float", "precision": 2}'/>%</b>
                                                 <div style="border:1px solid black;"></div>
                                                 <div style="border:1px solid black !important;margin-top:1px;"></div>
                                             </td>

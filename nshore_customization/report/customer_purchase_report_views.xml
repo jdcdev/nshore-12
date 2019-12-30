@@ -111,7 +111,7 @@
                                         <div style="border:1px solid black;margin-top:1px;"></div>
                                     </td>
                                     <td class="text-right">
-                                        <b><span t-esc="grand_total_margin" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/></b>
+                                        <b><span t-esc="grand_total_margin" t-options='{"widget": "float", "precision": 2}'/>%</b>
                                         <div style="border:1px solid black;"></div>
                                         <div style="border:1px solid black;margin-top:1px;"></div>
                                     </td>
@@ -126,7 +126,7 @@
                                         <div style="border:1px solid black;margin-top:1px;"></div>
                                     </td>
                                     <td t-if="docs['comparsion'] == True" class="text-right">
-                                        <b><span t-esc="grand_past_total_margin" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/></b>
+                                        <b><span t-esc="grand_past_total_margin" t-options='{"widget": "float", "precision": 2}'/>%</b>
                                         <div style="border:1px solid black;"></div>
                                         <div style="border:1px solid black;margin-top:1px;"></div>
                                     </td>
@@ -136,7 +136,7 @@
                                         <div style="border:1px solid black;margin-top:1px;"></div>
                                     </td>
                                     <td t-if="docs['comparsion'] == True" class="text-right">
-                                        <b><span t-esc="grand_total_changed_per"/>%</b>
+                                        <b><span t-esc="grand_total_changed_per" t-options='{"widget": "float", "precision": 2}'/>%</b>
                                         <div style="border:1px solid black;"></div>
                                         <div style="border:1px solid black;margin-top:1px;"></div>
                                     </td>
