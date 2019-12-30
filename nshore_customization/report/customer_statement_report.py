@@ -5,7 +5,7 @@ from odoo import api, models
 
 
 class payroll_advice_report(models.AbstractModel):
-    _name = 'report.nshore_customization.report_customer_statement'
+    _name = 'report.nshore_customization.report_customer_statement_1'
 
     _description = 'Report Customer Statement'
 
@@ -25,17 +25,16 @@ class payroll_advice_report(models.AbstractModel):
                 ('state', '!=', 'draft'),
                 ('date_invoice', '>=', invoice_start_date),
                 ('date_invoice', '<=', invoice_end_date)]):
-            data.append({'date_invoice':
-                         datetime.strptime(
-                             invoice.date_invoice, '%Y-%m-%d').strftime(
-                             date_format),
-                         'name': invoice.name,
-                         'amount_total': invoice.amount_total,
-                         'residual': invoice.residual})
+            data.append({
+                'date_invoice': invoice.date_invoice.strftime(
+                        date_format),
+                'name': invoice.name,
+                'amount_total': invoice.amount_total,
+                'residual': invoice.residual})
         return data
 
     @api.model
-    def get_report_values(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
         lang_code = self.env.context.get('lang') or 'en_US'
         lang = self.env['res.lang']
         lang_id = lang._lang_get(lang_code)
