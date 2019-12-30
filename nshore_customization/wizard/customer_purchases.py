@@ -14,8 +14,8 @@ class CustomerPurchases(models.TransientModel):
     end_date = fields.Date(string='End Date', default=date.today())
     pho_no = fields.Char(string="Phone")
     area_code = fields.Char(string="Area Code")
-    customer = fields.Boolean(string="All Customer")
-    product = fields.Boolean(string="All Products")
+    customer = fields.Boolean(string="All Customer", default=True)
+    product = fields.Boolean(string="All Products", default=True)
     dates = fields.Boolean(string="All Dates")
     summary = fields.Boolean(string="Summary")
     comparsion = fields.Boolean(string="Comparsion")
@@ -69,3 +69,9 @@ class CustomerPurchases(models.TransientModel):
     def _onchange_summary(self):
         if not self.summary:
             self.comparsion = ''
+
+    @api.multi
+    @api.onchange('comparsion')
+    def _onchange_comparsion(self):
+        if self.comparsion:
+            self.dates = False
