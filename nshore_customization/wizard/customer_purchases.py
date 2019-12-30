@@ -63,6 +63,7 @@ class CustomerPurchases(models.TransientModel):
         if self.dates:
             self.start_date = ''
             self.end_date = ''
+            self.comparsion = False
 
     @api.multi
     @api.onchange('summary')
