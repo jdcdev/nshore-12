@@ -42,7 +42,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
                 sum(l.price_subtotal) as total_amount_purchased,
                 sum(l.discount) as total_discounts,
                 sum((l.price_unit - pt.net_cost) * l.quantity) as total_gross_profit,
-                cast(sum((((l.price_unit - pt.net_cost) * l.quantity) / NULLIF(l.price_unit, 0)) * 100) as numeric(36,2)) as total_profit_margin,
+                cast(sum((((l.price_unit - pt.net_cost) * l.quantity) / NULLIF(l.price_subtotal, 0)) * 100) as numeric(36,2)) as total_profit_margin,
                 c.id as cust_id
             from account_invoice_line l
             left join account_invoice i on (l.invoice_id = i.id)
@@ -88,7 +88,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
                         sum(l.price_subtotal) as total_amount_purchased,
                         sum(l.discount) as total_discounts,
                         sum((l.price_unit - pt.net_cost) * l.quantity) as total_gross_profit,
-                        cast(sum((((l.price_unit - pt.net_cost) * l.quantity) / NULLIF(l.price_unit, 0)) * 100) as numeric(36,2)) as total_profit_margin,
+                        cast(sum((((l.price_unit - pt.net_cost) * l.quantity) / NULLIF(l.price_subtotal, 0)) * 100) as numeric(36,2)) as total_profit_margin,
                         c.id as cust_id
                         from account_invoice_line l
                         left join account_invoice i on (l.invoice_id = i.id)
@@ -104,7 +104,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
                         sum(l.price_subtotal) as total_amount_purchased,
                         sum(l.discount) as total_discounts,
                         sum((l.price_unit - pt.net_cost) * l.quantity) as total_gross_profit,
-                        cast(sum((((l.price_unit - pt.net_cost) * l.quantity) / NULLIF(l.price_unit, 0)) * 100) as numeric(36,2)) as total_profit_margin,
+                        cast(sum((((l.price_unit - pt.net_cost) * l.quantity) / NULLIF(l.price_subtotal, 0)) * 100) as numeric(36,2)) as total_profit_margin,
                         c.id as cust_id
                     from account_invoice_line l
                     left join account_invoice i on (l.invoice_id = i.id)

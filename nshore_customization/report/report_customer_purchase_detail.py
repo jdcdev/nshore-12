@@ -38,7 +38,7 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
                 SUM(l.price_unit) AS price,
                 CAST(SUM(((pt.list_price - l.price_unit) / NULLIF(pt.list_price, 0)) * 100) As numeric(36,2)) AS total_discounts,
                 SUM((l.price_unit - pt.net_cost) * l.quantity) AS total_gross_profit,
-                CAST(SUM((((l.price_unit - pt.net_cost) * l.quantity) / NULLIF(l.price_unit, 0)) * 100) AS numeric(36,2)) as total_profit_margin,
+                CAST(SUM((((l.price_unit - pt.net_cost) * l.quantity) / NULLIF(l.price_subtotal, 0)) * 100) AS numeric(36,2)) as total_profit_margin,
                 pt.list_price AS list_price,
                 c.id,
                 c.name,
