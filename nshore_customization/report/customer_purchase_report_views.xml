@@ -160,10 +160,12 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-12 text-right">
-                    <p><strong>From: </strong><span t-esc="docs['start_date']"/>&amp;nbsp;&amp;nbsp;&amp;nbsp;
-                    <strong>To: </strong><span t-esc="docs['end_date']"/></p>
-                </div>    
+                <t t-if="docs['start_date'] and docs['end_date']">
+                    <div class="col-12 text-right">
+                        <p><strong>From: </strong><span t-esc="docs['start_date']"/>&amp;nbsp;&amp;nbsp;&amp;nbsp;
+                        <strong>To: </strong><span t-esc="docs['end_date']"/></p>
+                    </div>
+                </t>
             </div>
          </div>
         <t t-raw="0" />

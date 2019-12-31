@@ -11,7 +11,7 @@
                         <field name="area_code" attrs="{'readonly': [('customer', '=', True)]}"/>
                     </group>
                     <group>
-                        <field name="partner_id" attrs="{'readonly': [('customer', '=', True)], 'required': [('customer', '=', False)]}"/>
+                        <field name="partner_id" attrs="{'readonly': [('customer', '=', True)], 'required': [('customer', '=', False)]}" domain="[('is_company', '=', True)]"/>
                         <field name="customer" />
                     </group> 
                 </group>
