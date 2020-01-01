@@ -77,7 +77,7 @@
                                         <span t-esc="rec_data['past_total_gross_profit']" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                     </td>
                                     <td t-if="docs['comparsion'] == True" class="text-right">
-                                        <span t-esc="rec_data['past_total_margin']" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                        <span t-esc="rec_data['past_total_margin']"/>%
                                     </td>
                                     <td t-if="docs['comparsion'] == True" class="text-right">
                                         <span t-esc="rec_data['total_changed_amount']" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
