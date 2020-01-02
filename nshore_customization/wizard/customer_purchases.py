@@ -24,10 +24,36 @@ class CustomerPurchases(models.TransientModel):
     @api.multi
     def print_report(self):
         self.ensure_one()
-        data = {
-            'model': self._name,
-            'active_id': self.id
-        }
+        data = self.read([
+            'partner_id',
+            'product_id',
+            'partner_vendor_id',
+            'product_category_id',
+            'start_date',
+            'end_date',
+            'pho_no',
+            'area_code',
+            'customer',
+            'product',
+            'dates',
+            'summary',
+            'comparsion',
+            'screen_view'
+        ])[0]
+
+        if self.product:
+            self.partner_vendor_id = False
+            self.product_id = False
+            self.product_category_id = False
+
+        if self.customer:
+            self.partner_id = False
+            self.pho_no = False
+            self.area_code = False
+
+        if not self.summary:
+            self.comparsion = False
+
         if self.summary:
             if self.screen_view:
                 return self.env.ref('nshore_customization.action_customer_purchase_html').with_context(
@@ -45,17 +71,16 @@ class CustomerPurchases(models.TransientModel):
     @api.onchange('customer')
     def _onchange_customer(self):
         if self.customer:
-            self.partner_id = ''
-            self.pho_no = ''
-            self.area_code = ''
+            self.partner_id = False
+            self.pho_no = False
+            self.area_code = False
 
-    @api.multi
     @api.onchange('product')
     def _onchange_product(self):
         if self.product:
-            self.partner_vendor_id = ''
-            self.product_id = ''
-            self.product_category_id = ''
+            self.partner_vendor_id = False
+            self.product_id = False
+            self.product_category_id = False
 
     @api.multi
     @api.onchange('dates')
@@ -65,13 +90,11 @@ class CustomerPurchases(models.TransientModel):
             self.end_date = ''
             self.comparsion = False
 
-    @api.multi
     @api.onchange('summary')
     def _onchange_summary(self):
         if not self.summary:
-            self.comparsion = ''
+            self.comparsion = False
 
-    @api.multi
     @api.onchange('comparsion')
     def _onchange_comparsion(self):
         if self.comparsion:

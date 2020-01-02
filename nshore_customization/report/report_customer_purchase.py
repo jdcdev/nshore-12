@@ -1,5 +1,7 @@
 from dateutil.relativedelta import relativedelta
 from odoo import models, api
+import datetime
+from datetime import datetime
 
 
 class CustomerPurchasesReportView(models.AbstractModel):
@@ -10,7 +12,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         vals = []
         model = self.env.context.get('active_model')
-        docs = self.env[model].browse(self.env.context.get('active_id'))
+        docs = data
         grand_total_purchased_amount = 0.0
         grand_total_discounts = 0.0
         grand_total_gross_profit = 0.0
@@ -20,18 +22,20 @@ class CustomerPurchasesReportView(models.AbstractModel):
         grand_past_total_margin = 0.0
         grand_total_changed_amount = 0.0
         grand_total_changed_per = 0.0
-        all_dates = docs.dates
-        start_date = docs.start_date
-        end_date = docs.end_date
-        all_customer = docs.customer
-        customer_id = docs.partner_id.id or None
-        cust_phone = docs.pho_no or None
-        area_code = docs.area_code or None
-        is_comparsion_reprot = docs.comparsion
-        all_products = docs.product
-        product_id = docs.product_id.id or None
-        product_category_id = docs.product_category_id.id or None
-        vendor_id = docs.partner_vendor_id or None
+        all_dates = data['dates']
+        start_date = datetime.strptime(data['start_date'], "%Y-%m-%d")
+        end_date = datetime.strptime(data['end_date'], "%Y-%m-%d")
+        all_customer = data['customer']
+        customer_id = data['partner_id'][0] if data['partner_id'] else None
+        cust_phone = data['pho_no'] or None
+        area_code = data['area_code'] or None
+        is_comparsion_reprot = data['comparsion']
+        all_products = data['product']
+        product_id = data['product_id'][0] if data['product_id'] else None
+        product_category_id = data['product_category_id'][
+            0] if data['product_category_id'] else None
+        vendor_id = data['partner_vendor_id'][
+            0] if data['partner_vendor_id'] else None
         states = ('open', 'paid')
         invoice_types = 'out_invoice'
         sqlstr = """
@@ -55,7 +59,6 @@ class CustomerPurchasesReportView(models.AbstractModel):
         if is_comparsion_reprot and start_date and end_date:
             past_year_start_date = start_date - relativedelta(years=1)
             past_year_end_date = end_date - relativedelta(years=1)
-            print('past_year_start_date888888', past_year_start_date)
             past_query_where = query_where + \
                 " AND (i.date_invoice IS NULL or (i.date_invoice>=%s and i.date_invoice<=%s))"
             past_query_param = states, invoice_types, past_year_start_date, past_year_end_date

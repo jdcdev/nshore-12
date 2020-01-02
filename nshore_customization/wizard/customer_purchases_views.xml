@@ -21,7 +21,7 @@
                         <field name="product_category_id" attrs="{'readonly': [('product', '=', True)]}"/>
                     </group>
                     <group>
-                        <field name="partner_vendor_id" attrs="{'readonly': [('product', '=', True)]}"/>
+                        <!-- <field name="partner_vendor_id" attrs="{'readonly': [('product', '=', True)]}"/> -->
                         <field name="product"/>
                     </group>
                 </group>

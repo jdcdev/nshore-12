@@ -11,19 +11,21 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
         partner_contact_dict = {}
         partner_dict = {}
         model = self.env.context.get('active_model')
-        docs = self.env[model].browse(self.env.context.get('active_id'))
-        all_dates = docs.dates
-        start_date = docs.start_date
-        end_date = docs.end_date
-        all_customer = docs.customer
-        is_comparsion_reprot = docs.comparsion
-        customer_id = docs.partner_id.id or None
-        cust_phone = docs.pho_no or None
-        area_code = docs.area_code or None
-        all_products = docs.product
-        product_id = docs.product_id.id or None
-        product_category_id = docs.product_category_id.id or None
-        vendor_id = docs.partner_vendor_id or None
+        docs = data
+        all_dates = data['dates']
+        start_date = datetime.strptime(data['start_date'], "%Y-%m-%d")
+        end_date = datetime.strptime(data['end_date'], "%Y-%m-%d")
+        all_customer = data['customer']
+        is_comparsion_reprot = data['comparsion']
+        customer_id = data['partner_id'][0] if data['partner_id'] else None
+        cust_phone = data['pho_no'] or None
+        area_code = data['area_code'] or None
+        all_products = data['product']
+        product_id = data['product_id'][0] if data['product_id'] else None
+        product_category_id = data['product_category_id'][
+            0] if data['product_category_id'] else None
+        vendor_id = data['partner_vendor_id'][
+            0] if data['partner_vendor_id'] else None
         states = ('open', 'paid')
         invoice_types = 'out_invoice'
         sqlstr = """
@@ -83,7 +85,7 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
             }
             if res[13] not in partner_dict.keys():
                 partner_contact_dict.update({
-                    res[13]:{'phone_no': res[14]}
+                    res[13]: {'phone_no': res[14]}
                 })
                 partner_dict.update({
                     res[13]: {
@@ -91,9 +93,9 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
                     }
                 })
             elif res[1] not in partner_dict[res[13]].keys():
-                    partner_dict[res[13]].update({
-                        res[1]: [vals_dict]
-                    })
+                partner_dict[res[13]].update({
+                    res[1]: [vals_dict]
+                })
             else:
                 partner_dict[res[13]][res[1]].append(vals_dict)
         data = {
@@ -101,8 +103,8 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
             'doc_model': model,
             'partner_dict': partner_dict,
             'partner_contact_dict': partner_contact_dict,
-            'start_date': docs.start_date,
-            'end_date': docs.end_date,
+            'start_date': data['start_date'],
+            'end_date': data['end_date'],
             'currency_id': self.env.user.company_id.currency_id,
             'docs': docs,
         }
