@@ -2,8 +2,8 @@
 <odoo>
     <template id="report_layout_customer_statement_1">
         <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="o">
-                <t t-call="web.basic_layout">
+            <t t-call="web.basic_layout">
+                <div t-foreach="lines_data" t-as="o" style="page-break-after: always">
                     <div class="header">
                         <div class="row">
                             <div class="col-8">
@@ -59,9 +59,16 @@
                                 </tr>
                                 <tr>
                                     <td style='padding: 5px;'>
-                                        <address t-esc="o" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}" />
-                                        <div t-if="o.vat" class="mt16">
-                                            <t t-esc="o.company_id.country_id.vat_label or 'TIN'" />: <span t-field="o.vat" /></div>
+                                        <t t-if="not lines_data.get('partner_shipping_id')">
+                                            <address t-esc="o" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}" />
+                                            <div t-if="o.vat" class="mt16">
+                                                <t t-esc="o.company_id.country_id.vat_label or 'TIN'" />: <span t-field="o.vat" /></div>
+                                        </t>
+                                        <t t-if="lines_data.get('partner_shipping_id')">
+                                            <address t-esc="lines_data.get('partner_shipping_id')" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}" />
+                                            <div t-if="o.vat" class="mt16">
+                                                <t t-esc="o.company_id.country_id.vat_label or 'TIN'" />: <span t-field="o.vat" /></div>
+                                        </t>
                                     </td>
                                 </tr>
                             </table>
@@ -82,9 +89,9 @@
                                     <th>Date</th>
                                     <th>Type</th>
                                     <th>Reference</th>
-                                    <th>Invoiced</th>
-                                    <th>Paid</th>
-                                    <th>Balance</th>
+                                    <th class="text-right">Invoiced</th>
+                                    <th class="text-right">Paid</th>
+                                    <th class="text-right">Balance</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -93,35 +100,35 @@
                                         Opening Balance
                                     </td>
                                     <td colspan="3"/>
-                                    <td>
-                                        <t t-esc="o.credit"/>
+                                    <td class="text-right">
+                                        <t t-esc="o.credit" t-options='{"widget": "float", "precision": 2}'/>
                                     </td>
                                 </tr>
                                 <t t-set="total_amount" t-value="o.credit"/>
-                                <tr t-foreach="lines_data" t-as="b">
-                                    <t t-set="total_amount" t-value="total_amount+b.get('amount_total')"/>
-                                    <td>
-                                        <span t-esc="b.get('date_invoice')"/>
-                                    </td>
-                                    <td>
-                                        Invoice
-                                    </td>
-                                    <td>
-                                        <span t-esc="b.get('name')"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="b.get('amount_total')"/>
-                                        <t t-set="total_invoice" t-value="total_invoice+b.get('amount_total')"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="b.get('amount_total')-b.get('residual')"/>
-                                        <t t-set="total_paid" t-value="total_paid+(b.get('amount_total')-b.get('residual'))"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="total_amount"/>
-                                        <t t-set="total_balance" t-value="total_balance+total_amount"/>
-                                    </td>
-                                </tr>
+                                <tr t-foreach="lines_data[o].get('invoice_line', [])" t-as="new_list">
+                                        <t t-set="total_amount" t-value="total_amount + new_list.get('amount_total', 0)"/>
+                                        <td>
+                                            <span t-esc="new_list.get('date_invoice')"/>
+                                        </td>
+                                        <td>
+                                            Invoice
+                                        </td>
+                                        <td>
+                                            <span t-esc="new_list.get('name')"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="new_list.get('amount_total', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                            <t t-set="total_invoice" t-value="total_invoice+new_list.get('amount_total', 0)"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="new_list.get('amount_total', 0)-new_list.get('residual', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                            <t t-set="total_paid" t-value="total_paid+(new_list.get('amount_total', 0)-new_list.get('residual', 0))"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="total_amount" t-options='{"widget": "float", "precision": 2}'/>
+                                            <t t-set="total_balance" t-value="total_balance+total_amount"/>
+                                        </td>
+                                    </tr>
                             </tbody>
                             <tbody>
                                 <tr style="background-color:black;color:white">
@@ -136,11 +143,11 @@
                                     <td colspan="3" class="text-right">
                                         <span t-esc="total_invoice" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                     </td>
-                                    <td>
+                                    <td class="text-right">
                                         <span t-esc="total_paid" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                     </td>
-                                    <td>
-                                        <span t-esc="total_balance" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    <td class="text-right">
+                                        <span t-esc="total_amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                     </td>
                                 </tr>
                             </tbody>
@@ -149,50 +156,58 @@
                     <div class="row mt16">
                         <table class="table div-rounded" width="100%">
                             <tr>
-                                <td>
+                                <td class="text-right">
                                     <b>Current</b>
                                 </td>
-                                <td>
+                                <td class="text-right">
                                     <b>30 Days</b>
                                 </td>
-                                <td>
+                                <td class="text-right">
                                     <b>60 Days</b>
                                 </td>
-                                <td>
+                                <td class="text-right">
                                     <b>90 + Days</b>
                                 </td>
-                                <td>
+                                <td class="text-right">
                                     <b>On Account</b>
                                 </td>
                             </tr>
                             <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td class="text-right">
+                                    <span t-esc="lines_data[o].get('current_amount', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="lines_data[o].get('between_30days', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="lines_data[o].get('between_60days', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="lines_data[o].get('between_90days', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td class="text-right">0.0</td>
                             </tr>
                         </table>
                     </div>
-
+                    <t t-raw="0" />
                     <div class="footer">
-                        <center>
-                            Page
-                            <span class="page"/>
-                            of
-                            <span class="topage"/>
-                        </center>
+                        <div class="text-center col-md-1">
+                            <ul class="list-inline">
+                                <li class="list-inline-item">Page</li>
+                                <li class="list-inline-item"><span class="page"/></li>
+                                <li class="list-inline-item">of</li>
+                                <li class="list-inline-item"><span class="topage"/></li>
+                            </ul>
+                        </div>
                     </div>
-                </t>
+                </div>
             </t>
         </t>
     </template>
 
     <template id="report_customer_statement_1">
         <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="doc">
-                <t t-call="nshore_customization.report_layout_customer_statement_1" />
-            </t>
+            <t t-call="nshore_customization.report_layout_customer_statement_1" />
         </t>
     </template>
 </odoo>
