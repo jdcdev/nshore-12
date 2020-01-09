@@ -62,7 +62,10 @@ class payroll_advice_report(models.AbstractModel):
         lang = self.env['res.lang']
         lang_id = lang._lang_get(lang_code)
         date_format = lang_id.date_format
-        partner_ids = data['partner_ids']
+        if not data.get('partner_ids'):
+            data.update({'partner_ids': docids})
+        data.update(self._context)
+        partner_ids = data.get('partner_ids')
         lines_data = self.get_invoice_details(data, date_format)
         return {
             'doc_ids': docids,

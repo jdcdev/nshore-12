@@ -2,7 +2,6 @@
 
 from odoo import fields, models, api, _
 from odoo.exceptions import UserError
-import datetime
 
 
 class AccountPrintStatement(models.TransientModel):
@@ -101,17 +100,18 @@ class AccountPrintStatement(models.TransientModel):
         if self.start_date > self.end_date:
             raise UserError(
                 _("Start date should not be greater than end date"))
-        else:
-            data = self.read([
-                'start_date',
-                'end_date'
-            ])[0]
-            partner_ids = self.env['res.partner'].sudo().search([('is_company', '=', True)]).ids
-            data_dict.update({
-                'partner_ids': partner_ids,
-                'start_date': data['start_date'],
-                'end_date': data['end_date']
-            })
-            return self.env.ref(
-                'nshore_customization.custom_customer_statement'
-            ).report_action(self, data_dict)
+        data = self.read([
+            'start_date',
+            'end_date'
+        ])[0]
+        partner_ids = self.env['res.partner'].sudo().search([
+            ('is_company', '=', True)
+        ]).ids
+        data_dict.update({
+            'partner_ids': partner_ids,
+            'start_date': data['start_date'],
+            'end_date': data['end_date']
+        })
+        return self.env.ref(
+            'nshore_customization.custom_customer_statement'
+        ).report_action(self, data_dict)
