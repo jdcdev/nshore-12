@@ -12,9 +12,10 @@
         'stock', 'purchase','point_of_sale', 'account'
     ],
     'data': [
+        'security/security.xml',
+        'security/ir.model.access.csv',
         'data/nshore_customization_data.xml',
         'views/partner_view.xml',
-        'security/security.xml',
         'views/template.xml',
         'views/inherited_sale_order.xml',
         'views/inherited_invoice_form.xml',
