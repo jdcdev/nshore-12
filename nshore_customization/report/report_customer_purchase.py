@@ -1,7 +1,8 @@
 from dateutil.relativedelta import relativedelta
-from odoo import models, api
+from odoo import models, api, _
 import datetime
 from datetime import datetime
+from odoo.exceptions import ValidationError
 
 
 class CustomerPurchasesReportView(models.AbstractModel):
@@ -38,6 +39,8 @@ class CustomerPurchasesReportView(models.AbstractModel):
             0] if data['partner_vendor_id'] else None
         states = ('open', 'paid')
         invoice_types = 'out_invoice'
+        user_id = data['user_id'][0] if data['user_id'] else None
+
         sqlstr = """
             select
                 c.ref as cust_ref,
@@ -56,6 +59,8 @@ class CustomerPurchasesReportView(models.AbstractModel):
             left join product_category categ on (categ.id = pt.categ_id)"""
         query_where = "where i.state in %s and i.type = %s"
         query_param = states, invoice_types
+        past_query_where = ''
+        past_query_param = ''
         if is_comparsion_reprot and start_date and end_date:
             past_year_start_date = start_date - relativedelta(years=1)
             past_year_end_date = end_date - relativedelta(years=1)
@@ -66,9 +71,9 @@ class CustomerPurchasesReportView(models.AbstractModel):
             query_where += " AND (i.date_invoice IS NULL or (i.date_invoice>=%s and i.date_invoice<=%s))"
             query_param += start_date, end_date
         if not all_customer:
-            if customer_id or area_code or cust_phone:
-                query_where += " AND (i.partner_id = %s or c.zip = %s or c.phone = %s)"
-                query_param += customer_id, area_code, cust_phone
+            if customer_id or area_code or cust_phone or user_id:
+                query_where += " AND (i.partner_id = %s or c.zip = %s or c.phone = %s or i.user_id = %s)"
+                query_param += customer_id, area_code, cust_phone, user_id
             if is_comparsion_reprot:
                 past_query_where += " AND (i.partner_id = %s or c.zip = %s or c.phone = %s)"
                 past_query_param += customer_id, area_code, cust_phone
@@ -133,6 +138,8 @@ class CustomerPurchasesReportView(models.AbstractModel):
             past_query_param = query_param + past_query_param
             self.env.cr.execute(past_sql_qry, past_query_param)
             past_final_rec = self.env.cr.fetchall()
+            if not past_final_rec:
+                raise ValidationError(_("Not data available."))
             for past_rec in past_final_rec:
                 total_purchased_amount = past_rec[3] or 0.0
                 past_total_purchased_amount = past_rec[7] or 0.0
@@ -169,6 +176,8 @@ class CustomerPurchasesReportView(models.AbstractModel):
         if not is_comparsion_reprot:
             self.env.cr.execute(final_sql_qry, (query_param))
             result = self.env.cr.fetchall()
+            if not result:
+                raise ValidationError(_("Not data available."))
             for res in result:
                 grand_total_purchased_amount += res[3] or 0.0
                 grand_total_discounts += res[4] or 0.0

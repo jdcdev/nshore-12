@@ -1,5 +1,7 @@
-from datetime import datetime, timedelta
-from odoo import models, api
+from datetime import datetime
+
+from odoo import models, api, _
+from odoo.exceptions import ValidationError
 
 
 class CustomerPurchasesDetailReportView(models.AbstractModel):
@@ -28,6 +30,7 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
             0] if data['partner_vendor_id'] else None
         states = ('open', 'paid')
         invoice_types = 'out_invoice'
+        user_id = data['user_id'][0] if data['user_id'] else None
         sqlstr = """
             SELECT
                 pc.id,
@@ -59,9 +62,9 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
             query_where += " AND (i.date_invoice IS NULL or (i.date_invoice>=%s and i.date_invoice<=%s))"
             query_param += start_date, end_date
         if not all_customer:
-            if customer_id or area_code or cust_phone:
-                query_where += " AND (i.partner_id = %s or c.zip = %s or c.phone = %s)"
-                query_param += customer_id, area_code, cust_phone
+            if customer_id or area_code or cust_phone or user_id:
+                query_where += " AND (i.partner_id = %s or c.zip = %s or c.phone = %s or i.user_id = %s)"
+                query_param += customer_id, area_code, cust_phone, user_id
         if not all_products:
             if product_id or product_category_id or vendor_id:
                 query_where += ' AND (l.product_id = %s or pc.id = %s)'
@@ -70,6 +73,8 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
         final_sql_qry = sqlstr + ' ' + query_where + ' ' + groupby
         self.env.cr.execute(final_sql_qry, query_param)
         result = self.env.cr.fetchall()
+        if not result:
+            raise ValidationError(_("Not data available."))
         for res in result:
             vals_dict = {
                 'default_code': res[2] or '',
