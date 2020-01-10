@@ -41,6 +41,7 @@
         'report/customer_purchase_report_views.xml',
         'report/customer_purchase_report_detail_views.xml',
         'data/email_template_partner_statement.xml',
+        'views/customer_statement_unmail_views.xml',
         'views/menus.xml'
     ],
     'qweb': ['static/src/xml/pos.xml'],

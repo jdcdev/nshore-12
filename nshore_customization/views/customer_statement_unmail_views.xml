@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_customer_statement_unmail_form_nshore"
+            model="ir.ui.view">
+        <field name="name">customer.statement.unmail.form.nshore</field>
+        <field name="model">customer.statement.unmail</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <label for="name" class="oe_edit_only"/>
+                    <h1>
+                        <field name="name" readonly="1"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="datas"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_customer_statement_unmail_tree_nshore"
+            model="ir.ui.view">
+        <field name="name">customer.statement.unmail.tree.nshore</field>
+        <field name="model">customer.statement.unmail</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="date"/>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_view_customer_statement_unmail" model="ir.actions.act_window">
+        <field name="name">Statement Attachments</field>
+        <field name="res_model">customer.statement.unmail</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_customer_statemetn_attachment"
+              parent="account.menu_finance_reports"
+              action="action_view_customer_statement_unmail"/>
+</odoo>
