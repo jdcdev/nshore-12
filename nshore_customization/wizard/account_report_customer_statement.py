@@ -97,6 +97,7 @@ class AccountPrintStatement(models.TransientModel):
     def print_customer_statement(self):
         """It creates pdf reports for particular partner."""
         data_dict = {}
+        partner_list = []
         if self.start_date > self.end_date:
             raise UserError(
                 _("Start date should not be greater than end date"))
@@ -104,13 +105,18 @@ class AccountPrintStatement(models.TransientModel):
             'start_date',
             'end_date'
         ])[0]
-        partner_ids = self.env['res.partner'].sudo().search([
-            ('is_company', '=', True)
-        ]).ids
+        start_date = data['start_date']
+        end_date = data['end_date']
+        invoice_ids = self.env['account.invoice'].search([
+            ('state', '!=', 'draft'),
+            ('date_invoice', '>=', start_date),
+            ('date_invoice', '<=', end_date),
+            ('type', '=', 'out_invoice')])
+        partner_list = [inv.partner_id.id for inv in invoice_ids]
         data_dict.update({
-            'partner_ids': partner_ids,
-            'start_date': data['start_date'],
-            'end_date': data['end_date']
+            'partner_ids': list(set(partner_list)),
+            'start_date': start_date,
+            'end_date': end_date
         })
         return self.env.ref(
             'nshore_customization.custom_customer_statement'

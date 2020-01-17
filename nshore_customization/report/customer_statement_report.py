@@ -18,6 +18,7 @@ class payroll_advice_report(models.AbstractModel):
         for partner in partner_ids:
             for invoice in self.env['account.invoice'].search([
                     ('partner_id', '=', partner.id),
+                    ('type', '=', 'out_invoice'),
                     ('state', '!=', 'draft'),
                     ('date_invoice', '>=', start_date),
                     ('date_invoice', '<=', end_date)]):

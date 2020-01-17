@@ -24,6 +24,7 @@
             name="nshore_customization.report_customer_statement_1"
             file="nshore_customization.report_customer_statement_1"
             paperformat="nshore_customization.paperformat_customer_stmt"
+            menu="False"
         />
 
         <report 
