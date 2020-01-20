@@ -18,51 +18,6 @@ class AccountPrintStatement(models.TransientModel):
         'res.company', String="Company",
         default=lambda self: self.env.user.company_id)
 
-    # @api.onchange('start_date', 'end_date')
-    # def onchange_date(self):
-    #     """When the date will change it will display the list of partners."""
-    #     if self.start_date and self.end_date:
-    #         final_start_date = datetime.date.today()
-    #         final_end_date = datetime.date.today()
-    #         start_date = datetime.datetime.strptime(
-    #             str(self.start_date), "%Y-%m-%d").date()
-    #         date_start_format = start_date.strftime("%d/%m/%Y")
-    #         final_start_date = datetime.datetime.strptime(
-    #             str(date_start_format), "%d/%m/%Y").date()
-    #         end_date = datetime.datetime.strptime(
-    #             str(self.end_date), "%Y-%m-%d").date()
-    #         date_end_format = end_date.strftime("%d/%m/%Y")
-    #         final_end_date = datetime.datetime.strptime(
-    #             str(date_end_format), "%d/%m/%Y").date()
-    #         invoice = self.env['account.invoice'].search(
-    #             [('type', '=', 'out_invoice')])
-    #         print('invoice--------', invoice, self.start_date, self.end_date)
-    #         payment = self.env['account.payment'].search([])
-    #         print('---payments-----', payment)
-    #         partner_list = []
-    #         for invoices in invoice:
-    #             if invoices.date_invoice:
-    #                 invoices_date = datetime.datetime.strptime(
-    #                     str(invoices.date_invoice), "%Y-%m-%d").date()
-    #                 invoices_date_format = invoices_date.strftime("%d/%m/%Y")
-    #                 final_invoices_date = datetime.datetime.strptime(
-    #                     str(invoices_date_format), "%d/%m/%Y").date()
-    #                 if final_start_date <= final_invoices_date <= final_end_date and not invoices.partner_id.email:
-    #                     partner_list.append(invoices.partner_id.id)
-    #         print('partners_list---invoice00000', partner_list)
-    #         for payments in payment:
-    #             if payments.payment_date:
-    #                 payments_date = datetime.datetime.strptime(
-    #                     str(payments.payment_date), "%Y-%m-%d").date()
-    #                 payments_date_format = payments_date.strftime("%d/%m/%Y")
-    #                 final_payment_date = datetime.datetime.strptime(
-    #                     str(payments_date_format), "%d/%m/%Y").date()
-    #                 if final_start_date <= final_payment_date <= final_end_date and not payments.partner_id.email:
-    #                     partner_list.append(payments.partner_id.id)
-    #         print('partner_list=------payment----', partner_list)
-    #         self.partner_ids = [(6, 0, partner_list)]
-    #         print('self.partner_li----', self.partner_ids)
-
     @api.multi
     def send_print_customer_statement(self):
         """For sending e-mail to multiple partners."""
@@ -70,28 +25,41 @@ class AccountPrintStatement(models.TransientModel):
             'start_date',
             'end_date',
         ])[0]
-        partner_list = []
-        email_partner_list = []
-        if self.start_date > self.end_date:
+        data_dict = {}
+        start_date = data['start_date']
+        end_date = data['end_date']
+        ctx = {
+            'start_date': start_date,
+            'end_date': end_date
+        }
+        if start_date > end_date:
             raise UserError(
                 _("Start date should not be greater than end date"))
         else:
             template_id = self.env.ref(
                 'nshore_customization.email_template_partner_statement')
             if template_id:
-                # base_context = self.env.context
-                partner_ids = self.env['res.partner'].sudo().search([('is_company', '=', True)])
-                for partner in partner_ids:
-                    template_id.write({'email_to': partner.email})
-                    template_id.send_mail(partner.id, force_send=True)
+                invoice_ids = self.env['account.invoice'].search([
+                    ('state', '!=', 'draft'),
+                    ('date_invoice', '>=', start_date),
+                    ('date_invoice', '<=', end_date),
+                    ('type', '=', 'out_invoice')])
+                partner_list = [inv.partner_id for inv in invoice_ids]
+                partner_ids = list(set(partner_list))
+                email_partner_list = [partner for partner in partner_ids if partner.email]
+                partner_list = [partner.id for partner in partner_ids if not partner.email]
                 for email_partner in email_partner_list:
                     template_id.write({'email_to': email_partner.email})
-                    template_id.send_mail(email_partner.id, force_send=True)
+                    template_id.with_context(ctx).send_mail(email_partner.id, force_send=True)
                 if partner_list:
+                    data_dict = {
+                        'partner_ids': list(set(partner_list)),
+                        'start_date': start_date,
+                        'end_date': end_date
+                    }
                     return self.env.ref(
                         'nshore_customization.custom_customer_statement'
-                    ).report_action(
-                        partner_list)
+                    ).report_action(data=data_dict, docids=self.id)
 
     @api.multi
     def print_customer_statement(self):
