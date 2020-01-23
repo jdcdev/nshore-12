@@ -50,7 +50,7 @@ class AccountPrintStatement(models.TransientModel):
                 partner_list = [partner.id for partner in partner_ids if not partner.email]
                 for email_partner in email_partner_list:
                     template_id.write({'email_to': email_partner.email})
-                    template_id.with_context(ctx).send_mail(email_partner.id, force_send=True)
+                    template_id.with_context(ctx).send_mail(email_partner.id, force_send=False)
                 if partner_list:
                     data_dict = {
                         'partner_ids': list(set(partner_list)),

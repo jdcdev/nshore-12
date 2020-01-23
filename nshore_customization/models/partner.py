@@ -70,7 +70,7 @@ class ResPartner(models.Model):
                 if partner.email:
                     template_id.write({'email_to': partner.email})
                     template_id.with_context(ctx).send_mail(partner.id,
-                                                            force_send=True)
+                                                            force_send=False)
             remains = partners.filtered(lambda l: not l.email)
             if remains:
                 cst_stmt_pdf = self.env.ref(
