@@ -16,28 +16,38 @@ class payroll_advice_report(models.AbstractModel):
         start_date = data['start_date']
         end_date = data['end_date']
         for partner in partner_ids:
+            open_invoices = self.env['account.invoice'].search([
+                ('partner_id', '=', partner.id),
+                ('type', '=', 'out_invoice'),
+                ('state', '=', 'open'),
+                ('date_invoice', '<', start_date),
+            ])
+            total_open_inv_amount = sum([inv.amount_total for inv in open_invoices])
             for invoice in self.env['account.invoice'].search([
                     ('partner_id', '=', partner.id),
                     ('type', '=', 'out_invoice'),
                     ('state', '!=', 'draft'),
                     ('date_invoice', '>=', start_date),
                     ('date_invoice', '<=', end_date)]):
+
                 vals_dict = {
                     'date_invoice': invoice.date_invoice.strftime(
                             date_format),
                     'name': invoice.name,
                     'amount_total': invoice.amount_total,
                     'residual': invoice.residual,
-                    'partner_shipping_id': invoice.partner_shipping_id
+                    'partner_shipping_id': invoice.partner_shipping_id,
                 }
                 if partner not in partner_dict.keys():
                     partner_dict.update({
                         partner: {
-                            'invoice_line': [vals_dict]
+                            'open_inv_amount': total_open_inv_amount,
+                            'invoice_line': [vals_dict],
                         }
                     })
                 else:
                     partner_dict[partner]['invoice_line'].append(vals_dict)
+                    partner_dict[partner]['open_inv_amount'] = total_open_inv_amount
                 partner_shipping_id = invoice.partner_shipping_id
             if partner not in partner_dict.keys():
                 partner_dict.update({
