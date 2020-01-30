@@ -104,7 +104,7 @@
                                         <t t-esc="lines_data[o].get('open_inv_amount', 0)" t-options='{"widget": "float", "precision": 2}'/>
                                     </td>
                                 </tr>
-                                <t t-set="total_amount" t-value="o.credit"/>
+                                <t t-set="total_amount" t-value="lines_data[o].get('open_inv_amount', 0)"/>
                                 <tr t-foreach="lines_data[o].get('invoice_line', [])" t-as="new_list">
                                         <t t-set="total_amount" t-value="total_amount + new_list.get('amount_total', 0)"/>
                                         <td>

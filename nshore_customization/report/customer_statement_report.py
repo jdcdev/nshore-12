@@ -55,7 +55,7 @@ class payroll_advice_report(models.AbstractModel):
                 })
             if partner in partner_dict.keys() and not any([x for x in partner_dict[partner].get('invoice_line', []) if 'partner_shipping_id' in x.keys()]):
                 partner_dict[partner].update({'partner_shipping_id': partner})
-            results, total, amls = self.env['report.account.report_agedpartnerbalance'].with_context(include_nullified_amount=True)._get_partner_move_lines(['receivable'], end_date, 'posted', 30)
+            results, total, amls = self.env['report.account.report_agedpartnerbalance'].with_context(include_nullified_amount=True)._get_partner_move_lines(['receivable'], datetime.today(), 'posted', 30)
             for rec in results:
                 if rec['partner_id'] == partner.id:
                     cust_dict = {
