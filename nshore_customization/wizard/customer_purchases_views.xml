@@ -15,8 +15,7 @@
                                attrs="{'readonly': [('is_all_salesperson', '=', True)]}"/>
                         <field name="is_all_salesperson"/>
                         <field name="partner_id"
-                               attrs="{'readonly': [('customer', '=', True)]}"
-                               domain="[('is_company', '=', True), ('phone', 'ilike', pho_no)]"/>
+                               attrs="{'readonly': [('customer', '=', True)]}"/>
                         <field name="customer"/>
                     </group>
                 </group>

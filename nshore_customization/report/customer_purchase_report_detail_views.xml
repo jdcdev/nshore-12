@@ -3,7 +3,9 @@
     <template id="report_customer_purchase_detail">
         <t t-call="web.basic_layout">
             <t t-if="html_report and not data_html_report">
-                <div><h2>No Data Available</h2></div>
+                <div class="row text-center">
+                    <h2>No Data Available</h2>
+                </div>
             </t>
             <div t-foreach="partner_dict" t-as="partner" style="page-break-after: always">
                 <div class="row">

@@ -78,8 +78,8 @@ class CustomerPurchasesReportView(models.AbstractModel):
 
         if not all_customer:
             if customer_id or area_code or cust_phone or user_id:
-                query_where += " AND (i.partner_id = %s or c.zip = %s or c.phone = %s or i.user_id = %s)"
-                query_param += customer_id, area_code, cust_phone, user_id
+                query_where += " AND (i.partner_id = %s or c.zip = %s or c.phone = %s)"
+                query_param += customer_id, area_code, cust_phone
 
             if is_comparsion_reprot:
                 past_query_where += " AND (i.partner_id = %s or c.zip = %s or c.phone = %s)"
@@ -98,6 +98,10 @@ class CustomerPurchasesReportView(models.AbstractModel):
             if is_comparsion_reprot:
                 past_query_where += ' AND (l.product_id = %s or categ.id = %s)'
                 past_query_param += product_id, product_category_id
+
+        if not is_all_salesperson:
+            if user_id:
+                query_where += " AND (i.user_id = %s)" % user_id
 
         query_groupby = "group by c.name, c.ref, c.id"
         final_sql_qry = sqlstr + ' ' + query_where + ' ' + query_groupby
@@ -153,6 +157,9 @@ class CustomerPurchasesReportView(models.AbstractModel):
             past_query_param = query_param + past_query_param
             self.env.cr.execute(past_sql_qry, past_query_param)
             past_final_rec = self.env.cr.fetchall()
+
+            # if not result and not self._context.get('html_report', False):
+            #     raise ValidationError(_("No data available."))
 
             if not past_final_rec:
                 raise ValidationError(_("No data available."))

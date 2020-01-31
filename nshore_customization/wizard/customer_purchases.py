@@ -23,6 +23,28 @@ class CustomerPurchases(models.TransientModel):
     user_id = fields.Many2one("res.users", string="Salesperson")
     is_all_salesperson = fields.Boolean(string="All Salesperson")
 
+    @api.onchange('area_code')
+    def _onchange_area_code(self):
+        if self.area_code:
+            partners = self.env['res.partner'].search([('customer', '=', True)])
+            partner_ids = []
+            for partner in partners:
+                if partner.zip and self.area_code in partner.zip:
+                    partner_ids.append(partner.id)
+            return {'domain': {'partner_id': [('id', 'in', partner_ids)]}}
+        return {'domain': {'partner_id': [('is_company', '=', True), ('id', 'not in', [])]}}
+
+    @api.onchange('pho_no')
+    def _onchange_pho_no(self):
+        if self.pho_no:
+            partners = self.env['res.partner'].search([('customer', '=', True)])
+            partner_ids = []
+            for partner in partners:
+                if partner.phone and self.pho_no in partner.phone:
+                    partner_ids.append(partner.id)
+            return {'domain': {'partner_id': [('id', 'in', partner_ids)]}}
+        return {'domain': {'partner_id': [('is_company', '=', True), ('id', 'not in', [])]}}
+
     @api.multi
     def print_report(self):
         self.ensure_one()
@@ -65,7 +87,7 @@ class CustomerPurchases(models.TransientModel):
             if self.screen_view:
                 return self.env.ref(
                     'nshore_customization.action_customer_purchase_html'
-                ).with_context(from_transient_model=True).report_action(
+                ).with_context(from_transient_model=True, html_report=True).report_action(
                     self, data=data)
             return self.env.ref(
                 'nshore_customization.action_customer_purchase'

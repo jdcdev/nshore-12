@@ -66,17 +66,16 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
         if not all_customer:
             if customer_id or area_code or cust_phone or user_id:
                 query_where += " AND (i.partner_id = %s or c.zip = %s or c.phone = %s)"
-                query_param += customer_id, area_code, cust_phone, user_id
-
-        if not is_all_salesperson:
-            if user_id:
-                query_where += " AND (i.user_id = %s)"
-                query_param += user_id
+                query_param += customer_id, area_code, cust_phone
 
         if not all_products:
             if product_id or product_category_id or vendor_id:
                 query_where += ' AND (l.product_id = %s or pc.id = %s)'
                 query_param += product_id, product_category_id
+
+        if not is_all_salesperson:
+            if user_id:
+                query_where += " AND (i.user_id = %s)" % user_id
 
         groupby = "group by pc.id, pc.name,pt.default_code,pt.name,pt.list_price,c.id,c.name"
         final_sql_qry = sqlstr + ' ' + query_where + ' ' + groupby
