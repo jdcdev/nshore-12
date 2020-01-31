@@ -14,13 +14,14 @@ class CustomerPurchases(models.TransientModel):
     end_date = fields.Date(string='End Date', default=date.today())
     pho_no = fields.Char(string="Phone")
     area_code = fields.Char(string="Area Code")
-    customer = fields.Boolean(string="All Customer", default=True)
+    customer = fields.Boolean(string="All Customer")
     product = fields.Boolean(string="All Products", default=True)
     dates = fields.Boolean(string="All Dates")
     summary = fields.Boolean(string="Summary")
     comparsion = fields.Boolean(string="Comparsion")
     screen_view = fields.Boolean(string="Screen View")
-    user_id = fields.Many2one("res.users", string="User")
+    user_id = fields.Many2one("res.users", string="Salesperson")
+    is_all_salesperson = fields.Boolean(string="All Salesperson")
 
     @api.multi
     def print_report(self):
@@ -40,23 +41,25 @@ class CustomerPurchases(models.TransientModel):
             'summary',
             'comparsion',
             'screen_view',
-            'user_id'
+            'user_id',
+            'is_all_salesperson'
         ])[0]
 
         if self.product:
             self.partner_vendor_id = False
             self.product_id = False
             self.product_category_id = False
-            self.user_id = False
 
         if self.customer:
             self.partner_id = False
             self.pho_no = False
             self.area_code = False
-            self.user_id = False
 
         if not self.summary:
             self.comparsion = False
+
+        if self.is_all_salesperson:
+            self.user_id = False
 
         if self.summary:
             if self.screen_view:
@@ -73,19 +76,23 @@ class CustomerPurchases(models.TransientModel):
                 return self.env.ref(
                     'nshore_customization.action_customer_purchase_detail_html'
                 ).with_context(
-                    from_transient_model=True).report_action(self, data=data)
+                    from_transient_model=True, html_report=True).report_action(self, data=data)
             return self.env.ref(
                 'nshore_customization.action_customer_purchase_detail'
             ).with_context(
                 from_transient_model=True).report_action(self, data=data)
 
-    @api.multi
     @api.onchange('customer')
     def _onchange_customer(self):
         if self.customer:
             self.partner_id = False
             self.pho_no = False
             self.area_code = False
+            self.user_id = False
+
+    @api.onchange('is_all_salesperson')
+    def _onchange_customer(self):
+        if self.is_all_salesperson:
             self.user_id = False
 
     @api.onchange('product')
@@ -95,7 +102,6 @@ class CustomerPurchases(models.TransientModel):
             self.product_id = False
             self.product_category_id = False
 
-    @api.multi
     @api.onchange('dates')
     def _onchange_all_date(self):
         if self.dates:

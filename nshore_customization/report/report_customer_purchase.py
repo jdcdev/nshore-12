@@ -1,7 +1,8 @@
-from dateutil.relativedelta import relativedelta
-from odoo import models, api, _
 import datetime
 from datetime import datetime
+
+from dateutil.relativedelta import relativedelta
+from odoo import models, api, _
 from odoo.exceptions import ValidationError
 
 
@@ -40,6 +41,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
         states = ('open', 'paid')
         invoice_types = 'out_invoice'
         user_id = data['user_id'][0] if data['user_id'] else None
+        is_all_salesperson = data['is_all_salesperson']
 
         sqlstr = """
             select
@@ -57,35 +59,49 @@ class CustomerPurchasesReportView(models.AbstractModel):
             left join product_product p on (p.id=l.product_id)
             left join product_template pt on (pt.id = p.product_tmpl_id)
             left join product_category categ on (categ.id = pt.categ_id)"""
+
         query_where = "where i.state in %s and i.type = %s"
         query_param = states, invoice_types
         past_query_where = ''
         past_query_param = ''
+
         if is_comparsion_reprot and start_date and end_date:
             past_year_start_date = start_date - relativedelta(years=1)
             past_year_end_date = end_date - relativedelta(years=1)
             past_query_where = query_where + \
-                " AND (i.date_invoice IS NULL or (i.date_invoice>=%s and i.date_invoice<=%s))"
+                               " AND (i.date_invoice IS NULL or (i.date_invoice>=%s and i.date_invoice<=%s))"
             past_query_param = states, invoice_types, past_year_start_date, past_year_end_date
+
         if not all_dates:
             query_where += " AND (i.date_invoice IS NULL or (i.date_invoice>=%s and i.date_invoice<=%s))"
             query_param += start_date, end_date
+
         if not all_customer:
             if customer_id or area_code or cust_phone or user_id:
                 query_where += " AND (i.partner_id = %s or c.zip = %s or c.phone = %s or i.user_id = %s)"
                 query_param += customer_id, area_code, cust_phone, user_id
+
             if is_comparsion_reprot:
                 past_query_where += " AND (i.partner_id = %s or c.zip = %s or c.phone = %s)"
                 past_query_param += customer_id, area_code, cust_phone
+
+        if not is_all_salesperson:
+            if user_id:
+                query_where += " AND (i.user_id = %s)"
+                query_param += user_id
+
         if not all_products:
             if product_id or product_category_id or vendor_id:
                 query_where += ' AND (l.product_id = %s or categ.id = %s)'
                 query_param += product_id, product_category_id
+
             if is_comparsion_reprot:
                 past_query_where += ' AND (l.product_id = %s or categ.id = %s)'
                 past_query_param += product_id, product_category_id
+
         query_groupby = "group by c.name, c.ref, c.id"
         final_sql_qry = sqlstr + ' ' + query_where + ' ' + query_groupby
+
         if is_comparsion_reprot:
             past_sql_qry = """
                 with cuur_customer_purchase AS (
@@ -132,14 +148,15 @@ class CustomerPurchasesReportView(models.AbstractModel):
                 pcp.total_gross_profit AS past_total_gross_profit,
                 pcp.total_profit_margin AS past_total_profit_margin
                 from cuur_customer_purchase cp
-                left join past_customer_purchase pcp on (pcp.cust_id = cp.cust_id)
+                left join past_customer_purchase pcp on (pcp.cust_id = cp.cust_id)"""
 
-                """
             past_query_param = query_param + past_query_param
             self.env.cr.execute(past_sql_qry, past_query_param)
             past_final_rec = self.env.cr.fetchall()
+
             if not past_final_rec:
-                raise ValidationError(_("Not data available."))
+                raise ValidationError(_("No data available."))
+
             for past_rec in past_final_rec:
                 total_purchased_amount = past_rec[3] or 0.0
                 past_total_purchased_amount = past_rec[7] or 0.0
@@ -151,9 +168,12 @@ class CustomerPurchasesReportView(models.AbstractModel):
                 grand_past_total_gross_profit += past_rec[8] or 0.0
                 grand_past_total_margin += past_rec[9] or 0.0
                 total_changed_amount = total_purchased_amount - past_total_purchased_amount
-                if past_total_purchased_amount > 0:
+                total_changed_per = 0.0
+
+                if past_total_purchased_amount > 0 and grand_past_total_purchased_amount:
                     total_changed_per = round(
                         (total_changed_amount / past_total_purchased_amount) * 100, 2)
+
                 vals.append({
                     'cust_ref': past_rec[0] or '',
                     'cust_name': past_rec[1] or '',
@@ -164,20 +184,24 @@ class CustomerPurchasesReportView(models.AbstractModel):
                     'total_margin': past_rec[6] or 0.0,
                     'past_total_purchased_amount': past_total_purchased_amount,
                     'past_total_gross_profit': past_rec[8] or 0.0,
-                    'past_total_margin':  past_rec[9] or 0.0,
+                    'past_total_margin': past_rec[9] or 0.0,
                     'total_changed_amount': total_changed_amount,
-                    'total_changed_per': total_changed_per if grand_past_total_purchased_amount else 0.0
+                    'total_changed_per': total_changed_per
                 })
+
             grand_total_changed_amount = grand_total_purchased_amount - \
-                grand_past_total_purchased_amount
+                                         grand_past_total_purchased_amount
+
             if grand_past_total_purchased_amount > 0:
-                grand_total_changed_per = round(
-                    (grand_total_changed_amount / grand_past_total_purchased_amount) * 100, 2)
+                grand_total_changed_per = round((grand_total_changed_amount / grand_past_total_purchased_amount) * 100, 2)
+
         if not is_comparsion_reprot:
             self.env.cr.execute(final_sql_qry, (query_param))
             result = self.env.cr.fetchall()
+
             if not result:
-                raise ValidationError(_("Not data available."))
+                raise ValidationError(_("No data available."))
+
             for res in result:
                 grand_total_purchased_amount += res[3] or 0.0
                 grand_total_discounts += res[4] or 0.0
@@ -197,6 +221,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
                     'total_changed_amount': 0.0,
                     'total_changed_per': 0.0
                 })
+
         data = {
             'doc_ids': self.ids,
             'doc_model': model,
