@@ -14,36 +14,36 @@ class CustomerPurchases(models.TransientModel):
     end_date = fields.Date(string='End Date', default=date.today())
     pho_no = fields.Char(string="Phone")
     area_code = fields.Char(string="Area Code")
-    customer = fields.Boolean(string="All Customer")
+    customer = fields.Boolean(string="All Customer", default=True)
     product = fields.Boolean(string="All Products", default=True)
     dates = fields.Boolean(string="All Dates")
     summary = fields.Boolean(string="Summary")
     comparsion = fields.Boolean(string="Comparsion")
     screen_view = fields.Boolean(string="Screen View")
     user_id = fields.Many2one("res.users", string="Salesperson")
-    is_all_salesperson = fields.Boolean(string="All Salesperson")
+    is_all_salesperson = fields.Boolean(string="All Salesperson", default=True)
 
-    @api.onchange('area_code')
-    def _onchange_area_code(self):
-        if self.area_code:
-            partners = self.env['res.partner'].search([('customer', '=', True)])
-            partner_ids = []
-            for partner in partners:
-                if partner.zip and self.area_code in partner.zip:
-                    partner_ids.append(partner.id)
-            return {'domain': {'partner_id': [('id', 'in', partner_ids)]}}
-        return {'domain': {'partner_id': [('is_company', '=', True), ('id', 'not in', [])]}}
-
-    @api.onchange('pho_no')
-    def _onchange_pho_no(self):
-        if self.pho_no:
-            partners = self.env['res.partner'].search([('customer', '=', True)])
-            partner_ids = []
+    @api.onchange('pho_no', 'area_code')
+    def _onchange_pho_no_area_code(self):
+        partners = self.env['res.partner'].search([('customer', '=', True)])
+        partner_ids = []
+        if not self.pho_no and not self.area_code:
+            return {'domain': {'partner_id': [('is_company', '=', True), ('id', 'not in', [])]}}
+        elif self.pho_no and not self.area_code:
             for partner in partners:
                 if partner.phone and self.pho_no in partner.phone:
                     partner_ids.append(partner.id)
             return {'domain': {'partner_id': [('id', 'in', partner_ids)]}}
-        return {'domain': {'partner_id': [('is_company', '=', True), ('id', 'not in', [])]}}
+        elif not self.pho_no and self.area_code:
+            for partner in partners:
+                if partner.zip and self.area_code in partner.zip:
+                    partner_ids.append(partner.id)
+            return {'domain': {'partner_id': [('id', 'in', partner_ids)]}}
+        else:
+            for partner in partners:
+                if partner.phone and self.pho_no in partner.phone and partner.zip and self.area_code in partner.zip:
+                    partner_ids.append(partner.id)
+            return {'domain': {'partner_id': [('id', 'in', partner_ids)]}}
 
     @api.multi
     def print_report(self):
