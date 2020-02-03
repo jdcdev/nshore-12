@@ -1,4 +1,4 @@
-sudo apt-get install cups
-sudo apt-get install libcups2-dev
-sudo apt-get install python3-dev
-sudo pip install pycups
+cups==0.0.6
+libcups2-dev
+python3-dev
+pycups==1.9.74
