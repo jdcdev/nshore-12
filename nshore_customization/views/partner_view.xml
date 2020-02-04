@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="partner_form_cutomization" model="ir.ui.view">
+        <field name="name">res.partner.form.customization</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group/group[2]/field[@name='email']" position="before">
+                <field name="fax"/>
+            </xpath>
+            <xpath expr="//group/group[2]/field[@name='email']" position="before">
+                <field name="invoice_start_date" invisible="1"/>
+            </xpath>
+            <xpath expr="//group/group[2]/field[@name='email']" position="before">
+                <field name="invoice_end_date" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_category_property_form" model="ir.ui.view">
+        <field name="name">partner.over.credit.limit.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="account.view_partner_property_form"/>
+        <field name="arch" type="xml">
+            <group name="sale" position="inside">
+                <field name="credit_limit"/>
+                <field name="over_credit"/>
+            </group>
+        </field>
+    </record>
+
+    <record id="custom_pop_message_wizard_view_form" model="ir.ui.view">
+        <field name="name">custom.pop.message.form</field>
+        <field name="model">custom.pop.message</field>
+        <field name="arch" type="xml">
+            <form string="Custom POP Message">
+                <group >
+                    <field name="error" type="html" nolabel="1" attrs="{'invisible':[('allow_supervisor', '=', False)]}" readonly="1"/>
+                    <field name="message" readonly="1" nolabel="1" type="html" attrs="{'invisible':[('allow_supervisor', '!=', False)]}"/>
+                    <field name="allow_supervisor" invisible="1"/>
+                    <group>
+                        <field name="user_name" attrs="{'invisible':[('allow_supervisor', '=', False)], 'required': [('allow_supervisor','!=', False)]}" />
+                        <field name="password" password="True" attrs="{'invisible':[('allow_supervisor', '=', False)], 'required': [('allow_supervisor','!=', False)]}"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="signin_supervisor" string="Sign In" type="object" class="btn-primary" attrs="{'invisible':[('allow_supervisor', '=', False)]}"/>
+                    <button string="Ok" class="btn-default btn-primary" special="cancel" attrs="{'invisible':[('allow_supervisor', '!=', False)]}"/>
+                    <span style="margin-left: 10px;margin-right: 10px;">or</span>
+                    <button name="approve_over_limit" string="Approve" type="object" class="btn-primary" attrs="{'invisible':[('allow_supervisor', '!=', False)]}"/>
+                    <button string="Cancel" class="btn-default btn-primary" special="cancel" attrs="{'invisible':[('allow_supervisor', '=', False)]}"/>
+                </footer>
+           </form>
+        </field>
+    </record>
+
+</odoo>

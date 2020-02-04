@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="paperformat_customer_stmt" model="report.paperformat">
+            <field name="name">Customer Statement Paperformat</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">45</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">2</field>
+            <field name="margin_right">2</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">40</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <report 
+            id="custom_customer_statement"
+            model="res.partner"
+            string="Customer Statement"
+            report_type="qweb-pdf"
+            name="nshore_customization.report_customer_statement_1"
+            file="nshore_customization.report_customer_statement_1"
+            paperformat="nshore_customization.paperformat_customer_stmt"
+            menu="False"
+        />
+
+        <report 
+            id="daily_monthly_invoices"
+            model="account.invoice"
+            string="Daily/Monthly Invoices"
+            report_type="qweb-html"
+            name="nshore_customization.report_daily_monthly_invoices"
+            file="nshore_customization.report_daily_monthly_invoices"
+            menu="False"
+        />
+
+        <report 
+            id="daily_monthly_payment"
+            model="account.payment"
+            string="Daily/Monthly Payment"
+            report_type="qweb-html"
+            name="nshore_customization.report_daily_monthly_payment_1"
+            file="nshore_customization.report_daily_monthly_payment_1"
+            menu="False"
+        />
+
+        <report 
+            id="daily_monthly_returns"
+            model="account.invoice"
+            string="Daily/Monthly Returns"
+            report_type="qweb-html"
+            name="nshore_customization.report_daily_monthly_returns_1"
+            file="nshore_customization.report_daily_monthly_returns_1"
+            menu="False"
+        />
+
+        <report
+            string="Inventory"
+            id="stock.action_report_inventory"
+            model="stock.inventory"
+            report_type="qweb-pdf"
+            name="nshore_customization.report_inventory_adjustment"
+            file="nshore_customization.report_inventory_adjustment"
+        />
+
+        <record id="paperformat_customer_purchase" model="report.paperformat">
+            <field name="name">Customer Purchases Report</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">35</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">30</field>
+            <field name="dpi">80</field>
+        </record>
+
+        <record id="paperformat_customer_purchase_detail" model="report.paperformat">
+            <field name="name">Customer Purchases Report</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">5</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="dpi">80</field>
+        </record>
+
+        <report
+        id="action_customer_purchase"
+        string="Customer Purchases Summary"
+        model="customer.purchases"
+        report_type="qweb-pdf"
+        paperformat="nshore_customization.paperformat_customer_purchase"
+        name="nshore_customization.report_customer_purchase"
+        file="nshore_customization.report_customer_purchase"
+        menu="False"/>
+
+        <report
+        id="action_customer_purchase_detail"
+        string="Customer Purchases Detail"
+        model="customer.purchases"
+        report_type="qweb-pdf"
+        paperformat="nshore_customization.paperformat_customer_purchase_detail"
+        name="nshore_customization.report_customer_purchase_detail"
+        file="nshore_customization.report_customer_purchase_detail"
+        menu="False"/>
+
+        <report
+        id="action_customer_purchase_html"
+        string="Customer Purchases Summary HTML"
+        model="customer.purchases"
+        report_type="qweb-html"
+        paperformat="nshore_customization.paperformat_customer_purchase"
+        name="nshore_customization.report_customer_purchase"
+        file="nshore_customization.report_customer_purchase"
+        menu="False"/>
+
+        <report
+        id="action_customer_purchase_detail_html"
+        string="Customer Purchases Detail HTML"
+        model="customer.purchases"
+        report_type="qweb-html"
+        paperformat="nshore_customization.paperformat_customer_purchase_detail"
+        name="nshore_customization.report_customer_purchase_detail"
+        file="nshore_customization.report_customer_purchase_detail"
+        menu="False"/>
+
+        <record id="paperformat_open_purchase_order" model="report.paperformat">
+            <field name="name">Purchase Order Paperformat</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">70</field>
+            <field name="margin_bottom">15</field>
+            <field name="margin_left">0</field>
+            <field name="margin_right">0</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">65</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <report
+            string="Open Purchase Order"
+            id="open_purchase_order"
+            model="purchase.order"
+            report_type="qweb-pdf"
+            name="nshore_customization.report_open_purchase_order"
+            file="nshore_customization.report_open_purchase_order"
+            paperformat="nshore_customization.paperformat_open_purchase_order"
+        />
+
+        <record id="paperformat_inventory_listing" model="report.paperformat">
+            <field name="name">Inventory Listing</field>
+            <field name="default" eval="True"/>
+            <field name="format">Letter</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">23</field>
+            <field name="margin_bottom">15</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">18</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <report
+            id="action_report_inventory_listing"
+            string="Master Inventory Listing"
+            model="product.category"
+            report_type="qweb-pdf"
+            name="nshore_customization.report_inventory_listing"
+            file="nshore_customization.report_inventory_listing"
+            paperformat="nshore_customization.paperformat_inventory_listing"
+            menu="False"/>
+
+    </data>
+</odoo>

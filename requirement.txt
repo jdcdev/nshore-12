@@ -1,0 +1,4 @@
+cups==0.0.6
+libcups2-dev
+python3-dev
+pycups==1.9.74

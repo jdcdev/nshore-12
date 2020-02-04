@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_daily_monthly_payment_1">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <div class="header" style="padding-top:25px !important;">
+                    <div class="col-xs-12">
+                        <h3>
+                            Daily/Monthly Payment
+                        </h3>
+                        <span t-esc="date"/>
+                    </div>
+                </div>
+                <div class="page">
+                    <div style="border:1px solid black;height:0px;"></div>
+                    <table width="100%">
+                        <thead>
+                            <th>DateCreated</th>
+                            <th>Payment #</th>
+                            <th>Cust #</th>
+                            <th>Name</th>
+                            <th>User</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="7">
+                                    <div style="border:1px solid black;height:0px;"></div>
+                                    <br/>
+                                    <div style="border:1px solid black;height:0px;"></div>
+                                </td>
+                            </tr>
+                            <t t-set="total" t-value="0"/>
+                            <t t-set="last_date" t-value="0"/>
+                            <tr t-foreach="lines_data_date" t-as="p">
+                                <t t-set="last_date" t-value="last_date+1"/>
+                                <tr t-foreach="lines_data" t-as="b">
+                                    <t t-if="p == b.get('date')">
+                                        <td>
+                                            <span t-esc="b.get('date')"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="b.get('payment_no')"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="b.get('cust_no')"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="b.get('cust_name')"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="b.get('user')"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="b.get('type')"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="b.get('amount')"
+                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                            <t t-set="total" t-value="total+b.get('amount')"/>
+                                        </td>
+                                    </t>
+                                </tr>
+                                <tr>
+                                    <td colspan="7">
+                                        <br/>
+                                        <div style="border:1px solid black;height:0px;"></div>
+                                        <br/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th colspan="6">
+                                        <br/>
+                                            <span t-esc="p"/>
+                                        <br/>
+                                    </th>
+                                    <th>
+                                        <br/>
+                                        <span t-esc="total"
+                                              t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                        <div style="border:1px solid black;height:0px;"></div>
+                                        <t t-if="last_date == get_date_loop">
+                                            <span t-esc="get_detail_total"
+                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                            <div style="border:1px solid black;height:0px;"/>
+                                            <br/>
+                                            <div style="border:1px solid black;height:0px;"></div>
+                                        </t>
+                                        <t t-set="total" t-value="0"/>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td colspan="7">
+                                        <br/>
+                                        <div style="border:1px solid black;height:0px;"></div>
+                                        <br/>
+                                    </td>
+                                </tr>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="footer">
+                    <div style="border:1px solid black;height:0px;"></div>
+                    <center>
+                        Page
+                        <span class="page"/>
+                        of
+                        <span class="topage"/>
+                    </center>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>
