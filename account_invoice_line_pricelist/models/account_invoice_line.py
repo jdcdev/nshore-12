@@ -50,6 +50,8 @@ class AccountInvoiceLine(models.Model):
             else:
                 taxes = res.product_id.supplier_taxes_id.filtered(lambda r: r.company_id == company_id) or res.account_id.tax_ids or res.invoice_id.company_id.account_purchase_tax_id
             res.invoice_line_tax_ids = res.invoice_id.fiscal_position_id.map_tax(taxes, res.product_id, res.invoice_id.partner_id)
+            # Call compute method for tax
+            res._compute_price()
         return res
 
     @api.onchange('uom_id')
