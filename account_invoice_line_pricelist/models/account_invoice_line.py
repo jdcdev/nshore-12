@@ -40,6 +40,13 @@ class AccountInvoiceLine(models.Model):
         )
         return res
 
+    @api.model
+    def create(self, vals):
+        res = super(AccountInvoiceLine, self).create(vals)
+        if 'invoice_line_tax_ids' not in vals:
+            res._set_taxes()
+        return res
+
     @api.onchange('uom_id')
     def _onchange_uom_id(self):
         res = super(AccountInvoiceLine, self)._onchange_uom_id()

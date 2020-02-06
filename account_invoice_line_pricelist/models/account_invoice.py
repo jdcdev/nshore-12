@@ -22,3 +22,11 @@ class AccountInvoice(models.Model):
             if self.partner_id:
                 self.pricelist_id = self.partner_id.property_product_pricelist
         return res
+
+    @api.model
+    def create(self, vals):
+        if 'pricelist_id' not in vals and 'partner_id' in vals:
+            partner_id = self.env['res.partner'].browse(vals['partner_id'])
+            if partner_id and partner_id.partner_id.property_product_pricelist:
+                vals.update({'pricelist_id': partner_id.property_product_pricelist.id})
+        return super(AccountInvoice, self).create(vals)
