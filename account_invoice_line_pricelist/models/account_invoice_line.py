@@ -44,7 +44,11 @@ class AccountInvoiceLine(models.Model):
     def create(self, vals):
         res = super(AccountInvoiceLine, self).create(vals)
         if 'invoice_line_tax_ids' not in vals:
-            res._set_taxes()
+            if res.invoice_id.type in ('out_invoice', 'out_refund'):
+                taxes = res.product_id.taxes_id.filtered(lambda r: r.company_id == company_id) or res.account_id.tax_ids or res.invoice_id.company_id.account_sale_tax_id
+            else:
+                taxes = res.product_id.supplier_taxes_id.filtered(lambda r: r.company_id == company_id) or res.account_id.tax_ids or res.invoice_id.company_id.account_purchase_tax_id
+            res.invoice_line_tax_ids = res.invoice_id.fiscal_position_id.map_tax(taxes, res.product_id, res.invoice_id.partner_id)
         return res
 
     @api.onchange('uom_id')
