@@ -29,4 +29,6 @@ class AccountInvoice(models.Model):
             partner_id = self.env['res.partner'].browse(vals['partner_id'])
             if partner_id and partner_id.property_product_pricelist:
                 vals.update({'pricelist_id': partner_id.property_product_pricelist.id})
-        return super(AccountInvoice, self).create(vals)
+        res = super(AccountInvoice, self).create(vals)
+        res._compute_amount()
+        return res
