@@ -43,6 +43,7 @@ class AccountInvoiceLine(models.Model):
     @api.model
     def create(self, vals):
         res = super(AccountInvoiceLine, self).create(vals)
+        company_id = res.company_id or self.env.user.company_id
         if 'invoice_line_tax_ids' not in vals:
             if res.invoice_id.type in ('out_invoice', 'out_refund'):
                 taxes = res.product_id.taxes_id.filtered(lambda r: r.company_id == company_id) or res.account_id.tax_ids or res.invoice_id.company_id.account_sale_tax_id
