@@ -1,0 +1,31 @@
+<odoo>
+
+    <record model="ir.ui.view" id="view_daily_monthly_invoices_form">
+        <field name="name">daily.monthly.invoices.form</field>
+        <field name="model">daily.monthly.invoices</field>
+        <field name="arch" type="xml">
+            <form string="Daily/Monthly Invoices">
+                <group colspan="4" col="4">
+                    <field name="from_date" required="1"/>
+                    <field name="to_date" required="1"/>
+                </group>
+                <footer>
+                    <button name="print_report" type="object" string="Print" class="oe_highlight"/>
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="print_report_invoice">
+        <field name="name">Daily/Monthly Invoices</field>
+        <field name="res_model">daily.monthly.invoices</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="wizard_daily_monthly_invoices" name="Daily/Monthly Invoices"
+              parent="account.menu_finance_reports" action="print_report_invoice"/>
+
+</odoo>

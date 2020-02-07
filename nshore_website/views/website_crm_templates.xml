@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+   <template id="contactus_formsss" name="Contact Form" inherit_id="website_crm.contactus_form" >
+      <div position='replace'>
+         <div class="header-banner">
+            <div class="banner contact-banner">
+               <div class="banner-content inner-pages">
+                  <a href="#" class="common-btn">CONTACT US</a>
+               </div>
+            </div>
+         </div>
+         <section class="contact-content">
+            <div class="container">
+               <div class="contact-container">
+                  <div class="col-md-7 col-sm-7 col-xs-12">
+                     <div class="contact-input">
+                        <form action="/website_form/" id="contactForm" method="post" data-model_name="crm.lead" data-success_page="/page/website_crm.contactus_thanks" class="s_website_form container-fluid mt32" enctype="multipart/form-data">
+                           <input type="text" placeholder="Name" class="form-control o_website_form_input" name="contact_name" t-att-value="request.params.get('contact_name', '')" required="" id="usr-nm"/>
+                           <input type="text" required="" placeholder="Company Name" name="contact_name"/>
+                           <input type="text" class="form-control o_website_form_input" placeholder="Email Address" name="email_from" required="" t-att-value="request.params.get('email_from', '')" id="email"/>
+                           <input placeholder="Phone Number" type="tel" tabindex="3" />
+                           <textarea class="form-control o_website_form_input" rows="10" name="description" placeholder="Message" required="" id="message"><t t-esc="request.params.get('description', '')"/></textarea>
+                           <input type="text" class="form-control o_website_form_input" name="name" placeholder="Re-captcha" required="" t-att-value="request.params.get('name', '')" id="usr-sub"/>
+                           <span class="btn contact_submit btn-primary btn-lg o_website_form_send  btn-default">SUBMIT</span>
+                        </form>
+                     </div>
+                  </div>
+                  <div class="col-md-5 col-sm-5 col-xs-12">
+                     <div class="conatct-info">
+                        <div class="service-hours">
+                           <h4 class="contact-title">Customer Service Hours</h4>
+                           <h3>Monday - Friday <br/> 10am - 4pm EST</h3>
+                        </div>
+                        <div class="phone-order">
+                           <h4 class="contact-title">Place an Order by Phone</h4>
+                           <a href="#"><span t-field="res_company.partner_id.phone" /></a>
+                        </div>
+                        <div class="email-info">
+                           <h4 class="contact-title">EMAIL</h4>
+                           <a href="#"><span t-field="res_company.partner_id.email" /></a>
+                        </div>
+                        <div class="social-media">
+                           <h4 class="contact-title">FOLLOW US</h4>
+                           <ul class="social_contacts_sites">
+                              <li><a href="https://www.facebook.com" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                              <li><a href="https://twitter.com" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                              <li><a href="https://www.instagram.com" target="_blank"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+                              <li><a href="https://plus.google.com" target="_blank"><i class="fa fa-google-plus" aria-hidden="true"></i></a></li>
+                           </ul>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </section>
+      </div>
+   </template>
+</odoo>

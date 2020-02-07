@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_layout_customer_statement_1">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <div t-foreach="lines_data" t-as="o" style="page-break-after: always">
+                    <div class="header">
+                        <div class="row">
+                            <div class="col-8">
+                                <h3>
+                                    <t t-esc="o.company_id.name" />
+                                </h3>
+                            </div>
+                            <div class="col-4">
+                                <span t-if="o.company_id.street" t-field="o.company_id.street" />
+                                <span t-field="o.company_id.street2" />
+                                <br />
+                                <span t-field="o.company_id.city" />, <span t-field="o.company_id.state_id" />, <span t-field="o.company_id.country_id" /><br /><span t-field="o.company_id.zip" /><br />
+                            </div>
+                         </div>
+                    </div>
+                    <div class="row">
+                        <style type="text/css">
+                            .div-rounded {
+                                border-collapse:separate;
+                                border:solid black 3px;
+                                border-radius:20px;
+                                -moz-border-radius:6px;
+                            }
+                            .div-data td:first-child, th:first-child {
+                                 border-left: none;
+                            }
+                            .div-rounded td {
+                                border-top: none !important;
+                            }
+                        </style>
+                        <div class="col-4">
+                            <table class="div-rounded" width="100%">
+                                <tr>
+                                    <th style='padding: 5px;'>
+                                        <strong>Billing Address</strong>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td style='padding: 5px;'>
+                                        <address t-esc="o" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}" />
+                                        <div t-if="o.vat" class="mt16">
+                                            <t t-esc="o.company_id.country_id.vat_label or 'TIN'" />: <span t-field="o.vat" /></div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-4">
+                            <table class="div-rounded" width="100%">
+                                <tr>
+                                    <th style='padding: 5px;'>
+                                        <strong>Shipping Address</strong>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td style='padding: 5px;'>
+                                        <t t-if="not lines_data.get('partner_shipping_id')">
+                                            <address t-esc="o" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}" />
+                                            <div t-if="o.vat" class="mt16">
+                                                <t t-esc="o.company_id.country_id.vat_label or 'TIN'" />: <span t-field="o.vat" /></div>
+                                        </t>
+                                        <t t-if="lines_data.get('partner_shipping_id')">
+                                            <address t-esc="lines_data.get('partner_shipping_id')" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}" />
+                                            <div t-if="o.vat" class="mt16">
+                                                <t t-esc="o.company_id.country_id.vat_label or 'TIN'" />: <span t-field="o.vat" /></div>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-4">
+                            <h4>Customer <br/><br/> Statement</h4><br/>
+                            <strong>Date:<span t-esc="date"/></strong>
+                        </div>
+                    </div>
+                    <div class="row mt16">
+                        <table class="table table-condensed div-data"
+                                style="border-left:solid white 1px;border-right:solid white 1px;border-bottom:solid white 1px;border-top:solid white 1px;">
+                            <t t-set="total_invoice" t-value="0"/>
+                            <t t-set="total_paid" t-value="0"/>
+                            <t t-set="total_balance" t-value="0"/>
+                            <thead>
+                                <tr style="background-color:black;color:white">
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Reference</th>
+                                    <th class="text-right">Invoiced</th>
+                                    <th class="text-right">Paid</th>
+                                    <th class="text-right">Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="2" class="text-right">
+                                        Opening Balance
+                                    </td>
+                                    <td colspan="3"/>
+                                    <td class="text-right">
+                                        <t t-esc="lines_data[o].get('open_inv_amount', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                </tr>
+                                <t t-set="total_amount" t-value="lines_data[o].get('open_inv_amount', 0)"/>
+                                <tr t-foreach="lines_data[o].get('invoice_line', [])" t-as="new_list">
+                                        <t t-set="total_amount" t-value="total_amount + new_list.get('amount_total', 0)"/>
+                                        <td>
+                                            <span t-esc="new_list.get('date_invoice')"/>
+                                        </td>
+                                        <td>
+                                            Invoice
+                                        </td>
+                                        <td>
+                                            <span t-esc="new_list.get('name')"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="new_list.get('amount_total', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                            <t t-set="total_invoice" t-value="total_invoice+new_list.get('amount_total', 0)"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="new_list.get('amount_total', 0)-new_list.get('residual', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                            <t t-set="total_paid" t-value="total_paid+(new_list.get('amount_total', 0)-new_list.get('residual', 0))"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="total_amount" t-options='{"widget": "float", "precision": 2}'/>
+                                            <t t-set="total_balance" t-value="total_balance+total_amount"/>
+                                        </td>
+                                    </tr>
+                            </tbody>
+                            <tbody>
+                                <tr style="background-color:black;color:white">
+                                    <td colspan="6">&#160;</td>
+                                </tr>
+                            </tbody>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        Totals
+                                    </td>
+                                    <td colspan="3" class="text-right">
+                                        <span t-esc="total_invoice" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="total_paid" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="total_amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row mt16">
+                        <table class="table div-rounded" width="100%">
+                            <tr>
+                                <td class="text-right">
+                                    <b>Current</b>
+                                </td>
+                                <td class="text-right">
+                                    <b>30 Days</b>
+                                </td>
+                                <td class="text-right">
+                                    <b>60 Days</b>
+                                </td>
+                                <td class="text-right">
+                                    <b>90 + Days</b>
+                                </td>
+                                <td class="text-right">
+                                    <b>On Account</b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-right">
+                                    <span t-esc="lines_data[o].get('current_amount', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="lines_data[o].get('between_30days', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="lines_data[o].get('between_60days', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="lines_data[o].get('between_90days', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td class="text-right">0.0</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <t t-raw="0" />
+                    <div class="footer">
+                        <div class="text-center col-md-1">
+                            <ul class="list-inline">
+                                <li class="list-inline-item">Page</li>
+                                <li class="list-inline-item"><span class="page"/></li>
+                                <li class="list-inline-item">of</li>
+                                <li class="list-inline-item"><span class="topage"/></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_customer_statement_1">
+        <t t-call="web.html_container">
+            <t t-call="nshore_customization.report_layout_customer_statement_1" />
+        </t>
+    </template>
+</odoo>
