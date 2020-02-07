@@ -9,6 +9,7 @@ class ProductTemplate(models.Model):
     net_cost = fields.Float(string='Net Cost')
     product_ref = fields.Char(string='Product Reference')
 
+
 class ProductProduct(models.Model):
     _inherit = 'product.product'
 
@@ -23,15 +24,20 @@ class ProductProduct(models.Model):
         if args is None:
             args = []
         if context and context.get('product_search', False) and name:
-            domain = ['|', '|', '|',
+            domain = [('product_tmpl_id.default_code', operator, name)]
+            products = self.search(domain + args, limit=limit)
+        if domain:
+            domain = ['|', '|',
                       ('product_tmpl_id.product_ref', operator, name),
                       ('product_tmpl_id.name', operator, name),
-                      ('product_tmpl_id.description', operator, name),
-                      ('product_tmpl_id.default_code', operator, name)]
-        if domain:
-            products = self.search(domain + args, limit=limit)
+                      ('product_tmpl_id.description', operator, name)]
+            if products:
+                products += self.search(domain + args, limit=limit)
+            else:
+                self.search(domain + args, limit=limit)
             return products.name_get()
         return super(ProductProduct, self).name_search(name, args=args, operator=operator, limit=limit)
+
 
 class PricelistItem(models.Model):
 
