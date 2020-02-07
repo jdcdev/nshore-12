@@ -30,5 +30,4 @@ class AccountInvoice(models.Model):
             if partner_id and partner_id.property_product_pricelist:
                 vals.update({'pricelist_id': partner_id.property_product_pricelist.id})
         res = super(AccountInvoice, self).create(vals)
-        res._compute_amount()
         return res
