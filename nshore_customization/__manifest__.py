@@ -24,6 +24,8 @@
         'views/payment.xml',
         'views/inherited_product_product_view.xml',
         'views/inherited_product_template_view.xml',
+        'views/inherited_stock_product_view.xml',
+        'views/contact_views.xml',
         'views/report.xml',
         'wizard/account_report_customer_statement.xml',
         'wizard/daily_monthly_invoices_view.xml',
