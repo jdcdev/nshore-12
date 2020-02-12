@@ -14,5 +14,6 @@
     ],
     'data': [
         'wizard/account_invoice_tax_views.xml',
+        'wizard/product_view.xml'
     ],
 }
