@@ -106,29 +106,34 @@
                                 </tr>
                                 <t t-set="total_amount" t-value="lines_data[o].get('open_inv_amount', 0)"/>
                                 <tr t-foreach="lines_data[o].get('invoice_line', [])" t-as="new_list">
-                                        <t t-set="total_amount" t-value="total_amount + new_list.get('amount_total', 0)"/>
-                                        <td>
-                                            <span t-esc="new_list.get('date_invoice')"/>
-                                        </td>
-                                        <td>
-                                            Invoice
-                                        </td>
-                                        <td>
-                                            <span t-esc="new_list.get('name')"/>
-                                        </td>
-                                        <td class="text-right">
-                                            <span t-esc="new_list.get('amount_total', 0)" t-options='{"widget": "float", "precision": 2}'/>
-                                            <t t-set="total_invoice" t-value="total_invoice+new_list.get('amount_total', 0)"/>
-                                        </td>
-                                        <td class="text-right">
-                                            <span t-esc="new_list.get('amount_total', 0)-new_list.get('residual', 0)" t-options='{"widget": "float", "precision": 2}'/>
-                                            <t t-set="total_paid" t-value="total_paid+(new_list.get('amount_total', 0)-new_list.get('residual', 0))"/>
-                                        </td>
-                                        <td class="text-right">
-                                            <span t-esc="total_amount" t-options='{"widget": "float", "precision": 2}'/>
-                                            <t t-set="total_balance" t-value="total_balance+total_amount"/>
-                                        </td>
-                                    </tr>
+                                    <t t-set="line_amount" t-value="new_list.get('amount_total', 0)"/>
+                                    <t t-if="new_list.get('state') == 'paid'">
+                                        <t t-set="line_amount" t-value="0"/>
+                                    </t>
+                                    <t t-set="total_amount" t-value="total_amount + line_amount"/>
+                                    <td>
+                                        <span t-esc="new_list.get('date_invoice')"/>
+                                    </td>
+                                    <td>
+                                        Invoice
+                                    </td>
+                                    <td>
+                                        <span t-esc="new_list.get('name')"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="new_list.get('amount_total', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                        <t t-set="total_invoice" t-value="total_invoice+new_list.get('amount_total', 0)"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="new_list.get('amount_total', 0)-new_list.get('residual', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                        <t t-set="total_paid" t-value="total_paid+(new_list.get('amount_total', 0)-new_list.get('residual', 0))"/>
+                                    </td>
+
+                                    <td class="text-right">
+                                        <span t-esc="total_amount" t-options='{"widget": "float", "precision": 2}'/>
+                                        <t t-set="total_balance" t-value="total_balance+total_amount"/>
+                                    </td>
+                                </tr>
                             </tbody>
                             <tbody>
                                 <tr style="background-color:black;color:white">

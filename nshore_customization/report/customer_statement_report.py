@@ -22,7 +22,8 @@ class payroll_advice_report(models.AbstractModel):
                 ('state', '=', 'open'),
                 ('date_invoice', '<', start_date),
             ])
-            total_open_inv_amount = sum([inv.amount_total for inv in open_invoices])
+            total_open_inv_amount = sum(
+                [inv.amount_total for inv in open_invoices])
             for invoice in self.env['account.invoice'].search([
                     ('partner_id', '=', partner.id),
                     ('type', '=', 'out_invoice'),
@@ -32,8 +33,9 @@ class payroll_advice_report(models.AbstractModel):
 
                 vals_dict = {
                     'date_invoice': invoice.date_invoice.strftime(
-                            date_format),
+                        date_format),
                     'name': invoice.name,
+                    'state': invoice.state,
                     'amount_total': invoice.amount_total,
                     'residual': invoice.residual,
                     'partner_shipping_id': invoice.partner_shipping_id,
@@ -55,7 +57,8 @@ class payroll_advice_report(models.AbstractModel):
                 })
             if partner in partner_dict.keys() and not any([x for x in partner_dict[partner].get('invoice_line', []) if 'partner_shipping_id' in x.keys()]):
                 partner_dict[partner].update({'partner_shipping_id': partner})
-            results, total, amls = self.env['report.account.report_agedpartnerbalance'].with_context(include_nullified_amount=True)._get_partner_move_lines(['receivable'], datetime.today(), 'posted', 30)
+            results, total, amls = self.env['report.account.report_agedpartnerbalance'].with_context(
+                include_nullified_amount=True)._get_partner_move_lines(['receivable'], datetime.today(), 'posted', 30)
             for rec in results:
                 if rec['partner_id'] == partner.id:
                     cust_dict = {
