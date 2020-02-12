@@ -40,21 +40,22 @@ class AccountInvoiceLine(models.Model):
         )
         return res
 
-    @api.model
-    def create(self, vals):
-        res = super(AccountInvoiceLine, self).create(vals)
-        company_id = res.company_id or self.env.user.company_id
-        if 'invoice_line_tax_ids' not in vals:
-            if res.invoice_id.type in ('out_invoice', 'out_refund'):
-                taxes = res.product_id.taxes_id.filtered(lambda r: r.company_id == company_id) or res.account_id.tax_ids or res.invoice_id.company_id.account_sale_tax_id
-            else:
-                taxes = res.product_id.supplier_taxes_id.filtered(lambda r: r.company_id == company_id) or res.account_id.tax_ids or res.invoice_id.company_id.account_purchase_tax_id
-            res.invoice_line_tax_ids = res.invoice_id.fiscal_position_id.map_tax(taxes, res.product_id, res.invoice_id.partner_id)
-            # Call compute method for tax
-            res._compute_price()
-        res.invoice_id._onchange_invoice_line_ids()
-        res.invoice_id.res._compute_amount()
-        return res
+    # @api.model
+    # def create(self, vals):
+    #     print ("210120>>>>>>>>>>>>>>>>>", vals)
+    #     res = super(AccountInvoiceLine, self).create(vals)
+    #     company_id = res.company_id or self.env.user.company_id
+    #     if 'invoice_line_tax_ids' not in vals:
+    #         if res.invoice_id.type in ('out_invoice', 'out_refund'):
+    #             taxes = res.product_id.taxes_id.filtered(lambda r: r.company_id == company_id) or res.account_id.tax_ids or res.invoice_id.company_id.account_sale_tax_id
+    #         else:
+    #             taxes = res.product_id.supplier_taxes_id.filtered(lambda r: r.company_id == company_id) or res.account_id.tax_ids or res.invoice_id.company_id.account_purchase_tax_id
+    #         res.invoice_line_tax_ids = res.invoice_id.fiscal_position_id.map_tax(taxes, res.product_id, res.invoice_id.partner_id)
+    #         # Call compute method for tax
+    #         res._compute_price()
+    #     res.invoice_id._onchange_invoice_line_ids()
+    #     res.invoice_id._compute_amount()
+    #     return res
 
     @api.onchange('uom_id')
     def _onchange_uom_id(self):
