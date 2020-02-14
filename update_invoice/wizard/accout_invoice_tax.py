@@ -11,6 +11,9 @@ class InvoiceList(models.Model):
         context = dict(self._context or {})
         invoices = self.env['account.invoice'].browse(context['active_ids'])
         for invoice in invoices:
+            delivery_partner_id = invoice.get_delivery_partner_id()
+            fiscal_position = p.env['account.fiscal.position'].get_fiscal_position(invoice.partner_id.id, delivery_id=delivery_partner_id)
+            invoice.fiscal_position_id = fiscal_position
             for res in invoice.invoice_line_ids:
                 if res.invoice_id.type in ('out_invoice', 'out_refund'):
                     taxes = res.product_id.taxes_id.filtered(lambda r: r.company_id == res.company_id) or res.account_id.tax_ids or res.invoice_id.company_id.account_sale_tax_id
