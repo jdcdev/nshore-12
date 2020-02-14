@@ -11,11 +11,9 @@ class ProductExternalID(models.TransientModel):
         templates = self.env['product.template'].search([])
         modeldata = self.env['ir.model.data']
         for template in templates:
-            print (template)
             product = self.env['product.product'].search([('product_tmpl_id', '=', template.id)])
             template_model = template.get_external_id()[template.id]
             product_model = product.get_external_id()[product.id]
-            print ("template>>>>>>>>>>>>>>>", template_model, product_model)
             if template_model and not product_model:
                 external_id = template_model.split('.')
                 modeldata.create({'model': 'product.product',
