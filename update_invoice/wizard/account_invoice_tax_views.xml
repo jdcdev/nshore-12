@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
                 <form>
                     <footer>
-                        <button name="get_invoice" type="object" string="Calculate Taxes" class="oe_highlight" style="margin-left: 5px;"/>
+                        <button name="calculate_taxes" type="object" string="Calculate Taxes" class="oe_highlight" style="margin-left: 5px;"/>
                         <button name="validate_invoice" type="object" string="Validate Invoices" class="oe_highlight" style="margin-left: 5px;"/>
                         <button name="generate_reference" type="object" string="Generate References" class="oe_highlight" style="margin-left: 5px;"/>
                         <button string="Cancel" class="oe_link" special="cancel"/>

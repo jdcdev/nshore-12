@@ -6,15 +6,15 @@ from odoo.tools import float_compare
 class InvoiceList(models.Model):
     _name = 'invoice.list'
 
-    def get_invoice(self):
+    def calculate_taxes(self):
         """Remove prduct name in description sale."""
         context = dict(self._context or {})
         invoices = self.env['account.invoice'].browse(context['active_ids'])
         for invoice in invoices:
-            delivery_partner_id = invoice.get_delivery_partner_id()
-            fiscal_position = p.env['account.fiscal.position'].get_fiscal_position(invoice.partner_id.id, delivery_id=delivery_partner_id)
-            invoice.fiscal_position_id = fiscal_position
+            invoice._onchange_partner_id()
+            invoice._onchange_partner_shipping_id()
             for res in invoice.invoice_line_ids:
+                res.uom_id = res.product_id.uom_id.id
                 if res.invoice_id.type in ('out_invoice', 'out_refund'):
                     taxes = res.product_id.taxes_id.filtered(lambda r: r.company_id == res.company_id) or res.account_id.tax_ids or res.invoice_id.company_id.account_sale_tax_id
                 else:
@@ -24,7 +24,6 @@ class InvoiceList(models.Model):
                 res.invoice_line_tax_ids = res.invoice_id.fiscal_position_id.map_tax(taxes, res.product_id, res.invoice_id.partner_id)
             invoice._onchange_invoice_line_ids()
             invoice._compute_amount()
-            invoice._onchange_partner_id()
 
     def generate_reference(self):
         """ Assign External ID as Reference"""
