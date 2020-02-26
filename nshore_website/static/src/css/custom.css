@@ -1,0 +1,1123 @@
+@import url('https://fonts.googleapis.com/css?family=Amatic+SC:400,700|Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i');
+
+/*font-family: 'Open Sans', sans-serif;
+font-family: 'Amatic SC', cursive;*/
+
+@font-face {
+    font-family: BebasKai;
+    src: url("../fonts/BebasKai.otf");
+}
+
+@font-face {
+    font-family: BebasKai;
+    src: url("../fonts/BebasKai.ttf");
+}
+
+p,
+a,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Open Sans', sans-serif;
+}
+
+
+
+a:hover,
+a:focus {
+    outline: none;
+    text-decoration: none;
+}
+
+header li {
+    list-style: none;
+    display: inline-block;
+}
+
+ul {
+    padding-left: 0
+}
+
+li {
+    list-style: none;
+}
+
+h2:after {
+    content: "";
+    height: 2px;
+    width: 95px;
+    background: #baa57c;
+    position: absolute;
+    bottom: -17px;
+    left: 0;
+}
+
+h2 {
+    text-transform: uppercase;
+    position: relative;
+    color: #baa57c
+}
+
+
+/* HOME Page */
+
+.header-banner {
+    position: relative;
+}
+
+.banner img {
+    width: 100%
+}
+
+.header-banner .navbar-inverse {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.navbar-inverse .navbar-nav>li>a {
+    color: #fff;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.header-banner .banner {
+    background-image: url("/nshore_website/static/src/img/home-banner-img.jpg");
+    padding-top: 40.58%;
+    background-size: cover;
+}
+
+.banner-content {
+    position: absolute;
+    top: 50%;
+    width: 56.5%;
+    right: 0;
+    transform: translateY(-50%);
+}
+
+.container {
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+a.navbar-brand {
+    padding-top: 0;
+}
+
+ul.nav.navbar-nav.navbar-right {
+    margin-top: 35px;
+}
+
+.nav>li>a {
+    position: relative;
+    display: block;
+    padding: 10px 25px;
+}
+
+h3.common-title {
+    font-size: 60px;
+    color: #222222;
+    font-weight: bold;
+}
+
+.banner-content p {
+    font-size: 32px;
+    color: #222222;
+    line-height: 40px;
+    width: 91%;
+}
+
+a.common-btn {
+    background: #7a2b31;
+    /* padding: 14px 59px; */
+    color: #fff;
+    width: 350px;
+    display: inline-block;
+    text-align: center;
+    line-height: 70px;
+    font-size: 32px;
+    margin-top: 50px;
+    font-family: BebasKai;
+}
+
+header.navbar.navbar-inverse.bs-docs-nav {
+    position: absolute;
+    left: 0;
+    right: 0;
+}
+
+section.why-choose {
+    text-align: center;
+}
+
+.why-choose h4 {
+    font-size: 42px;
+    color: #4d4b49;
+    font-weight: bold;
+}
+
+.why-choose p {
+    color: #222222;
+    font-size: 32px;
+    line-height: 35px;
+    font-weight: 400;
+}
+
+.why-choose-container {
+    padding: 78px 0;
+    display: block;
+    float: left;
+}
+
+.inner-why-choose {
+    padding-top: 50px;
+}
+
+.why-choose-container a.common-btn {
+    margin-top: 16px;
+}
+
+.product-contruction {
+    background-image: url("/nshore_website/static/src/img/product-construction-bg.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100%;
+}
+
+.color-shine {
+    background-color: #f9d4af;
+    padding: 30px 70px;
+}
+
+.product-contruction-content {
+    padding: 30px 80px;
+}
+
+.no-padding {
+    padding: 0;
+}
+
+.product-shine p {
+    font-size: 30px;
+    line-height: 38px;
+}
+
+.product-contruction h3.common-title,
+.product-contruction p {
+    color: #fff;
+}
+
+.product-shine-inner-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.navbar-brand>img {
+    display: block;
+    width: 70%;
+}
+
+.product-types_container h3 {
+    text-align: center;
+    margin-top: 0;
+    padding-bottom: 30px;
+}
+
+.product-types_container h4 {
+    font-size: 32px;
+    color: #222;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    padding-top: 20px;
+}
+
+.product-types_container p {
+    text-align: center;
+    font-size: 32px;
+    line-height: 36px;
+}
+
+.product-types_container a.common-btn {
+    margin-top: 20px;
+}
+
+.product-types_container {
+    text-align: center;
+    float: left;
+    padding: 80px 0;
+}
+
+.product-types_container img {
+    width: 100%;
+}
+
+.brands {
+    background-color: #e2e2e2
+}
+
+.brands-container {
+    float: left;
+    padding: 80px 0;
+    margin: 0 auto;
+    clear: both;
+    width: 100%;
+    text-align: center;
+}
+
+.brands-container h3.common-title {
+    margin-top: 0;
+    padding-bottom: 70px;
+}
+
+.footer1 {
+    background-color: #7a2b31;
+    color: #fff;
+    padding-top: 60px;
+    padding-bottom: 60px;
+}
+
+.footer1 h4 {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.footer1 p {
+    font-size: 30px;
+    line-height: 35px;
+}
+
+.sprinklers {
+    padding-top: 56px;
+}
+
+.sprinklers p:last-child {
+    padding-top: 25px;
+}
+
+.news {
+    padding-top: 10px;
+}
+
+.news h5 {
+    font-family: BebasKai;
+    font-size: 30px;
+}
+
+.adress1 {
+    padding-top: 25px;
+}
+
+address {
+    font-size: 30px;
+    line-height: 40px;
+}
+
+.address2 {
+    padding-top: 20px;
+}
+
+.footer2.copy-right {
+    font-size: 32px;
+    text-align: center;
+    color: #222222;
+    padding: 45px 0;
+}
+
+.footer2.copy-right p {
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+.news img {
+    width: 100%
+}
+
+.brands-container img {
+    max-width: 100%;
+}
+
+
+/* HOME Page */
+
+
+/* About */
+
+.banner-content.inner-pages {
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.banner-content.inner-pages a.common-btn {
+    background: transparent;
+    border: 6px solid #fff;
+    font-size: 50px;
+    width: 400px;
+    line-height: 94px;
+    font-weight: 900;
+    font-family: 'Open Sans', sans-serif;
+    color: #e5e5e5;
+}
+
+section.about-content p {
+    font-size: 32px;
+    text-align: center;
+    color: #222;
+    padding-bottom: 35px;
+    line-height: 50px;
+}
+
+.about-container {
+    padding: 62px 0;
+}
+
+.header-banner .banner.about-banner {
+    background-image: url("/nshore_website/static/src/img/about-banner.jpg");
+    padding-top: 24.58%;
+}
+
+.header-banner .banner.contact-banner {
+    background-image: url("/nshore_website/static/src/img/contact-banner.jpg");
+    padding-top: 24.58%;
+}
+
+
+/* About */
+
+
+/* Contact us */
+
+.contact-input input {
+    width: 100%;
+    margin-bottom: 16px;
+    padding: 10px;
+    border: 0;
+    line-height: 50px;
+}
+
+.contact-input input:focus,
+.contact-input textarea:focus {
+    outline: none;
+}
+
+section.contact-content {
+    background: #f9d4af;
+    padding: 80px 0;
+}
+
+.contact-input textarea {
+    width: 100%;
+    margin-bottom: 10px;
+    border: 0;
+}
+
+.contact-container .contact_submit {
+    width: 100%;
+    background: #7a2b31;
+    color: #fff;
+    line-height: 87px;
+    font-size: 60px;
+    font-weight: bold;
+}
+
+h4.contact-title {
+    font-size: 42px;
+    font-weight: bold;
+    color: #4d4b49;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.conatct-info h3,
+.conatct-info a {
+    font-size: 63px;
+    font-weight: bold;
+    color: #4d4b49;
+    margin-top: 0;
+}
+
+.social_contacts_sites li {
+    display: inline-block;
+    padding-right: 10px;
+}
+
+.social_contacts_sites i {
+    color: #f9d4af;
+    height: 96px;
+    width: 96px;
+    border-radius: 50px;
+    text-align: center;
+    line-height: 96px;
+    font-size: 58px;
+}
+
+.social_contacts_sites i.fa.fa-facebook {
+    background: #3a589b;
+}
+
+.social_contacts_sites i.fa.fa-twitter {
+    background: #598dca;
+}
+
+.social_contacts_sites i.fa.fa-instagram {
+    background: #517fa6;
+}
+
+.social_contacts_sites i.fa.fa-google-plus {
+    background: #d6492f;
+}
+
+.service-hours,
+.phone-order,
+.email-info {
+    padding-bottom: 30px;
+}
+
+.email-info a {
+    font-size: 42px;
+}
+
+ul.social_contacts_sites {
+    padding-top: 20px;
+}
+
+
+/* Contact us */
+
+
+/* Meadia Start */
+
+@media (min-width: 768px) {
+    .container {
+        width: 750px;
+    }
+}
+
+@media (min-width: 850px) {
+    .container {
+        width: 760px;
+    }
+}
+
+@media (min-width: 860px) {
+    .container {
+        width: 850px;
+    }
+}
+
+@media (min-width: 990px) {
+    .container {
+        width: 950px;
+    }
+}
+
+@media (min-width: 992px) {
+    .container {
+        width: 970px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        width: 1170px;
+    }
+}
+
+@media (min-width: 1366px) {
+    .container {
+        width: 1278px;
+    }
+}
+
+@media (min-width: 1440px) {
+    .container {
+        width: 1320px;
+    }
+}
+
+@media (min-width: 1600px) {
+    .container {
+        width: 1480px;
+    }
+}
+
+@media (min-width: 1800px) {
+    .container {
+        width: 1680px;
+    }
+}
+
+@media (min-width: 1920px) {
+    .container {
+        width: 1800px;
+    }
+}
+
+@media screen and (max-width:1800px) {
+    .conatct-info h3,
+    .conatct-info a {
+        font-size: 34px;
+    }
+    h4.contact-title {
+        font-size: 28px;
+    }
+    address {
+        font-size: 25px;
+        line-height: 37px;
+    }
+    .footer1 p {
+        font-size: 26px;
+    }
+    .news h5 {
+        font-family: BebasKai;
+        font-size: 26px;
+    }
+    .navbar-inverse .navbar-nav>li>a {
+        font-size: 29px
+    }
+    .why-choose h4 {
+        font-size: 36px;
+    }
+    a.common-btn {
+        font-size: 28px
+    }
+    .why-choose p {
+        font-size: 26px
+    }
+    h3.common-title {
+        font-size: 54px;
+    }
+    .product-types_container p {
+        text-align: center;
+        font-size: 26px;
+        line-height: 32px;
+    }
+    .social_contacts_sites i {
+        color: #f9d4af;
+        height: 56px;
+        width: 56px;
+        border-radius: 50px;
+        text-align: center;
+        line-height: 56px;
+        font-size: 31px;
+    }
+    .contact-container button {
+        line-height: 75px;
+        font-size: 42px;
+    }
+}
+
+@media screen and (max-width:1600px) {
+    .footer2.copy-right {
+        font-size: 28px;
+    }
+    .footer1 p {
+        font-size: 21px;
+        line-height: 35px;
+    }
+    .sprinklers {
+        padding-top: 48px;
+    }
+    address {
+        font-size: 21px;
+        line-height: 37px;
+    }
+    .news h5 {
+        font-family: BebasKai;
+        font-size: 21px;
+    }
+    .product-shine p {
+        font-size: 21px;
+        line-height: 33px;
+    }
+    h3.common-title {
+        font-size: 40px;
+    }
+    .banner-content p {
+        font-size: 22px;
+    }
+    .navbar-inverse .navbar-nav>li>a {
+        padding: 10px 20px;
+        font-size: 25px;
+    }
+    .banner-content {
+        position: absolute;
+        top: 50%;
+        width: 61.5%;
+    }
+    a.common-btn {
+        width: 264px;
+        line-height: 56px;
+        font-size: 21px;
+    }
+    .banner-content {
+        width: 54.5%;
+    }
+    .why-choose p {
+        font-size: 22px;
+        line-height: 30px;
+    }
+    .why-choose h4 {
+        font-size: 28px;
+    }
+    .navbar-brand>img {
+        display: block;
+        width: 53%;
+    }
+    .contact-input input {
+        line-height: 34px;
+    }
+}
+
+@media screen and (max-width:1440px) {
+    .conatct-info h3,
+    .conatct-info a {
+        font-size: 28px;
+    }
+    h4.contact-title {
+        font-size: 24px;
+    }
+    section.about-content p {
+        font-size: 24px;
+        padding-bottom: 30px;
+        line-height: 38px;
+    }
+    .banner-content.inner-pages a.common-btn {
+        background: transparent;
+        border: 6px solid #fff;
+        font-size: 42px;
+        width: 385px;
+        line-height: 83px;
+    }
+    .footer1 h4 {
+        font-size: 26px;
+    }
+    .product-types_container p {
+        text-align: center;
+        font-size: 21px;
+        line-height: 28px;
+    }
+    .product-shine p {
+        font-size: 21px;
+        line-height: 30px;
+    }
+    .why-choose p {
+        font-size: 21px;
+        line-height: 31px;
+    }
+    a.common-btn {
+        font-size: 21px;
+        width: 258px;
+    }
+    .why-choose h4 {
+        font-size: 28px;
+    }
+    .banner-content {
+        width: 60.5%;
+    }
+    .banner-content p {
+        line-height: 32px;
+    }
+    a.common-btn {
+        margin-top: 20px
+    }
+    .product-types_container h4 {
+        font-size: 26px;
+    }
+}
+
+@media screen and (max-width:1366px) {
+    ul.nav.navbar-nav.navbar-right {
+        margin-top: 21px;
+    }
+    .navbar-inverse .navbar-nav>li>a {
+        padding: 10px 20px;
+        font-size: 23px;
+    }
+    .banner-content {
+        width: 59.5%;
+    }
+    .why-choose p {
+        font-size: 18px;
+        line-height: 27px;
+    }
+    .why-choose h4 {
+        font-size: 26px;
+    }
+    .why-choose-container a.common-btn {
+        font-size: 18px;
+        width: 228px;
+    }
+    .color-shine {
+        background-color: #f9d4af;
+        padding: 30px 45px;
+    }
+    .product-contruction-content {
+        padding: 30px 45px;
+    }
+    .footer2.copy-right {
+        font-size: 24px;
+    }
+    .contact-container button {
+        line-height: 75px;
+        font-size: 36px;
+    }
+    .banner-content.inner-pages a.common-btn {
+        background: transparent;
+        border: 5px solid #fff;
+        font-size: 36px;
+        width: 313px;
+        line-height: 64px;
+    }
+}
+
+@media screen and (max-width:1280px) {
+    .conatct-info h3,
+    .conatct-info a {
+        font-size: 22px;
+    }
+    .contact-container button {
+        line-height: 60px;
+        font-size: 30px;
+    }
+    .social_contacts_sites i {
+        height: 48px;
+        width: 48px;
+        line-height: 48px;
+        font-size: 24px;
+    }
+    .navbar-inverse .navbar-nav>li>a {
+        font-size: 21px;
+    }
+    .banner-content {
+        width: 60.5%;
+    }
+}
+
+@media screen and (max-width:1024px) {
+    h4.contact-title {
+        font-size: 21px;
+    }
+    .conatct-info h3,
+    .conatct-info a {
+        font-size: 19px;
+    }
+    .product-types_container p {
+        text-align: center;
+        font-size: 15px;
+        line-height: 24px;
+    }
+    .product-types_container h4 {
+        font-size: 21px;
+    }
+    .product-shine p {
+        font-size: 16px;
+        line-height: 23px;
+    }
+    .banner-content p {
+        line-height: 22px;
+        font-size: 16px;
+    }
+    .navbar-inverse .navbar-nav>li>a {
+        font-size: 18px;
+        padding: 10px 13px;
+    }
+    h3.common-title {
+        font-size: 28px;
+    }
+    a.common-btn {
+        font-size: 18px;
+        width: 199px;
+        line-height: 43px;
+    }
+    .banner-content {
+        width: 59%;
+    }
+    .why-choose h4 {
+        font-size: 24px;
+    }
+    .why-choose p {
+        font-size: 15px;
+        line-height: 21px;
+    }
+    .why-choose-container a.common-btn {
+        font-size: 15px;
+        width: 170px;
+        line-height: 38px;
+    }
+}
+
+@media screen and (max-width:991px) {
+    .navbar-inverse .navbar-toggle,
+    .navbar-inverse .navbar-toggle:focus,
+    .navbar-inverse .navbar-toggle:hover {
+        background: #7a2b31;
+        border: 0;
+    }
+    .why-choose-container {
+        padding: 25px 0;
+    }
+    .inner-why-choose a.common-btn {
+        margin-bottom: 30px;
+    }
+    .navbar-header {
+        float: none;
+    }
+    .navbar-toggle {
+        display: block;
+    }
+    .navbar-collapse {
+        border-top: 1px solid transparent;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+    .navbar-collapse.collapse {
+        display: none!important;
+    }
+    .navbar-nav {
+        float: none!important;
+        margin: 7.5px -15px;
+    }
+    .navbar-nav>li {
+        float: none;
+    }
+    .navbar-nav>li>a {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .navbar-collapse.collapse.in {
+        display: block !important;
+        max-height: 100%;
+    }
+    .navbar-brand>img {
+        display: block;
+        width: 36%;
+    }
+    .navbar-inverse .navbar-collapse,
+    .navbar-inverse .navbar-form {
+        border-color: transparent;
+        border: 0;
+        box-shadow: none;
+    }
+    ul.nav.navbar-nav.navbar-right {
+        margin-top: 36px;
+    }
+    .menu-right {
+        background-color: #fff;
+        z-index: 99999;
+        margin-top: 40px;
+        border: 0;
+        min-height: 0;
+    }
+    .navbar-inverse .navbar-nav>li>a {
+        color: #000;
+    }
+    .footer2.copy-right {
+        font-size: 20px;
+    }
+}
+
+@media screen and (max-width:980px) {
+    section.about-content p {
+        font-size: 22px;
+        padding-bottom: 30px;
+        line-height: 36px;
+    }
+}
+
+@media screen and (max-width:960px) {
+    ul.nav.navbar-nav.navbar-right {
+        margin-top: 0;
+    }
+}
+
+@media screen and (max-width:850px) {
+    h4.contact-title {
+        font-size: 18px;
+    }
+    .conatct-info h3,
+    .conatct-info a {
+        font-size: 18px;
+    }
+    .contact-container button {
+        line-height: 53px;
+        font-size: 25px;
+    }
+    .navbar-inverse .navbar-nav>li>a {
+        font-size: 18px;
+        padding: 6px 13px;
+    }
+}
+
+@media screen and (max-width:768px) {
+    .header-banner .banner {
+        background-image: url("/nshore_website/static/src/img/responsive-home-banner-img.jpg");
+        padding-top: 100%;
+    }
+}
+
+@media screen and (max-width:767px) {
+    .product-types_container a.common-btn {
+        margin-bottom: 40px
+    }
+    section.about-content p {
+        font-size: 18px;
+        padding-bottom: 30px;
+        line-height: 30px;
+    }
+    .conatct-info {
+        padding-top: 40px;
+    }
+    .header-banner .banner.contact-banner {
+        background-image: url("/nshore_website/static/src/img/responsive-contact-banner.jpg");
+        padding-top: 100%;
+    }
+    .header-banner .banner.about-banner {
+        background-image: url("/nshore_website/static/src/img/responsive-about-banner.jpg");
+        padding-top: 100%;
+    }
+}
+
+@media screen and (max-width:736px) {}
+
+@media screen and (max-width:667px) {
+    section.contact-content {
+        background: #f9d4af;
+        padding: 32px 0;
+    }
+    .about-container {
+        padding: 30px 0;
+    }
+    h3.common-title {
+        font-size: 24px;
+    }
+    .color-shine,
+    .product-contruction-content {
+        padding: 30px 20px;
+    }
+    .footer2.copy-right {
+        font-size: 16px;
+    }
+    .sprinklers {
+        padding-top: 12px;
+    }
+    .footer1 p {
+        font-size: 18px;
+        line-height: 28px;
+    }
+    .adress1 {
+        padding-top: 10px;
+    }
+}
+
+@media screen and (max-width:640px) {
+    .banner-content p {
+        width: 94%;
+        margin: 0 auto;
+    }
+    .banner-content {
+        width: 100%;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        text-align: center;
+        float: none;
+    }
+    .banner-content p {
+        line-height: 22px;
+        font-size: 14px;
+    }
+    h3.common-title {
+        font-size: 24px;
+    }
+}
+
+@media screen and (max-width:600px) {
+    .news img {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width:568px) {}
+
+@media screen and (max-width:480px) {
+    .padding-0 {
+        padding: 0;
+    }
+    a.navbar-brand {
+        padding: 0;
+        padding-top: 0;
+    }
+    .navbar-inverse .navbar-toggle {
+        border-color: #333;
+        margin-right: 0;
+    }
+    .banner-content.inner-pages a.common-btn {
+        background: transparent;
+        border: 5px solid #fff;
+        font-size: 32px;
+        width: 290px;
+        line-height: 62px;
+    }
+}
+
+@media screen and (max-width:414px) {
+    .conatct-info h3,
+    .conatct-info a {
+        font-size: 16px;
+    }
+    .navbar-brand>img {
+        display: block;
+        width: 40%;
+    }
+    .navbar-brand {
+        width: 70%;
+    }
+    .header-banner .banner {
+        background-image: url("/nshore_website/static/src/img/responsive-home-banner-img.jpg");
+        padding-top: 570px;
+    }
+    h3.common-title {
+        font-size: 26px;
+    }
+    .brands-container img {
+        width: 100%;
+    }
+    .menu-right {
+        margin-top: 65px;
+    }
+}
+
+@media screen and (max-width:375px) {
+    .menu-right {
+        margin-top: 54px;
+    }
+}
+
+@media screen and (max-width:360px) {
+    .menu-right {
+        margin-top: 50px;
+    }
+}
+
+@media screen and (max-width:320px) {
+    .banner-content.inner-pages a.common-btn {
+        background: transparent;
+        border: 5px solid #fff;
+        font-size: 32px;
+        width: 252px;
+        line-height: 55px;
+    }
+    .menu-right {
+        margin-top: 40px;
+    }
+}
+
+
+/* Meadia End */

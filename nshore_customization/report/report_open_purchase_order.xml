@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="open_purchase_order_template">
+        <div class="oe_structure">
+            <div style='margin-top:100px;'>
+                <table class="table table-condensed"
+                        style="border-left:solid white 1px;border-right:solid white 1px;border-bottom:solid white 1px;">
+                    <t t-set="total_sig" t-value="0"/>
+                    <t t-set="total_cal" t-value="0"/>
+                    <t t-set="total_res" t-value="0"/>
+                    <thead>
+                        <tr style="background-color:black;color:white">
+                            <th>Invoice #</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                            <th>Paid</th>
+                            <th>Balance Due</th>
+                        </tr>
+                        <tr>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="o.invoice_ids" t-as="b">
+                            <td>
+                                <t t-esc="b.id"/>
+                            </td>
+                            <td>
+                                <span t-field="b.create_date"/>
+                            </td>
+                            <td>
+                                <t t-esc="b.amount_total_signed"/>
+                                <t t-set="total_sig"
+                                    t-value="total_sig+b.amount_total_signed"/>
+                            </td>
+                            <td>
+                                <t t-if="b.state == 'draft'">
+                                    0
+                                    <t t-set="total_cal"
+                                        t-value="total_cal+0"/>
+                                </t>
+                                <t t-if="b.state != 'draft'">
+                                    <span t-esc="b.amount_total_signed - b.residual"
+                                          t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    <t t-set="total_cal"
+                                        t-value="total_cal+(b.amount_total_signed - b.residual)"/>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-if="b.state == 'draft'">
+                                    <span t-esc="b.amount_total_signed"
+                                          t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    <t t-set="total_res"
+                                        t-value="total_res+b.amount_total_signed"/>
+                                </t>
+                                <t t-if="b.state != 'draft'">
+                                    <span t-esc="b.amount_total_signed"
+                                          t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    <t t-set="total_res"
+                                        t-value="total_res+b.amount_total_signed"/>
+                                </t>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr style="background-color:black;color:white">
+                            <td colspan="5">&#160;</td>
+                        </tr>
+                    </tbody>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td>
+                            <span t-esc="total_sig"
+                                  t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                        </td>
+                        <td>
+                            <span t-esc="total_cal"
+                                  t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                        </td>
+                        <td>
+                            <span t-esc="total_res"
+                                  t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="footer">
+            <center>
+                Page
+                <span class="page"/>
+                of
+                <span class="topage"/>
+            </center>
+        </div>
+    </template>
+
+    <template id="open_purchase_order_layout_header">
+        <div class="header">
+            <div class="row">
+                <div class="col-8">
+                    <h3>
+                        <t t-esc="o.company_id.name" />
+                    </h3>
+                </div>
+                <div class="col-4">
+                    <span t-if="o.company_id.street" t-field="o.company_id.street" />
+                    <span t-field="o.company_id.street2" />
+                    <br />
+                    <span t-field="o.company_id.city" />, <span t-field="o.company_id.state_id" />, <span t-field="o.company_id.country_id" /><br /><span t-field="o.company_id.zip" /><br />
+                </div>
+            </div>
+            <div class="row mt16">
+                <style type="text/css">
+                    .ship_addrees {
+                        border-collapse:separate;
+                        border:solid black 2px;
+                        border-radius:20px;
+                        -moz-border-radius:6px;
+                    }
+                    td:first-child, th:first-child {
+                         border-left: none;
+                    }
+                </style>
+                <div class="col-4">
+                    <table class="ship_addrees" style="width:100%">
+                        <tr style="border-bottom:1px solid black !important">
+                            <th style='padding: 5px;border-bottom:1px solid black !important'>
+                                <strong>Billing Address</strong>
+                            </th>
+                        </tr>
+                        <tr>
+                            <td style='padding: 5px;'>
+                                <address t-esc="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}" />
+                                <div t-if="o.partner_id.vat" class="mt16">
+                                    <t t-esc="o.company_id.country_id.vat_label or 'TIN'" />: <span t-field="o.partner_id.vat" /></div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-4">
+                    <table class="ship_addrees" style="width:100%">
+                        <tr>
+                            <th style='padding: 5px;border-bottom:1px solid black !important'>
+                                <strong>Shipping Address</strong>
+                            </th>
+                        </tr>
+                        <tr>
+                            <td style='padding: 5px;'>
+                                <address t-esc="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}" />
+                                <div t-if="o.partner_id.vat" class="mt16">
+                                    <t t-esc="o.company_id.country_id.vat_label or 'TIN'" />: <span t-field="o.partner_id.vat"/></div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-4">
+                    <b>
+                        <h4>Open Purchase Orders</h4>
+                        Date<span style="margin-left:1em;" t-esc="context_timestamp(datetime.datetime.now()).strftime('%m/%d/%Y')"/>
+                    </b>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="report_layout_open_purchase_order">
+        <t t-set="o" t-value="o.with_context(lang=lang)" />
+
+        <t t-call="nshore_customization.open_purchase_order_layout_header" />
+        <div class="article o_report_layout_standard">
+            <t t-raw="0" />
+        </div>
+        <!-- <t t-call="nshore_customization.open_purchase_order_template" /> -->
+        <!-- <t t-call="nshore_customization.open_purchase_order_layout_footer" /> -->
+    </template>
+
+    <template id="report_open_purchase_order">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="nshore_customization.report_layout_open_purchase_order">
+                    <t t-set="lang" t-value="o.partner_id.lang"/>
+                    <div class="page">
+                        <t t-call="nshore_customization.open_purchase_order_template"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    
+
+</odoo>

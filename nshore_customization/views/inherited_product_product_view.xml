@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherited view of Product Product view -->
+    <record id="inherited_product_form_view" model="ir.ui.view">
+        <field name="name">product.product.form.inherit</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lst_price']" position="after">
+                <field name="product_ref" />
+                <field name="net_cost" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherited view of Product Pricelist view -->
+    <record id="inherited_product_pricelist_item_form_view" model="ir.ui.view">
+        <field name="name">product.pricelist.item.form.inherited</field>
+        <field name="model">product.pricelist.item</field>
+        <field name="inherit_id" ref="product.product_pricelist_item_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[3]//div" position="inside">
+                <span attrs="{'invisible':[('base', '!=', 'net_cost')]}">Net Cost  -  </span>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="view_stock_product_template_tree_inherit" model="ir.ui.view">
+        <field name="name">product.template.stock.tree.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="stock.view_stock_product_template_tree"/>
+        <field name="arch" type="xml">
+            <field name="qty_available" position="attributes">
+                <attribute name="widget">integer</attribute>
+            </field>
+            <field name="virtual_available" position="attributes">
+                <attribute name="widget">integer</attribute>
+            </field>
+        </field>
+    </record>
+    <record id="product_form_view_procurement_button_inherit" model="ir.ui.view">
+        <field name="name">product.template.procurement.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="stock.product_template_form_view_procurement_button"/>
+        <field name="arch" type="xml">
+            <field name="qty_available" position="attributes">
+                <attribute name="widget">integer</attribute>
+            </field>
+            <field name="virtual_available" position="attributes">
+                <attribute name="widget">integer</attribute>
+            </field>
+            <field name="outgoing_qty" position="attributes">
+                <attribute name="widget">integer</attribute>
+            </field>
+        </field>
+    </record>
+    <record id="view_product_template_purchase_buttons_from" model="ir.ui.view">
+        <field name="name">product.template.purchase.button.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="purchase.view_product_template_purchase_buttons_from"/>
+        <field name="arch" type="xml">
+            <field name="purchased_product_qty" position="attributes">
+                <attribute name="widget">integer</attribute>
+            </field>
+        </field>
+    </record>
+    <record id="product_template_form_view_sale_order_button" model="ir.ui.view">
+        <field name="name">product.template.sale.button.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="sale.product_template_form_view_sale_order_button"/>
+        <field name="arch" type="xml">
+            <field name="sales_count" position="attributes">
+                <attribute name="widget">integer</attribute>
+            </field>
+        </field>
+    </record>
+</odoo>

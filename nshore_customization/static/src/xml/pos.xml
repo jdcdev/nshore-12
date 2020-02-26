@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template id="template" xml:space="preserve">
+
+    <t t-extend="PosTicket">
+        <t t-jquery=".pos-sale-ticket" t-operation="replace">
+            <div class="pos-sale-ticket" style="margin-right:20px;">
+                <div class="header row" style="padding-top:25px !important;">
+                    <table>
+                        <tr>
+                            <td width="30%">
+                                <h3>
+                                    <t t-if="widget.pos.company" t-esc="widget.pos.company.name"/>
+                                </h3>
+                            </td>
+                            <td width="40%"></td>
+                            <td class="text-right" width="30%">
+                                <span t-if="widget.pos.company.street"
+                                      t-esc="widget.pos.company.street"/>
+                                <span t-if="widget.pos.company.street2"
+                                      t-esc="widget.pos.company.street2"/>
+                                <br/>
+                                <t t-if="widget.pos.company.city">
+                                    <span t-esc="widget.pos.company.city"/>,
+                                </t>
+                                <t t-if="widget.pos.company.state_id">
+                                    <span t-esc="widget.pos.company.state_id[1]"/>,
+                                </t>
+                                <t t-if="widget.pos.company.country_id">
+                                    <span t-esc="widget.pos.company.country_id[1]"/>
+                                </t>
+                                <t t-if="widget.pos.company.zip">
+                                    <br/>
+                                    <span t-esc="widget.pos.company.zip"/>
+                                </t>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="article o_report_layout_standard"
+                     style="margin-top:30px !important;">
+                    <div class="page">
+                        <div class="row" style="margin-right:20px;">
+                            <div name="invoice_address" class="col-xs-12">
+                                <table class="table table-condensed"
+                                       style="width:280px;display: inline-block;"
+                                       border="0">
+                                    <tbody>
+                                        <tr style="border: none !important;">
+                                            <td style="font-size:30px;border: none !important; padding-right:5px !important"
+                                                border="0" colspan="3">
+                                                <h2>
+                                                    <span>Invoice</span>
+                                                </h2>
+                                            </td>
+                                        </tr>
+                                        <tr style="border: none !important;">
+                                            <td style="border: none !important;">
+                                                <strong>Number</strong>
+                                            </td>
+                                            <td
+                                                    style="border: none !important;" colspan="2">
+                                                <strong>
+                                                    <t t-esc="order.name"/>
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: none !important;">
+                                                <strong>Date</strong>
+                                            </td>
+                                            <td style="border: none !important;" colspan="2">
+                                                <strong>
+                                                    <t t-esc="order.formatted_validation_date"/>
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td
+                                                    style="border: none !important; padding-right:10px;">
+                                                <div name="reference">
+                                                    <strong>Reference</strong>
+                                                </div>
+                                            </td>
+                                            <td style="border: none !important;" colspan="2">
+                                                <strong><t t-if="widget.pos.get_client()"
+                                                        t-esc="widget.pos.get_client().ref" /></strong>
+                                            </td>
+                                        </tr>
+                                        <tr style="border: 0px;">
+                                            <td style="border: none !important;">
+                                                <strong>Terms</strong>
+                                            </td>
+                                            <td style="border: none !important;" colspan="2">
+                                                <strong>
+                                                    <t t-if="widget.pos.get_client() and widget.pos.get_client().property_payment_term_id"
+                                                       t-esc="widget.pos.get_client().property_payment_term_id[1]"/>
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <br/>
+                        <table class="table table-condensed"
+                               name="invoice_line_table">
+
+                            <thead>
+                                <tr style="background-color:black;color:white">
+                                    <th width="10%">Product</th>
+                                    <th width="20%" class="text-right">Quantity</th>
+                                    <th width="30%" style="padding-right:10px; !important;">Description</th>
+                                    <th width="10%" class="text-right">Price</th>
+                                    <th width="10%" class="text-right">Extention</th>
+                                    <th width="20%" class="text-right" style="padding-right:10px; !important;">Taxes</th>
+                                </tr>
+                            </thead>
+                            <tbody class="invoice_tbody">
+                                <tr t-foreach="orderlines" t-as="orderline">
+                                    <td>
+                                        <span t-esc="orderline.get_product().default_code"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="orderline.get_quantity_str_with_unit()"/>
+                                        <span t-if="orderline.get_product().uom_id"
+                                              t-esc="orderline.get_product().uom_id[1]"/>
+                                        <span t-esc="orderline.get_product().uom_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="orderline.get_product().display_name"/>
+                                        <span t-esc="orderline.get_product().name"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="orderline.get_unit_price()"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <t t-esc="widget.format_currency(orderline.get_display_price())"/>
+                                    </td>
+                                    <t t-if="orderline.get_applicable_taxes()">
+                                        <td class="text-right">
+                                            <t t-foreach="orderline.get_applicable_taxes()" t-as="tax">
+                                                <t t-esc="tax.name" /><br/>
+                                            </t>
+                                        </td>
+                                    </t>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="clearfix">
+                            <div id="total" class="row">
+                                <div class="col-xs-4 pull-right">
+                                    <table class="table table-condensed" style="min-width: 250px;max-width: 400px;"></table>
+                                </div>
+                            </div>
+                        </div>
+                        <!--<p t-if="o.comment">
+                            &lt;!&ndash;<span t-field="o.comment" />&ndash;&gt;
+                            <span t-esc="order.get_comment" />
+                        </p>-->
+                        </div>
+                </div>
+
+                <div class="footer col-xs-12" style="font-size: 16px !important;">
+                    <div class="col-xs-12  pull-right">
+                        <table class="table table-condensed" style="border-top:10px solid black;">
+                            <tr>
+                                <td width="10" style="border: none !important;"></td>
+                                <td width="20" style="border: none !important;"></td>
+                                <td width="30" style="border: none !important;"></td>
+                                <td width="10" style="border: none !important;"></td>
+                                <td width="10" style="border: none !important;">
+                                    <strong>Amount</strong>
+                                </td>
+                                <td width="20" style="border: none !important;" class="text-right">
+                                    <t t-esc="widget.format_currency(order.get_total_without_tax())"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <t t-if="order.get_tax_details()">
+                                    <td style="border: none !important;"></td>
+                                    <td style="border: none !important;"></td>
+                                    <td style="border: none !important;"></td>
+                                    <td style="border: none !important;"></td>
+                                    <td style="border: none !important;">
+                                        <strong>Taxes</strong>
+                                    </td>
+                                    <td style="border: none !important;">
+                                        <t t-set="tax_total" t-value="0"/>
+                                        <t t-foreach="order.get_tax_details()" t-as="taxdetail">
+                                            <t t-set="tax_total"
+                                               t-value="tax_total + taxdetail.amount"/>
+                                        </t>
+                                        <t t-esc="widget.format_currency(tax_total)" />
+                                    </td>
+                                </t>
+                            </tr>
+                            <tr>
+                                <td style="border: none !important;"></td>
+                                <td style="border: none !important;"></td>
+                                <td style="border: none !important;"></td>
+                                <td style="border: none !important;"></td>
+                                <td style="border: none !important;">
+                                    <strong>Total</strong>
+                                </td>
+                                <td style="border: none !important;" class="text-right">
+                                    <t t-esc="widget.format_currency(order.get_total_with_tax())"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <t t-foreach="paymentlines" t-as="line">
+                                    <td style="border: none !important;"></td>
+                                    <td style="border: none !important;"></td>
+                                    <td style="border: none !important;"></td>
+                                    <td style="border: none !important;"></td>
+                                    <td style="border: none !important;">
+                                        <strong>Payments</strong>
+                                    </td>
+                                    <td>
+                                        <t t-esc="widget.format_currency(line.get_amount())"/>
+                                    </td>
+                                </t>
+                            </tr>
+                        </table>
+                        <div>
+                            <strong>Customer Signature</strong>
+                            <br/>
+                            <br/>
+                            <span>__________________________</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </t>
+
+    <!--<t t-extend="ReceiptScreenWidget">
+        <t t-jquery=".centered-content"
+           t-operation="replace"/>
+        <t t-jquery=".top-content" t-operation="append">
+            <div class="button print">
+                <i class='fa fa-print'></i>
+                Print Receipt
+            </div>
+            <div class="pos-receipt-container touch-scrollable"/>
+        </t>
+    </t>-->
+
+</template>
