@@ -33,7 +33,7 @@ class InvoiceList(models.Model):
             invoice_model = invoice.get_external_id()[invoice.id]
             if invoice_model:
                 invoice_model = invoice_model.split('.')
-                invoice.number = invoice_model[1].lstrip('CI')
+                invoice.number = invoice_model[1].lstrip('CI_')
 
     def validate_invoice(self):
         """Remove prduct name in description sale."""
