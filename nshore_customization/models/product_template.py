@@ -27,10 +27,13 @@ class ProductProduct(models.Model):
             domain = [('product_tmpl_id.default_code', operator, name)]
             products = self.search(domain + args, limit=limit)
         if domain:
-            domain = ['|', '|',
+            domain = ['|', '|', '|', '|', '|',
                       ('product_tmpl_id.product_ref', operator, name),
                       ('product_tmpl_id.name', operator, name),
-                      ('product_tmpl_id.description', operator, name)]
+                      ('product_tmpl_id.description', operator, name),
+                      ('product_ref', operator, name),
+                      ('name', operator, name),
+                      ('description', operator, name)]
             if products:
                 products += self.search(domain + args, limit=limit)
             else:
