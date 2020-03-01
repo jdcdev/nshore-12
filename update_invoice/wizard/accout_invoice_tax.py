@@ -13,6 +13,7 @@ class InvoiceList(models.Model):
         for invoice in invoices:
             invoice._onchange_partner_id()
             invoice._onchange_partner_shipping_id()
+            invoice.tax_line_ids.sudo().unlink()
             for res in invoice.invoice_line_ids:
                 res.uom_id = res.product_id.uom_id.id
                 if res.invoice_id.type in ('out_invoice', 'out_refund'):
