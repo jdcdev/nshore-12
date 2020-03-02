@@ -11,7 +11,7 @@
                             height: 2px !important;
                             }
                             .table th {
-                            border: none;
+                            border: 0px;
                             }
                             td:first-child, th:first-child {
                             border-left: none;
@@ -19,17 +19,16 @@
                         </style>
                         <table class="table" width="100%">
                             <t t-if="docs['comparsion'] == True">
-                                <tr>
+                                <tr style="line-height:0px;">
                                     <td/>
                                     <td/>
                                     <td/>
                                     <td colspan="4">
-                                        _________Report Peroid_________
+                                        _______________Report Peroid_______________
                                     </td>
-                                    <td colspan="3">
-                                        _________Previous Peroid_________
+                                    <td colspan="4">
+                                        _________ Peroid_________
                                     </td>
-                                    <td/>
                                     <td/>
                                 </tr>
                             </t>
@@ -71,8 +70,8 @@
                                     <u>Chg %</u>
                                 </th>
                             </tr>
-                            <tbody>
-                                <tr t-foreach="purchase_rec" t-as="rec_data">
+                            <tbody style="border:0px;">
+                                <tr t-foreach="purchase_rec" t-as="rec_data" style="line-height:0px;">
                                     <td>
                                         <span t-esc="rec_data['cust_ref']"/>
                                     </td>
@@ -218,7 +217,9 @@
             </div>
             <div class="row">
                 <t t-if="docs['start_date'] and docs['end_date']">
-                    <div class="col-12 text-right">
+                    <div class="col-6">
+                    </div>
+                    <div class="col-6 text-right">
                         <p>
                             <strong>From:</strong>
                             <span t-esc="docs['start_date']"/>&amp;nbsp;&amp;nbsp;&amp;nbsp;
