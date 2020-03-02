@@ -66,7 +66,6 @@ class CustomerPurchases(models.TransientModel):
             'user_id',
             'is_all_salesperson'
         ])[0]
-
         if self.product:
             self.partner_vendor_id = False
             self.product_id = False
