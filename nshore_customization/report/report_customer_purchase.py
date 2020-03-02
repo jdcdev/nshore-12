@@ -25,8 +25,8 @@ class CustomerPurchasesReportView(models.AbstractModel):
         grand_total_changed_amount = 0.0
         grand_total_changed_per = 0.0
         all_dates = data['dates']
-        start_date = datetime.strptime(data['start_date'], "%Y-%m-%d")
-        end_date = datetime.strptime(data['end_date'], "%Y-%m-%d")
+        start_date = data['start_date']
+        end_date = data['end_date']
         all_customer = data['customer']
         customer_id = data['partner_id'][0] if data['partner_id'] else None
         cust_phone = data['pho_no'] or None
