@@ -22,8 +22,8 @@
                         <style type="text/css">
                             .ship_addrees {
                                 border-collapse:separate;
-                                border:solid black 2px;
-                                border-radius:20px;
+                                border:solid black 1px;
+                                border-radius:45px;
                                 -moz-border-radius:6px;
                             }
                             td:first-child, th:first-child {
@@ -33,12 +33,12 @@
                         <div class="col-4">
                             <table class="ship_addrees" style="width:100%">
                                 <tr style="border-bottom:1px solid black !important">
-                                    <th style='padding: 5px;border-bottom:1px solid black !important'>
-                                        <strong>Billing Address</strong>
-                                    </th>
+                                    <td class="text-center" style='padding:5px;border-bottom:1px solid black !important'>
+                                        Billing Address
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td style='padding: 5px;'>
+                                    <td style='padding: 5px 20px 5px 20px;'>
                                         <address t-esc="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}" />
                                         <div t-if="o.partner_id.vat" class="mt16">
                                             <t t-esc="o.company_id.country_id.vat_label or 'TIN'" />: <span t-field="o.partner_id.vat" /></div>
@@ -49,12 +49,12 @@
                         <div class="col-4">
                             <table class="ship_addrees" style="width:100%">
                                 <tr>
-                                    <th style='padding: 5px;border-bottom:1px solid black !important'>
-                                        <strong>Shipping Address</strong>
-                                    </th>
+                                    <td class="text-center" style='padding: 5px;border-bottom:1px solid black !important'>
+                                        Shipping Address
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td style='padding: 5px;'>
+                                    <td style='padding: 5px 20px 5px 20px;'>
                                         <address t-esc="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}" />
                                         <div t-if="o.partner_id.vat" class="mt16">
                                             <t t-esc="o.company_id.country_id.vat_label or 'TIN'" />: <span t-field="o.partner_id.vat"/></div>
@@ -118,8 +118,8 @@
                         <t t-set="display_discount" t-value="any([l.discount for l in o.invoice_line_ids])" />
                         <table class="table table-condensed" name="invoice_line_table">
                             <thead>
-                                <tr style="background-color:black;color:white">
-                                    <th>Product</th>
+                                <tr style="background-color:black;color:white;line-height:0;">
+                                    <th class="text-left">Product</th>
                                     <th class="hidden"/>
                                     <th class="text-right">Quantity</th>
                                     <th class="text-left">Description</th>
@@ -132,7 +132,7 @@
                             </thead>
                             <tbody class="invoice_tbody">
                                 <tr t-foreach="o.invoice_line_ids" t-as="l">
-                                    <td>
+                                    <td class="text-left">
                                         <span t-field="l.product_id.default_code" />
                                     </td>
                                     <td class="hidden">

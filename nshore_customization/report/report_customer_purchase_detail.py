@@ -86,7 +86,7 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
         if not result and not self._context.get('html_report', False):
             raise ValidationError(_("No data available."))
 
-        if result:
+        if not self._context.get('html_report', False):
             for res in result:
                 vals_dict = {
                     'default_code': res[2] or '',
