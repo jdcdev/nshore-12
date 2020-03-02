@@ -35,7 +35,7 @@ class InvoiceList(models.Model):
                 invoice_model = invoice_model.split('.')
                 invoice.number = invoice_model[1].lstrip('CI_')
 
-    def validate_invoice(self):
+    def create_credit_notes(self):
         """Remove prduct name in description sale."""
         context = dict(self._context or {})
         invoices = self.env['account.invoice'].browse(context['active_ids'])
@@ -48,4 +48,10 @@ class InvoiceList(models.Model):
                         invoice_line.quantity = invoice_line.quantity * -1
                     if invoice_line.price_unit < 0:
                         invoice_line.price_unit = invoice_line.price_unit * -1
+
+    def validate_invoice(self):
+        context = dict(self._context or {})
+        invoices = self.env['account.invoice'].browse(context['active_ids'])
+        # invoices = self.env['account.invoice'].search([])
+        for invoice in invoices:
             invoice.action_invoice_open()
