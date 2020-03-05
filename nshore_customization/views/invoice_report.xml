@@ -125,15 +125,13 @@
                                     <th class="text-left">Description</th>
                                     <th class="text-right">Price</th>
                                     <th class="text-right">Extention</th>
-                                    <t t-if="len(o.tax_line_ids) &gt; 0">
-                                        <th class="text-right">Taxes</th>
-                                    </t>
+                                    <th class="text-right">Taxes</th>
                                 </tr>
                             </thead>
                             <tbody class="invoice_tbody">
                                 <tr t-foreach="o.invoice_line_ids" t-as="l">
                                     <td>
-                                        <span t-field="l.product_id.default_code" />
+                                        <span t-field="l.product_id.product_ref" />
                                     </td>
                                     <td class="hidden">
                                         <span t-field="l.origin" />
@@ -151,10 +149,15 @@
                                     <td class="text-right">
                                         <span t-field="l.price_subtotal" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" />
                                     </td>
-                                    <t t-if="len(o.tax_line_ids) &gt; 0">
+                                    <t t-if="o.amount_tax &gt; 0">
                                         <td class="text-right">
-                                            <span t-esc="', '.join(map(lambda x: (x.description or x.name), l.invoice_line_tax_ids))" />
+                                            <span>T</span>
                                         </td>
+                                    </t>
+                                    <t t-else="">
+                                      <td class="text-right">
+                                        <span>F</span>
+                                      </td>
                                     </t>
                                 </tr>
                             </tbody>
