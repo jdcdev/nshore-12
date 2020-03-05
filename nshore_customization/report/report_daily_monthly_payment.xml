@@ -17,16 +17,15 @@
                     <table width="100%">
                         <thead>
                             <th>DateCreated</th>
-                            <th>Payment #</th>
                             <th>Cust #</th>
                             <th>Name</th>
                             <th>User</th>
                             <th>Type</th>
-                            <th>Amount</th>
+                            <th class="text-right">Amount</th>
                         </thead>
                         <tbody>
                             <tr>
-                                <td colspan="7">
+                                <td colspan="6">
                                     <div style="border:1px solid black;height:0px;"></div>
                                     <br/>
                                     <div style="border:1px solid black;height:0px;"></div>
@@ -42,9 +41,6 @@
                                             <span t-esc="b.get('date')"/>
                                         </td>
                                         <td>
-                                            <span t-esc="b.get('payment_no')"/>
-                                        </td>
-                                        <td>
                                             <span t-esc="b.get('cust_no')"/>
                                         </td>
                                         <td>
@@ -56,7 +52,7 @@
                                         <td>
                                             <span t-esc="b.get('type')"/>
                                         </td>
-                                        <td>
+                                        <td class="text-right">
                                             <span t-esc="b.get('amount')"
                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                             <t t-set="total" t-value="total+b.get('amount')"/>
@@ -64,19 +60,17 @@
                                     </t>
                                 </tr>
                                 <tr>
-                                    <td colspan="7">
-                                        <br/>
-                                        <div style="border:1px solid black;height:0px;"></div>
-                                        <br/>
+                                    <td colspan="6">
+                                        <div style="border:1px solid black;height:0px;margin:0px;"></div>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th colspan="6">
+                                    <th colspan="5">
                                         <br/>
                                             <span t-esc="p"/>
                                         <br/>
                                     </th>
-                                    <th>
+                                    <th class="text-right">
                                         <br/>
                                         <span t-esc="total"
                                               t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
@@ -85,14 +79,12 @@
                                             <span t-esc="get_detail_total"
                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                             <div style="border:1px solid black;height:0px;"/>
-                                            <br/>
-                                            <div style="border:1px solid black;height:0px;"></div>
                                         </t>
                                         <t t-set="total" t-value="0"/>
                                     </th>
                                 </tr>
                                 <tr>
-                                    <td colspan="7">
+                                    <td colspan="6">
                                         <br/>
                                         <div style="border:1px solid black;height:0px;"></div>
                                         <br/>
@@ -101,6 +93,10 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                <div class="footer">
+                    <div style="border:1px solid black;height:0px;"></div>
+                    <center>Page<span class="page" />of<span class="topage"/></center>
                 </div>
                 <div class="footer">
                     <div style="border:1px solid black;height:0px;"></div>

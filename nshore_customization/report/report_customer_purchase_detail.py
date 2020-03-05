@@ -82,7 +82,6 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
 
         self.env.cr.execute(final_sql_qry, query_param)
         result = self.env.cr.fetchall()
-
         if not result and not self._context.get('html_report', False):
             raise ValidationError(_("No data available."))
 

@@ -3,7 +3,7 @@
 
     <template id="custom_layout_report">
         <div class="header">
-            <span style="font-family:Liberation Serif;float:left;font-weight:bold;font-size: 28px;padding-top:5px; padding-bottom:5px;width:50%;!important;">
+            <span style="font-family:Liberation Serif;float:left;font-weight:bold;font-size: 28px;padding-top:5px; padding-bottom:2px;width:40%;!important;">
                 Master Inventory Listing
             </span>
             <span style="font-family:Liberation Serif;float:right;font-size:18px;padding-top:5px;!important;">
@@ -14,9 +14,9 @@
                 width: 100%;
                 }
                 th, td {
-                padding-top: 10px;
+                padding-top: 8px;
                 padding-right:10px;
-                border-bottom: 2px solid black;
+                border-bottom: 1px solid black;
                 font-family:Liberation Serif;
                 font-size: 16px;
                 }
@@ -61,7 +61,7 @@
         <t t-call="web.html_container">
             <t t-call="nshore_customization.custom_layout_report">
                 <div class="page"
-                     style="font-family:Liberation Serif;font-weight:bold;font-size: 15px;!important;">
+                     style="font-family:Liberation Serif;font-size: 15px;!important;">
                     <style type="text/css">
                         table {
                         width: 100%;
@@ -73,7 +73,7 @@
                         th, td {
                         padding-top: 1px;
                         padding-right:10px;
-                        border-bottom: 2px solid #cacace;
+                        border-bottom: 1px solid #cacace;
                         font-family:Liberation Serif;
                         font-size: 18px;
                         }
@@ -86,8 +86,10 @@
                         <table t-if="product_data(o)">
                             <tr>
                                 <td colspan="14">
-                                    <span style="font-weight:bold;font-size: 20px;!important;"
-                                          class="text-uppercase" t-esc="o.name"/>
+                                    <span style="font-weight:bold;font-size: 25px;!important;"
+                                          class="text-uppercase">
+                                          <t t-esc='o.name'/>
+                                    </span>
                                 </td>
                             </tr>
                             <tr t-foreach="product_data(o)" t-as="product">

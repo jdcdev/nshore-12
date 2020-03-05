@@ -36,7 +36,7 @@ class InvoicePaymentWizard(models.TransientModel):
                 AccountInvoice = self.env['account.invoice']
 
                 for row_idx in range(1, nrows):
-                    invoice_external_id = int(worksheet.cell(row_idx, 2).value)
+                    invoice_external_id = str(worksheet.cell(row_idx, 2).value)
                     payment_external_id = int(worksheet.cell(row_idx, 3).value)
                     model_invoice_id = ModelData.search([('name', '=', invoice_external_id),('model','=', 'account.invoice')])
                     model_payment_id = ModelData.search([('name', '=', payment_external_id),('model','=', 'account.payment')])

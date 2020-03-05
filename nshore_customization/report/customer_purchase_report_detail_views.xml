@@ -12,15 +12,17 @@
                     <div class="col-4">
                         <h2 class="text-left">Customer Purchases</h2>
                     </div>
-                    <div class="col-3">
-                        <span t-esc="partner"/>
+                    <div class="col-3" align="left">
+                        <span class="text-left" t-esc="partner"/>
                         <br/>
                         <span t-esc="partner_contact_dict[partner]['phone_no']"/>
                     </div>
-                    <div class="col-5 text-right">
+                     <div class="col-1">
+                     </div>
+                    <div class="col-4 text-left">
                         <p>
                             <strong>Printed:</strong>
-                            <span style="margin-left:10px;" t-esc="datetime.date.today().strftime('%B %d, %Y')"/>
+                            <span style="margin-left:1px;" t-esc="datetime.date.today().strftime('%B %d, %Y')"/>
                         </p>
                     </div>
                 </div>
@@ -28,7 +30,9 @@
                 <div class="row">
                     <div class="col-4"/>
                     <div class="col-3"/>
-                    <div class="col-5 text-right">
+                     <div class="col-1">
+                     </div>
+                    <div class="col-4 text-left">
                         <t t-if="docs['start_date'] and docs['end_date']">
                             <p>
                                 <strong>From:</strong>
@@ -61,15 +65,15 @@
                                 <td/>
                                 <td/>
                                 <td colspan="4">
-                                    ______Peroid ____________
+                                    __________Peroid__________
                                 </td>
                                 <td colspan="2">
-                                    ___Gross Profit___
+                                ______Gross Profit______
                                 </td>
                                 <td/>
                             </tr>
 
-                            <tr style="font-size:12px;">
+                            <tr style="font-size:12px;border-bottom:hidden">
                                 <th>
                                     <u>Product</u>
                                 </th>

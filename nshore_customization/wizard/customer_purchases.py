@@ -66,7 +66,6 @@ class CustomerPurchases(models.TransientModel):
             'user_id',
             'is_all_salesperson'
         ])[0]
-
         if self.product:
             self.partner_vendor_id = False
             self.product_id = False
@@ -82,7 +81,6 @@ class CustomerPurchases(models.TransientModel):
 
         if self.is_all_salesperson:
             self.user_id = False
-
         if self.summary:
             if self.screen_view:
                 return self.env.ref(
@@ -93,7 +91,7 @@ class CustomerPurchases(models.TransientModel):
                 'nshore_customization.action_customer_purchase'
             ).with_context(from_transient_model=True).report_action(
                 self, data=data)
-        if not self.summary:
+        else:
             if self.screen_view:
                 return self.env.ref(
                     'nshore_customization.action_customer_purchase_detail_html'
