@@ -17,25 +17,24 @@ class ProductProduct(models.Model):
     def name_get(self):
         return [(product.id, '%s' % (product.name)) for product in self]
 
-    @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
         context = self.env.context
         domain = []
         if args is None:
             args = []
-        if context and context.get('product_search', False) and name:
-            domain = [('product_tmpl_id.default_code', operator, name)]
+        domain = ['|', '|', '|', '|', '|',
+                  ('product_tmpl_id.product_ref', operator, name),
+                  ('product_tmpl_id.name', operator, name),
+                  ('product_tmpl_id.description', operator, name),
+                  ('product_ref', operator, name),
+                  ('name', operator, name),
+                  ('description', operator, name)]
+        products = ''
+        if products:
             products = self.search(domain + args, limit=limit)
-        if domain:
-            domain = ['|', '|',
-                      ('product_tmpl_id.product_ref', operator, name),
-                      ('product_tmpl_id.name', operator, name),
-                      ('product_tmpl_id.description', operator, name)]
-            if products:
-                products += self.search(domain + args, limit=limit)
-            else:
-                self.search(domain + args, limit=limit)
-            return products.name_get()
+        else:
+            products = self.search(domain + args, limit=limit)
+        return products.name_get()
         return super(ProductProduct, self).name_search(name, args=args, operator=operator, limit=limit)
 
 
