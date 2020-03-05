@@ -23,9 +23,9 @@ class ProductProduct(models.Model):
         domain = []
         if args is None:
             args = []
-        if context and context.get('product_search', False) and name:
-            domain = [('product_tmpl_id.default_code', operator, name)]
-            products = self.search(domain + args, limit=limit)
+        # if context and context.get('product_search', False) and name:
+        #     domain = [('product_tmpl_id.default_code', operator, name)]
+        #     products = self.search(domain + args, limit=limit)
         if domain:
             domain = ['|', '|', '|', '|', '|',
                       ('product_tmpl_id.product_ref', operator, name),
@@ -34,6 +34,7 @@ class ProductProduct(models.Model):
                       ('product_ref', operator, name),
                       ('name', operator, name),
                       ('description', operator, name)]
+            products = ''
             if products:
                 products += self.search(domain + args, limit=limit)
             else:
