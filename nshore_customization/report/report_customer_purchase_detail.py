@@ -125,7 +125,6 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
             'end_date': data['end_date'],
             'currency_id': self.env.user.company_id.currency_id,
             'docs': docs,
-            'data_html_report': True if result else False,
-            'is_html_report': self._context.get('html_report', False)
+            'html_report': True if result else False,
         }
         return data

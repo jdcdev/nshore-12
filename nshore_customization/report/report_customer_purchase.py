@@ -178,6 +178,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
                     'end_date': end_date,
                     'currency_id': self.env.user.company_id.currency_id,
                     'docs': docs,
+                    'html_report': True,
                 }
 
             for past_rec in past_final_rec:
@@ -242,6 +243,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
                     'end_date': end_date,
                     'currency_id': self.env.user.company_id.currency_id,
                     'docs': docs,
+                    'html_report': True
                 }
 
             for res in result:
