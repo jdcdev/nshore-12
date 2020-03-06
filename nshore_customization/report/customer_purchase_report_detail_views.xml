@@ -2,7 +2,7 @@
 <odoo>
     <template id="report_customer_purchase_detail">
         <t t-call="web.basic_layout">
-            <t t-if="html_report and not data_html_report">
+            <t t-if="html_report and not partner_dict">
                 <div class="row text-center">
                     <h2>No Data Available</h2>
                 </div>

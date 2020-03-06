@@ -2,7 +2,7 @@
 <odoo>
     <template id="report_customer_purchase">
         <t t-call="web.basic_layout">
-            <t t-if="html_report and not data_html_report">
+            <t t-if="html_report and not purchase_rec">
                 <div class="row text-center">
                     <h2>No Data Available</h2>
                 </div>
@@ -77,7 +77,7 @@
                                     </th>
                                 </tr>
                                 <tbody style="border:0px;">
-                                    <tr t-foreach="purchase_rec" t-as="rec_data" style="line-height:0px;">
+                                    <tr t-foreach="purchase_rec" t-as="rec_data">
                                         <td>
                                             <span t-esc="rec_data['cust_ref']"/>
                                         </td>
