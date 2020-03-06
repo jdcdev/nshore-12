@@ -17,10 +17,13 @@ class AccountInvoice(models.Model):
     @api.onchange('partner_id', 'company_id')
     def _onchange_partner_id(self):
         res = super(AccountInvoice, self)._onchange_partner_id()
+        self.user_id = self._uid
         if self.type in ['out_invoice', 'out_refund']:
             self.pricelist_id = None
             if self.partner_id:
                 self.pricelist_id = self.partner_id.property_product_pricelist
+            if self.partner_id and self.partner_id.user_id:
+                self.user_id = self.partner_id.user_id
         return res
 
     @api.model
