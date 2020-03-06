@@ -25,6 +25,14 @@ class InvoiceList(models.Model):
             invoice._onchange_invoice_line_ids()
             invoice._compute_amount()
 
+    def fetch_saleperson(self):
+        """ Assign External ID as Reference"""
+        # invoices = self.env['account.invoice'].browse(context['active_ids'])
+        invoices = self.env['account.invoice'].search([])
+        for invoice in invoices:
+            if invoice.partner_id and invoice.partner_id.user_id:
+                invoice.user_id = invoice.partner_id.user_id
+
     def generate_reference(self):
         """ Assign External ID as Reference"""
         # invoices = self.env['account.invoice'].browse(context['active_ids'])
