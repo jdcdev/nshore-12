@@ -66,8 +66,8 @@ class CustomerPurchasesReportView(models.AbstractModel):
         past_query_param = ''
 
         if is_comparsion_reprot and start_date and end_date:
-            past_year_start_date = start_date - relativedelta(years=1)
-            past_year_end_date = end_date - relativedelta(years=1)
+            past_year_start_date = datetime.strptime(start_date, '%Y-%m-%d') - relativedelta(years=1)
+            past_year_end_date = datetime.strptime(end_date, '%Y-%m-%d') - relativedelta(years=1)
             past_query_where = query_where + \
                                " AND (i.date_invoice IS NULL or (i.date_invoice>=%s and i.date_invoice<=%s))"
             past_query_param = states, invoice_types, past_year_start_date, past_year_end_date
@@ -158,11 +158,27 @@ class CustomerPurchasesReportView(models.AbstractModel):
             self.env.cr.execute(past_sql_qry, past_query_param)
             past_final_rec = self.env.cr.fetchall()
 
-            # if not result and not self._context.get('html_report', False):
-            #     raise ValidationError(_("No data available."))
-
-            if not past_final_rec:
+            if not past_final_rec and not self._context.get('html_report', False):
                 raise ValidationError(_("No data available."))
+            elif not past_final_rec and self._context.get('html_report', False):
+                return {
+                    'doc_ids': self.ids,
+                    'doc_model': model,
+                    'purchase_rec': vals,
+                    'grand_total_purchased_amount': grand_total_purchased_amount,
+                    'grand_total_discounts': grand_total_discounts,
+                    'grand_total_gross_profit': grand_total_gross_profit,
+                    'grand_total_margin': grand_total_margin,
+                    'grand_past_total_purchased_amount': grand_past_total_purchased_amount,
+                    'grand_past_total_gross_profit': grand_past_total_gross_profit,
+                    'grand_past_total_margin': grand_past_total_margin,
+                    'grand_total_changed_amount': grand_total_changed_amount,
+                    'grand_total_changed_per': grand_total_changed_per,
+                    'start_date': start_date,
+                    'end_date': end_date,
+                    'currency_id': self.env.user.company_id.currency_id,
+                    'docs': docs,
+                }
 
             for past_rec in past_final_rec:
                 total_purchased_amount = past_rec[3] or 0.0
@@ -206,8 +222,27 @@ class CustomerPurchasesReportView(models.AbstractModel):
             self.env.cr.execute(final_sql_qry, (query_param))
             result = self.env.cr.fetchall()
 
-            if not result:
+            if not result and not self._context.get('html_report', False):
                 raise ValidationError(_("No data available."))
+            elif not result and self._context.get('html_report', False):
+                return {
+                    'doc_ids': self.ids,
+                    'doc_model': model,
+                    'purchase_rec': vals,
+                    'grand_total_purchased_amount': grand_total_purchased_amount,
+                    'grand_total_discounts': grand_total_discounts,
+                    'grand_total_gross_profit': grand_total_gross_profit,
+                    'grand_total_margin': grand_total_margin,
+                    'grand_past_total_purchased_amount': grand_past_total_purchased_amount,
+                    'grand_past_total_gross_profit': grand_past_total_gross_profit,
+                    'grand_past_total_margin': grand_past_total_margin,
+                    'grand_total_changed_amount': grand_total_changed_amount,
+                    'grand_total_changed_per': grand_total_changed_per,
+                    'start_date': start_date,
+                    'end_date': end_date,
+                    'currency_id': self.env.user.company_id.currency_id,
+                    'docs': docs,
+                }
 
             for res in result:
                 grand_total_purchased_amount += res[3] or 0.0
