@@ -2,202 +2,209 @@
 <odoo>
     <template id="report_customer_purchase">
         <t t-call="web.basic_layout">
-            <t t-call="nshore_customization.external_layout_customer_pur">
-                <div class="m-0">
-                    <div class="page">
-                        <style type="text/css">
-                            .table td {
-                            border: none;
-                            height: 2px !important;
-                            }
-                            .table th {
-                            border: 0px;
-                            }
-                            td:first-child, th:first-child {
-                            border-left: none;
-                            }
-                        </style>
-                        <table class="table" width="100%">
-                            <t t-if="docs['comparsion'] == True">
-                                <tr style="line-height:0px;">
-                                    <td/>
-                                    <td/>
-                                    <td/>
-                                    <td colspan="4">
-                                        _______________Report Peroid_______________
-                                    </td>
-                                    <td colspan="4">
-                                        _________ Peroid_________
-                                    </td>
-                                    <td/>
-                                </tr>
-                            </t>
-                            <tr style="font-size:12px;">
-                                <th>
-                                    <u>Cust #</u>
-                                </th>
-                                <th>
-                                    <u>Name</u>
-                                </th>
-                                <th>
-                                    <u>Last Purchased</u>
-                                </th>
-                                <th class="text-right">
-                                    <u>Amount</u>
-                                </th>
-                                <th class="text-right">
-                                    <u>Discounts</u>
-                                </th>
-                                <th class="text-right">
-                                    <u>Gross Profit</u>
-                                </th>
-                                <th class="text-right">
-                                    <u>Margin</u>
-                                </th>
-                                <th class="text-right" t-if="docs['comparsion'] == True">
-                                    <u>Amount</u>
-                                </th>
-                                <th class="text-right" t-if="docs['comparsion'] == True">
-                                    <u>Gross Profit</u>
-                                </th>
-                                <th class="text-right" t-if="docs['comparsion'] == True">
-                                    <u>Margin</u>
-                                </th>
-                                <th class="text-right" t-if="docs['comparsion'] == True">
-                                    <u>Changed</u>
-                                </th>
-                                <th class="text-right" t-if="docs['comparsion'] == True">
-                                    <u>Chg %</u>
-                                </th>
-                            </tr>
-                            <tbody style="border:0px;">
-                                <tr t-foreach="purchase_rec" t-as="rec_data" style="line-height:0px;">
-                                    <td>
-                                        <span t-esc="rec_data['cust_ref']"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="rec_data['cust_name']"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="rec_data['purchased_date']"/>
-                                    </td>
-                                    <td class="text-right">
-                                        <span t-esc="rec_data['total_purchased_amount']"
-                                              t-options="{'widget': 'monetary','display_currency': currency_id}"/>
-                                    </td>
-                                    <td class="text-right">
-                                        <span t-esc="rec_data['total_discounts']"
-                                              t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
-                                    </td>
-                                    <td class="text-right">
-                                        <span t-esc="rec_data['total_gross_profit']"
-                                              t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
-                                    </td>
-                                    <td class="text-right">
-                                        <span t-esc="rec_data['total_margin']"/>%
-                                    </td>
-                                    <td t-if="docs['comparsion'] == True" class="text-right">
-                                        <span t-esc="rec_data['past_total_purchased_amount']"
-                                              t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
-                                    </td>
-                                    <td t-if="docs['comparsion'] == True" class="text-right">
-                                        <span t-esc="rec_data['past_total_gross_profit']"
-                                              t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
-                                    </td>
-                                    <td t-if="docs['comparsion'] == True" class="text-right">
-                                        <span t-esc="rec_data['past_total_margin']"/>%
-                                    </td>
-                                    <td t-if="docs['comparsion'] == True" class="text-right">
-                                        <span t-esc="rec_data['total_changed_amount']"
-                                              t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
-                                    </td>
-                                    <td t-if="docs['comparsion'] == True" class="text-right">
-                                        <span t-esc="rec_data['total_changed_per']"/>%
-                                    </td>
-                                </tr>
-                                <tr/>
-                                <tr>
-                                    <td colspan="2">
-                                        <b>Grand total:</b>
-                                        <div style="border:1px solid black;"></div>
-                                        <div style="border:1px solid black;margin-top:1px;"></div>
-                                    </td>
-                                    <td/>
-                                    <td class="text-right">
-                                        <b>
-                                            <span t-esc="grand_total_purchased_amount"
-                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
-                                        </b>
-                                        <br/>
-                                        <div style="border:1px solid black;"></div>
-                                        <div style="border:1px solid black;margin-top:1px;"></div>
-                                    </td>
-                                    <td class="text-right">
-                                        <b>
-                                            <span t-esc="grand_total_discounts"
-                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
-                                        </b>
-                                        <div style="border:1px solid black;"></div>
-                                        <div style="border:1px solid black;margin-top:1px;"></div>
-                                    </td>
-                                    <td class="text-right">
-                                        <b>
-                                            <span t-esc="grand_total_gross_profit"
-                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
-                                        </b>
-                                        <div style="border:1px solid black;"></div>
-                                        <div style="border:1px solid black;margin-top:1px;"></div>
-                                    </td>
-                                    <td class="text-right">
-                                        <b><span t-esc="grand_total_margin"
-                                                 t-options='{"widget": "float", "precision": 2}'/>%
-                                        </b>
-                                        <div style="border:1px solid black;"></div>
-                                        <div style="border:1px solid black;margin-top:1px;"></div>
-                                    </td>
-                                    <td t-if="docs['comparsion'] == True" class="text-right">
-                                        <b>
-                                            <span t-esc="grand_past_total_purchased_amount"
-                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
-                                        </b>
-                                        <div style="border:1px solid black;"></div>
-                                        <div style="border:1px solid black;margin-top:1px;"></div>
-                                    </td>
-                                    <td t-if="docs['comparsion'] == True" class="text-right">
-                                        <b>
-                                            <span t-esc="grand_past_total_gross_profit"
-                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
-                                        </b>
-                                        <div style="border:1px solid black;"></div>
-                                        <div style="border:1px solid black;margin-top:1px;"></div>
-                                    </td>
-                                    <td t-if="docs['comparsion'] == True" class="text-right">
-                                        <b><span t-esc="grand_past_total_margin"
-                                                 t-options='{"widget": "float", "precision": 2}'/>%
-                                        </b>
-                                        <div style="border:1px solid black;"></div>
-                                        <div style="border:1px solid black;margin-top:1px;"></div>
-                                    </td>
-                                    <td t-if="docs['comparsion'] == True" class="text-right">
-                                        <b>
-                                            <span t-esc="grand_total_changed_amount"
-                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
-                                        </b>
-                                        <div style="border:1px solid black;"></div>
-                                        <div style="border:1px solid black;margin-top:1px;"></div>
-                                    </td>
-                                    <td t-if="docs['comparsion'] == True" class="text-right">
-                                        <b><span t-esc="grand_total_changed_per"
-                                                 t-options='{"widget": "float", "precision": 2}'/>%
-                                        </b>
-                                        <div style="border:1px solid black;"></div>
-                                        <div style="border:1px solid black;margin-top:1px;"></div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+            <t t-if="html_report and not purchase_rec">
+                <div class="row text-center">
+                    <h2>No Data Available</h2>
                 </div>
+            </t>
+            <t t-if="purchase_rec">
+                <t t-call="nshore_customization.external_layout_customer_pur">
+                    <div class="m-0">
+                        <div class="page">
+                            <style type="text/css">
+                                .table td {
+                                border: none;
+                                height: 2px !important;
+                                }
+                                .table th {
+                                border: 0px;
+                                }
+                                td:first-child, th:first-child {
+                                border-left: none;
+                                }
+                            </style>
+                            <table class="table" width="100%">
+                                <t t-if="docs['comparsion'] == True">
+                                    <tr style="line-height:0px;">
+                                        <td/>
+                                        <td/>
+                                        <td/>
+                                        <td colspan="4">
+                                            _______________Report Peroid_______________
+                                        </td>
+                                        <td colspan="4">
+                                            _________ Peroid_________
+                                        </td>
+                                        <td/>
+                                    </tr>
+                                </t>
+                                <tr style="font-size:12px;">
+                                    <th>
+                                        <u>Cust #</u>
+                                    </th>
+                                    <th>
+                                        <u>Name</u>
+                                    </th>
+                                    <th>
+                                        <u>Last Purchased</u>
+                                    </th>
+                                    <th class="text-right">
+                                        <u>Amount</u>
+                                    </th>
+                                    <th class="text-right">
+                                        <u>Discounts</u>
+                                    </th>
+                                    <th class="text-right">
+                                        <u>Gross Profit</u>
+                                    </th>
+                                    <th class="text-right">
+                                        <u>Margin</u>
+                                    </th>
+                                    <th class="text-right" t-if="docs['comparsion'] == True">
+                                        <u>Amount</u>
+                                    </th>
+                                    <th class="text-right" t-if="docs['comparsion'] == True">
+                                        <u>Gross Profit</u>
+                                    </th>
+                                    <th class="text-right" t-if="docs['comparsion'] == True">
+                                        <u>Margin</u>
+                                    </th>
+                                    <th class="text-right" t-if="docs['comparsion'] == True">
+                                        <u>Changed</u>
+                                    </th>
+                                    <th class="text-right" t-if="docs['comparsion'] == True">
+                                        <u>Chg %</u>
+                                    </th>
+                                </tr>
+                                <tbody style="border:0px;">
+                                    <tr t-foreach="purchase_rec" t-as="rec_data">
+                                        <td>
+                                            <span t-esc="rec_data['cust_ref']"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="rec_data['cust_name']"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="rec_data['purchased_date']"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="rec_data['total_purchased_amount']"
+                                                  t-options="{'widget': 'monetary','display_currency': currency_id}"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="rec_data['total_discounts']"
+                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="rec_data['total_gross_profit']"
+                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="rec_data['total_margin']"/>%
+                                        </td>
+                                        <td t-if="docs['comparsion'] == True" class="text-right">
+                                            <span t-esc="rec_data['past_total_purchased_amount']"
+                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                        </td>
+                                        <td t-if="docs['comparsion'] == True" class="text-right">
+                                            <span t-esc="rec_data['past_total_gross_profit']"
+                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                        </td>
+                                        <td t-if="docs['comparsion'] == True" class="text-right">
+                                            <span t-esc="rec_data['past_total_margin']"/>%
+                                        </td>
+                                        <td t-if="docs['comparsion'] == True" class="text-right">
+                                            <span t-esc="rec_data['total_changed_amount']"
+                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                        </td>
+                                        <td t-if="docs['comparsion'] == True" class="text-right">
+                                            <span t-esc="rec_data['total_changed_per']"/>%
+                                        </td>
+                                    </tr>
+                                    <tr/>
+                                    <tr>
+                                        <td colspan="2">
+                                            <b>Grand total:</b>
+                                            <div style="border:1px solid black;"></div>
+                                            <div style="border:1px solid black;margin-top:1px;"></div>
+                                        </td>
+                                        <td/>
+                                        <td class="text-right">
+                                            <b>
+                                                <span t-esc="grand_total_purchased_amount"
+                                                      t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                            </b>
+                                            <br/>
+                                            <div style="border:1px solid black;"></div>
+                                            <div style="border:1px solid black;margin-top:1px;"></div>
+                                        </td>
+                                        <td class="text-right">
+                                            <b>
+                                                <span t-esc="grand_total_discounts"
+                                                      t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                            </b>
+                                            <div style="border:1px solid black;"></div>
+                                            <div style="border:1px solid black;margin-top:1px;"></div>
+                                        </td>
+                                        <td class="text-right">
+                                            <b>
+                                                <span t-esc="grand_total_gross_profit"
+                                                      t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                            </b>
+                                            <div style="border:1px solid black;"></div>
+                                            <div style="border:1px solid black;margin-top:1px;"></div>
+                                        </td>
+                                        <td class="text-right">
+                                            <b><span t-esc="grand_total_margin"
+                                                     t-options='{"widget": "float", "precision": 2}'/>%
+                                            </b>
+                                            <div style="border:1px solid black;"></div>
+                                            <div style="border:1px solid black;margin-top:1px;"></div>
+                                        </td>
+                                        <td t-if="docs['comparsion'] == True" class="text-right">
+                                            <b>
+                                                <span t-esc="grand_past_total_purchased_amount"
+                                                      t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                            </b>
+                                            <div style="border:1px solid black;"></div>
+                                            <div style="border:1px solid black;margin-top:1px;"></div>
+                                        </td>
+                                        <td t-if="docs['comparsion'] == True" class="text-right">
+                                            <b>
+                                                <span t-esc="grand_past_total_gross_profit"
+                                                      t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                            </b>
+                                            <div style="border:1px solid black;"></div>
+                                            <div style="border:1px solid black;margin-top:1px;"></div>
+                                        </td>
+                                        <td t-if="docs['comparsion'] == True" class="text-right">
+                                            <b><span t-esc="grand_past_total_margin"
+                                                     t-options='{"widget": "float", "precision": 2}'/>%
+                                            </b>
+                                            <div style="border:1px solid black;"></div>
+                                            <div style="border:1px solid black;margin-top:1px;"></div>
+                                        </td>
+                                        <td t-if="docs['comparsion'] == True" class="text-right">
+                                            <b>
+                                                <span t-esc="grand_total_changed_amount"
+                                                      t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                            </b>
+                                            <div style="border:1px solid black;"></div>
+                                            <div style="border:1px solid black;margin-top:1px;"></div>
+                                        </td>
+                                        <td t-if="docs['comparsion'] == True" class="text-right">
+                                            <b><span t-esc="grand_total_changed_per"
+                                                     t-options='{"widget": "float", "precision": 2}'/>%
+                                            </b>
+                                            <div style="border:1px solid black;"></div>
+                                            <div style="border:1px solid black;margin-top:1px;"></div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </t>
             </t>
         </t>
     </template>
