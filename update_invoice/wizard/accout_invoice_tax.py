@@ -26,7 +26,7 @@ class InvoiceList(models.TransientModel):
             invoice._compute_amount()
 
     def cancel_payment(self):
-        for payment in self.env['account.payment'].search([('id', '!=', 712)]):
+        for payment in self.env['account.payment'].search([]):
             if payment.state == 'posted':
                 payment.cancel()
                 payment.action_draft()
