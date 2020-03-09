@@ -10,7 +10,7 @@
     'website': 'http://www.onestein.eu',
     'license': 'AGPL-3',
     'depends': [
-        'account',
+        'account', 'account_cancel'
     ],
     'data': [
         'wizard/account_invoice_tax_views.xml',

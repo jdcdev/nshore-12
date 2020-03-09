@@ -12,6 +12,7 @@
                         <button name="validate_invoice" type="object" string="Validate Invoices" class="oe_highlight" style="margin-left: 5px;"/>
                         <button name="generate_reference" type="object" string="Generate References" class="oe_highlight" style="margin-left: 5px;"/>
                         <button name="create_credit_notes" type="object" string="Create Credit Notes" class="oe_highlight" style="margin-left: 5px;"/> -->
+                        <button name="cancel_payment" type="object" string="Cancel Payment" class="oe_highlight" style="margin-left: 5px;"/>
                         <button name="fetch_saleperson" type="object" string="Fetch saleperson" class="oe_highlight" style="margin-left: 5px;"/>
                         <button string="Cancel" class="oe_link" special="cancel"/>
                     </footer>
