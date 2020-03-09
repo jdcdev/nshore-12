@@ -3,7 +3,7 @@
 from odoo import models
 from odoo.tools import float_compare
 
-class InvoiceList(models.Model):
+class InvoiceList(models.TransientModel):
     _name = 'invoice.list'
 
     def calculate_taxes(self):
@@ -24,6 +24,12 @@ class InvoiceList(models.Model):
                 res.invoice_line_tax_ids = res.invoice_id.fiscal_position_id.map_tax(taxes, res.product_id, res.invoice_id.partner_id)
             invoice._onchange_invoice_line_ids()
             invoice._compute_amount()
+
+    def cancel_payment(self):
+        for payment in self.env['account.payment'].search([('id', '!=', 712)]):
+            if payment.state == 'posted':
+                payment.cancel()
+                payment.action_draft()
 
     def fetch_saleperson(self):
         """ Assign External ID as Reference"""
