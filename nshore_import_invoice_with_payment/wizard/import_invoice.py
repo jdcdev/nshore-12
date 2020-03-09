@@ -34,16 +34,19 @@ class InvoicePaymentWizard(models.TransientModel):
                 ModelData = self.env['ir.model.data']
                 AccountPayment = self.env['account.payment']
                 AccountInvoice = self.env['account.invoice']
-
                 for row_idx in range(1, nrows):
                     invoice_external_id = str(worksheet.cell(row_idx, 2).value)
-                    payment_external_id = int(worksheet.cell(row_idx, 3).value)
+                    payment_external_id = worksheet.cell(row_idx, 3).value
+                    if type(payment_external_id) is float:
+                        payment_external_id = str(payment_external_id).split('.')[0]
+                    else:
+                        payment_external_id = str(payment_external_id)
                     model_invoice_id = ModelData.search([('name', '=', invoice_external_id),('model','=', 'account.invoice')])
                     model_payment_id = ModelData.search([('name', '=', payment_external_id),('model','=', 'account.payment')])
+
                     if model_payment_id and model_invoice_id:
                         invoice = AccountInvoice.browse(model_invoice_id.res_id)
                         payment = AccountPayment.browse(model_payment_id.res_id)
-                        print ("invoice>>>>>>>>>payment", invoice,payment)
                         if payment.state == 'draft':
                             payment.post()
                         if invoice not in payment.invoice_ids:
