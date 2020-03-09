@@ -43,6 +43,7 @@ class InvoicePaymentWizard(models.TransientModel):
                     if model_payment_id and model_invoice_id:
                         invoice = AccountInvoice.browse(model_invoice_id.res_id)
                         payment = AccountPayment.browse(model_payment_id.res_id)
+                        print ("invoice>>>>>>>>>payment", invoice,payment)
                         if payment.state == 'draft':
                             payment.post()
                         if invoice not in payment.invoice_ids:
