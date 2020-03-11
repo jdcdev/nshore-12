@@ -186,41 +186,31 @@
                     </div>
                     <div class="row">
                         <div class="col-3"/>
-                        <div class="col-3"><!-- <span t-esc="amount_by_group"/> --></div>
-                        <!-- <div class="col-3"/>
-                        <div class="col-3"/> -->
-                        <t t-set="tax_val" t-value="0"/>
-                        <t t-foreach="o.amount_by_group" t-as="amount_by_group">
-                            <t t-set="amount_group" t-value="int(amount_by_group[1])" />
-                            <t t-set="tax_val" t-value="tax_val + amount_group"/>
-                        </t>
+                        <div class="col-3"></div>
                         <div class="col-3">
                             <strong>Sales Tax</strong>
                         </div>
                         <div class="col-3 text-right">
-                            <t t-esc="tax_val" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                            <t t-foreach="o.amount_by_group" t-as="amount_by_group">
+                            <tr style="">
+                                <t t-if="len(o.tax_line_ids) == 1 and o.amount_untaxed == amount_by_group[2]">
+                                    <td class="text-right o_price_total">
+                                        <span t-esc="amount_by_group[3]" />
+                                    </td>
+                                </t>
+                                <t t-else="">
+                                    <td>
+                                        <span>&amp;nbsp;<span>on</span>
+                                            <t t-esc="amount_by_group[4]"/>
+                                        </span>
+                                    </td>
+                                    <td class="text-right o_price_total">
+                                        <span t-esc="amount_by_group[3]"/>
+                                    </td>
+                                </t>
+                            </tr>
+                            </t>
                         </div>
-                        <!-- <t t-foreach="o.amount_by_group" t-as="amount_by_group">
-                            <div class="col-4">
-                                    <t t-if="len(o.tax_line_ids) == 1 and o.amount_untaxed == amount_by_group[2]">
-                                        <td><span t-esc="amount_by_group[0]"/></td>
-                                        <td class="text-right o_price_total">
-                                            <span t-esc="amount_by_group[3]" />
-                                        </td>
-                                    </t>
-                                    <t t-else="">
-                                        <td>
-                                            <span t-esc="amount_by_group[0]"/>
-                                            <span>&amp;nbsp;<span>on</span>
-                                                <t t-esc="amount_by_group[4]"/>
-                                            </span>
-                                        </td>
-                                        <td class="text-right o_price_total">
-                                            <span t-esc="amount_by_group[3]"/>
-                                        </td>
-                                    </t>
-                                </div>
-                            </t> -->
                     </div>
                     <div class="row" id="inv_total">
                         <div class="col-3"/>
@@ -233,21 +223,19 @@
                         </div>
                     </div>
                     <t t-set="payments_vals" t-value="o._get_payments_vals()"/>
-                    <t t-set="payment_total" t-value="0"/>
                     <t t-foreach="payments_vals" t-as="payment_vals">
-                        <t t-set="payment_value" t-value="int(payment_vals['amount'])" />
-                        <t t-set="payment_total" t-value="payment_total + payment_value"/>
+                        <div class="row">
+                            <div class="col-3"/>
+                            <div class="col-3"/>
+                            <div class="col-3">
+                                <strong>Payments</strong>
+                            </div>
+                            <div class="col-3 text-right">
+                                <span t-esc="payment_vals['amount']" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                            </div>
+                        </div> 
                     </t>
-                    <div class="row">
-                        <div class="col-3"/>
-                        <div class="col-3"/>
-                        <div class="col-3">
-                            <strong>Payments</strong>
-                        </div>
-                        <div class="col-3 text-right">
-                            <span t-esc="payment_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
-                        </div>
-                    </div>
+
                     <div class="row">
                         <div class="col-6">
                             <strong>Customer Signature</strong>
