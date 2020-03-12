@@ -87,8 +87,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
 
         if not is_all_salesperson:
             if user_id:
-                query_where += " AND (i.user_id = %s)"
-                query_param += user_id
+                query_where += " AND i.user_id = %s" % user_id
 
         if not all_products:
             if product_id or product_category_id or vendor_id:
