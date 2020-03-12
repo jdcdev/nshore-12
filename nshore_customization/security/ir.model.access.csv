@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_customer_statement_unmail,access_customer_statement_unmail,model_customer_statement_unmail,base.group_user,1,1,1,1
+access_product_pricelist,access_product_pricelist,product.model_product_pricelist,stock.group_stock_user,1,1,1,1
