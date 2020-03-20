@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <odoo>
     <data>
-
         <record id="view_sale_form_inherit_nshore" model="ir.ui.view">
             <field name="name">sale.order.form.sale.nshore</field>
             <field name="model">sale.order</field>
@@ -20,11 +19,6 @@
                         position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
-               <!--  <xpath
-                        expr="//field[@name='order_line']/tree/field[@name='layout_category_id']"
-                        position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath> -->
                 <xpath
                         expr="//field[@name='order_line']/tree/field[@name='analytic_tag_ids']"
                         position="attributes">
@@ -48,22 +42,16 @@
                     </attribute>
                     <attribute name="options">{"no_quick_create": True}</attribute>
                 </xpath>
-                <xpath
-                        expr="//field[@name='order_line']/tree/field[@name='name']"
-                       position="after">
+                <xpath expr="//field[@name='order_line']/tree/field[@name='name']" position="after">
                     <field name="product_uom_qty" widget="integer"/>
                 </xpath>
-                <xpath
-                        expr="//field[@name='order_line']/tree/field[@name='qty_delivered']"
-                       position="replace">
+                <xpath expr="//field[@name='order_line']/tree/field[@name='qty_delivered']" position="replace">
                     <field name="qty_delivered" attrs="{
                         'column_invisible': [('parent.state', 'not in', ['sale', 'done'])],
                         'readonly': [('qty_delivered_method', '!=', 'manual')]
                     }" widget="integer"/>
                 </xpath>
-                <xpath
-                        expr="//field[@name='order_line']/tree/field[@name='qty_invoiced']"
-                       position="replace">
+                <xpath expr="//field[@name='order_line']/tree/field[@name='qty_invoiced']" position="replace">
                     <field name="qty_invoiced" attrs="{'column_invisible': [('parent.state', 'not in', ['sale', 'done'])]}" widget="integer"/>
                 </xpath>
                 <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
@@ -79,6 +67,11 @@
                 <xpath expr="//button[@name='action_quotation_send'][2]"
                        position="attributes">
                     <attribute name="context">{'print_order': True}</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_confirm']" position="after">
+                    <button name="return_invoice" id="return_invoice"
+                        string="Express Checkout" class="btn-primary" type="object" attrs="{'invisible': [('state', 'in', ['sale','cancel'])]}"
+                        />
                 </xpath>
             </field>
         </record>
