@@ -70,7 +70,7 @@
                 </xpath>
                 <xpath expr="//button[@name='action_confirm']" position="after">
                     <button name="return_invoice" id="return_invoice"
-                        string="Express Checkout" class="btn-primary" type="object" attrs="{'invisible': [('state', 'in', ['sale','cancel'])]}"
+                        string="Express Checkout" class="btn-primary" type="object" attrs="{'invisible': [('state', 'in', ['sale','cancel', 'done'])]}"
                         />
                 </xpath>
             </field>

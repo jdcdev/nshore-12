@@ -24,22 +24,25 @@ class SaleOrder(models.Model):
 
     def express_checkout(self):
         if self.state != 'sale':
+            # Delivery Creation and Validation
             self.action_confirm()
-            self.action_invoice_create()
             delivery_obj = self.env['stock.picking'].search([('group_id.name', '=', self.name),('state', '!=', 'cancel')])
-            invoice_obj = self.env['account.invoice'].search([('origin', '=', self.name)])
-            for order_line in self.order_line:
-                if delivery_obj:
+            if delivery_obj:
+                for order_line in self.order_line:
                     [picking_line.update({
                             'quantity_done': order_line.product_uom_qty,
                             }) for picking_line in delivery_obj.move_lines]
-            delivery_obj.button_validate()
+                delivery_obj.button_validate()
+            # Invoice Creation and Validation
+            self.action_invoice_create()
+            invoice_obj = self.env['account.invoice'].search([('origin', '=', self.name),('state', '!=', 'cancel')])
             if invoice_obj:
                 invoice_obj.action_invoice_open()
             return invoice_obj
 
     def return_invoice(self):
         invoice_obj  = self.express_checkout()
+        print("\n\n\n invoice_objJJJJJJJJJJJJJJJ", invoice_obj)
         tree_view_ref = self.env.ref('account.invoice_tree_with_onboarding',False)
         form_view_ref = self.env.ref('account.invoice_form',False)
         return {
