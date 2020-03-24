@@ -24,33 +24,29 @@ class SaleOrder(models.Model):
 
     def express_checkout(self):
         if self.state != 'sale':
+            # Delivery Creation and Validation
             self.action_confirm()
-            self.action_invoice_create()
             delivery_obj = self.env['stock.picking'].search([('group_id.name', '=', self.name),('state', '!=', 'cancel')])
-            invoice_obj = self.env['account.invoice'].search([('origin', '=', self.name)])
-            for order_line in self.order_line:
-                if delivery_obj:
+            if delivery_obj:
+                for order_line in self.order_line:
                     [picking_line.update({
                             'quantity_done': order_line.product_uom_qty,
                             }) for picking_line in delivery_obj.move_lines]
-            delivery_obj.button_validate()
+                delivery_obj.button_validate()
+            # Invoice Creation and Validation
+            self.action_invoice_create()
+            invoice_obj = self.env['account.invoice'].search([('origin', '=', self.name),('state', '!=', 'cancel')])
             if invoice_obj:
                 invoice_obj.action_invoice_open()
-            return invoice_obj
-
-    def return_invoice(self):
-        invoice_obj  = self.express_checkout()
-        tree_view_ref = self.env.ref('account.invoice_tree_with_onboarding',False)
-        form_view_ref = self.env.ref('account.invoice_form',False)
-        return {
-                'name':'Account Invoice',
-                'res_model':'account.invoice',
-                'view_type':'form',
-                'view_mode':'tree, form',
-                'target':'current',
-                'domain':[('id','=',invoice_obj.id)],
-                'type':'ir.actions.act_window',
-                'views': [(tree_view_ref and tree_view_ref.id or False,'tree'),(form_view_ref and form_view_ref.id or False,'form')],
-                }
-
-
+                # Redirect to created Invoice
+                action = self.env.ref('account.action_invoice_tree1').read()[0]
+                if len(invoice_obj) == 1:
+                    form_view = [(self.env.ref('account.invoice_form').id, 'form')]
+                    if 'views' in action:
+                        action['views'] = form_view + [(state,view) for state,view in action['views'] if view != 'form']
+                    else:
+                        action['views'] = form_view
+                    action['res_id'] = invoice_obj.id
+                else:
+                    action = {'type': 'ir.actions.act_window_close'}
+                return action
