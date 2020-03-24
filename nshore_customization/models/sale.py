@@ -38,22 +38,15 @@ class SaleOrder(models.Model):
             invoice_obj = self.env['account.invoice'].search([('origin', '=', self.name),('state', '!=', 'cancel')])
             if invoice_obj:
                 invoice_obj.action_invoice_open()
-            return invoice_obj
-
-    def return_invoice(self):
-        invoice_obj  = self.express_checkout()
-        print("\n\n\n invoice_objJJJJJJJJJJJJJJJ", invoice_obj)
-        tree_view_ref = self.env.ref('account.invoice_tree_with_onboarding',False)
-        form_view_ref = self.env.ref('account.invoice_form',False)
-        return {
-                'name':'Account Invoice',
-                'res_model':'account.invoice',
-                'view_type':'form',
-                'view_mode':'tree, form',
-                'target':'current',
-                'domain':[('id','=',invoice_obj.id)],
-                'type':'ir.actions.act_window',
-                'views': [(tree_view_ref and tree_view_ref.id or False,'tree'),(form_view_ref and form_view_ref.id or False,'form')],
-                }
-
-
+                # Redirect to created Invoice
+                action = self.env.ref('account.action_invoice_tree1').read()[0]
+                if len(invoice_obj) == 1:
+                    form_view = [(self.env.ref('account.invoice_form').id, 'form')]
+                    if 'views' in action:
+                        action['views'] = form_view + [(state,view) for state,view in action['views'] if view != 'form']
+                    else:
+                        action['views'] = form_view
+                    action['res_id'] = invoice_obj.id
+                else:
+                    action = {'type': 'ir.actions.act_window_close'}
+                return action
