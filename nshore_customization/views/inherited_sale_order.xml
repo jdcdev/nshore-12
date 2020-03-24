@@ -69,7 +69,7 @@
                     <attribute name="context">{'print_order': True}</attribute>
                 </xpath>
                 <xpath expr="//button[@name='action_confirm']" position="after">
-                    <button name="return_invoice" id="return_invoice"
+                    <button name="express_checkout" id="express_checkout"
                         string="Express Checkout" class="btn-primary" type="object" attrs="{'invisible': [('state', 'in', ['sale','cancel', 'done'])]}"
                         />
                 </xpath>
