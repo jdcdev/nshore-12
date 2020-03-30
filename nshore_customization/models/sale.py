@@ -32,7 +32,7 @@ class SaleOrder(models.Model):
                     [picking_line.update({
                             'quantity_done': order_line.product_uom_qty,
                             }) for picking_line in delivery_obj.move_lines]
-                delivery_obj.button_validate()
+                delivery_obj.action_done()
             # Invoice Creation and Validation
             self.action_invoice_create()
             invoice_obj = self.env['account.invoice'].search([('origin', '=', self.name),('state', '!=', 'cancel')])
