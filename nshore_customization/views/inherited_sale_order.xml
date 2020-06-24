@@ -116,10 +116,10 @@
             <field name="view_id" ref="product.product_template_tree_view"/>
         </record>
 
-        <menuitem action="account.action_invoice_tree1"
+       <!--  <menuitem action="account.action_invoice_tree1"
                   id="menu_action_customer_invoice"
                   parent="sale.sale_order_menu"
-                  sequence="1"/>
+                  sequence="1"/> -->
 
 
 

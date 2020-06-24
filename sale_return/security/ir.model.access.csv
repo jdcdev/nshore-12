@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_return_order_user,return_order_user,model_return_order,group_returns_user,1,1,1,0
+access_return_order_line_user,return_order_line_user,model_return_order_line,group_returns_user,1,1,1,1
+access_return_reason_user,return_reason_user,model_return_reason,group_returns_user,1,0,0,0
+access_return_reason_manager,return_reason_manager,model_return_reason,group_returns_manager,1,1,1,1

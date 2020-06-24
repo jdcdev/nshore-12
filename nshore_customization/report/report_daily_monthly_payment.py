@@ -14,7 +14,9 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
             payment_rec = self.env['account.payment'].search(
                 [('payment_date', '>=', payment_data[0]),
                  ('payment_date', '<=', payment_data[1])])
+            final_total = 0.0
             for payment in payment_rec:
+                final_total += payment.amount
                 payment_data = {}
                 payment_data.update({
                     'date': payment.payment_date.strftime(date_format),
@@ -24,6 +26,7 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
                     'user': payment.sudo().create_uid.name,
                     'type': payment.journal_id.type,
                     'amount': payment.amount,
+                    'final_total': final_total,
                 })
                 if payment_data:
                     data.append(payment_data)
@@ -38,6 +41,7 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
             for payment in payment_rec:
                 data.append(payment.payment_date.strftime(date_format))
             data = list(set(data))
+        data.sort(key = lambda date: datetime.strptime(date, '%m/%d/%Y'))
         return data
 
     def get_date_loop(self, payment_data):
@@ -51,9 +55,12 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
             data = len(list(set(data)))
         return data
 
-    def get_detail_total(self):
+    def get_detail_total(self, payment_data):
         total = 0
-        payment_rec = self.env['account.payment'].search([])
+        if payment_data:
+            payment_rec = self.env['account.payment'].search(
+                [('payment_date', '>=', payment_data[0]),
+                 ('payment_date', '<=', payment_data[1])])
         for payment in payment_rec:
             total += payment.amount
         return total
@@ -71,7 +78,7 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
                 'to_date')]
         lines_data = self.get_detail(payment_data, date_format)
         lines_data_date = self.get_detail_date(payment_data, date_format)
-        get_detail_total = self.get_detail_total()
+        get_detail_total = self.get_detail_total(payment_data)
         get_date_loop = self.get_date_loop(payment_data)
         return {
             'doc_model': 'account.payment',

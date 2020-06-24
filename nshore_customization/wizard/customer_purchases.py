@@ -19,7 +19,7 @@ class CustomerPurchases(models.TransientModel):
     dates = fields.Boolean(string="All Dates")
     summary = fields.Boolean(string="Summary")
     comparsion = fields.Boolean(string="Comparsion")
-    screen_view = fields.Boolean(string="Screen View")
+    screen_view = fields.Boolean(string="Screen View", default=True)
     user_id = fields.Many2one("res.users", string="Salesperson")
     is_all_salesperson = fields.Boolean(string="All Salesperson", default=True)
 

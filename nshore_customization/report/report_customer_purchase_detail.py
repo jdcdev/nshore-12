@@ -31,6 +31,10 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
         invoice_types = 'out_invoice'
         user_id = data['user_id'][0] if data['user_id'] else None
         is_all_salesperson = data['is_all_salesperson']
+        final_amount_purchase = 0.0
+        grand_total_purchased_amount = 0.0
+        grand_total_gross_profit_details = 0.0
+        grand_total_profit_margin_details = 0.0
 
         sqlstr = """
             SELECT
@@ -87,6 +91,12 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
 
         if result:
             for res in result:
+                grand_total_purchased_amount += res[6] or 0.0
+                grand_total_gross_profit_details += res[9] or 0.0
+                if not grand_total_gross_profit_details == 0:
+                    grand_total_profit_margin_details = ((grand_total_gross_profit_details / grand_total_purchased_amount) * 100)
+                else:
+                    grand_total_profit_margin_details = 0.0
                 vals_dict = {
                     'default_code': res[2] or '',
                     'description': res[3] or '',
@@ -99,7 +109,6 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
                     'total_profit_margin': res[10] or 0.0,
                     'list_price': res[11] or 0.0
                 }
-
                 if res[13] not in partner_dict.keys():
                     partner_contact_dict.update({
                         res[13]: {'phone_no': res[14]}
@@ -119,6 +128,9 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
         data = {
             'doc_ids': self.ids,
             'doc_model': model,
+            'grand_total_purchased_amount': grand_total_purchased_amount or 0.0,
+            'grand_total_gross_profit_details': grand_total_gross_profit_details or 0.0,
+            'grand_total_profit_margin_details': grand_total_profit_margin_details or 0.0,
             'partner_dict': partner_dict,
             'partner_contact_dict': partner_contact_dict,
             'start_date': data['start_date'],

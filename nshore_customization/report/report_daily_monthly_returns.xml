@@ -9,22 +9,22 @@
                         <h3>
                             Daily/Monthly Returns
                         </h3>
-                        <span t-esc="date"/>
+                        Report Date: <span t-esc="date"/>
                     </div>
                 </div>
                 <div class="page">
                     <div style="border:1px solid black;height:0px;"></div>
                     <table width="100%">
-                        <thead>
-                            <th>Date</th>
-                            <th style="text-align: center;">Inv #</th>
-                            <th style="text-align: center;">Cust #</th>
-                            <th style="text-align: center;">Name</th>
-                            <th style="text-align: center;">User</th>
-                            <th style="text-align: center;">Amount</th>
-                            <th style="text-align: center;">Discount</th>
-                            <th style="text-align: center;">Tax</th>
-                            <th style="text-align: center;">Total</th>
+                        <thead >
+                            <th class="text-left">Date</th>
+                            <th class="text-left">Inv #</th>
+                            <th class="text-left" style="width:10%">Cust #</th>
+                            <th class="text-left">Name</th>
+                            <th class="text-left">User</th>
+                            <th class="text-right">Amount</th>
+                            <th class="text-right">Discount</th>
+                            <th class="text-right">Tax</th>
+                            <th class="text-right">Total</th>
                         </thead>
                         <tbody>
                             <tr>
@@ -43,63 +43,39 @@
                                 <t t-set="last_date" t-value="last_date+1"/>
                                 <tr t-foreach="lines_data" t-as="b">
                                     <t t-if="p == b.get('date')">
-                                        <td>
+                                        <td class="text-left" style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                             <span t-esc="b.get('date')"/>
                                         </td>
-                                        <td style='text-align: center; padding: 5px;'>
+                                        <td class="text-left" style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                             <span t-esc="b.get('number')"/>
                                         </td>
-                                        <td style='text-align: center; padding: 5px;'>
+                                        <td class="text-left" style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                             <span t-esc="b.get('cust_no')"/>
                                         </td>
-                                        <td style='text-align: center; padding: 5px;'>
+                                        <td class="text-left" style="padding-top:0px;padding-bottom:0px;font-size:13px;white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 350px;">
                                             <span t-esc="b.get('customer')"/>
                                         </td>
-                                        <td style='text-align: center; padding: 5px;'>
+                                        <td class="text-left" style="padding-top:0px;padding-bottom:0px;font-size:13px;white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 350px;">
                                             <span t-esc="b.get('user')"/>
                                         </td>
-                                        <td style='text-align: center; padding: 5px;'>
-                                            <t t-if="b.get('amount') == 0">
-                                                <span t-esc="b.get('amount')"
-                                                      t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
-                                            </t>
-                                            <t t-if="not b.get('amount') == 0">
-                                                (<span t-esc="b.get('amount')"
-                                                      t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
-                                            </t>
+                                        <td style="padding-top:0px;padding-bottom:0px;font-size:13px" class="text-right">
+                                            <span t-esc="b.get('amount')"
+                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                             <t t-set="total_amount" t-value="total_amount+b.get('amount')"/>
                                         </td>
-                                        <td style='text-align: center; padding: 5px;'>
-                                            <t t-if="b.get('discount') == 0">
-                                                <span t-esc="b.get('discount')"
-                                                      t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
-                                            </t>
-                                            <t t-if="not b.get('discount') == 0">
-                                                (<span t-esc="b.get('discount')"
-                                                      t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
-                                            </t>
+                                        <td style="padding-top:0px;padding-bottom:0px;font-size:13px" class="text-right">
+                                            <span t-esc="b.get('discount')"
+                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                             <t t-set="total_discount" t-value="total_discount+b.get('discount')"/>
                                         </td>
-                                        <td style='text-align: center; padding: 5px;'>
-                                            <t t-if="b.get('tax') == 0">
-                                                <span t-esc="b.get('tax')"
-                                                      t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
-                                            </t>
-                                            <t t-if="not b.get('tax') == 0">
-                                                (<span t-esc="b.get('tax')"
-                                                      t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
-                                            </t>
+                                        <td style="padding-top:0px;padding-bottom:0px;font-size:13px" class="text-right">
+                                            <span t-esc="b.get('tax')"
+                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                             <t t-set="total_tax" t-value="total_tax+b.get('tax')"/>
                                         </td>
-                                        <td style='text-align: center; padding: 5px;'>
-                                            <t t-if="b.get('tax') == 0">
-                                                <span t-esc="b.get('total')"
-                                                      t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
-                                            </t>
-                                            <t t-if="not b.get('tax') == 0">
-                                                (<span t-esc="b.get('total')"
-                                                      t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
-                                            </t>
+                                        <td style="padding-top:0px;padding-bottom:0px;font-size:13px" class="text-right">
+                                            <span t-esc="b.get('total')"
+                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                             <t t-set="total" t-value="total+b.get('total')"/>
                                         </td>
                                     </t>
@@ -111,11 +87,13 @@
                                 </tr>
                                 <tr>
                                     <th colspan="5">
+                                        <span t-esc="p"/>
                                         <br/>
-                                            <span t-esc="p"/>
-                                        <br/>
+                                        <t t-if="last_date == get_detail_total_loop">
+                                            Grand Total:
+                                        </t>
                                     </th>
-                                    <td style='text-align: center; padding: 5px;font-weight: bold;'>
+                                    <td style='padding: 5px;font-weight: bold;' class="text-right">
                                         <t t-if="total_amount == 0">
                                             <span t-esc="total_amount"
                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
@@ -124,9 +102,7 @@
                                             (<span t-esc="total_amount"
                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
                                         </t>
-                                        <div style="border:1px solid black;height:0px;"></div>
                                         <t t-if="last_date == get_detail_total_loop">
-                                            <br/>
                                             <t t-if="lines_total_data[0].get('invoice_total_amount') == 0">
                                                 <t t-esc="lines_total_data[0].get('invoice_total_amount')"
                                                    t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
@@ -136,11 +112,10 @@
                                                    t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
                                             </t>
                                             <div style="border:1px solid black;height:0px;"></div>
-                                            <br/>
-                                            <div style="border:1px solid black;height:0px;"></div>
                                         </t>
+                                        <t t-set="total_amount" t-value="0"/>
                                     </td>
-                                    <td style='text-align: center; padding: 5px;font-weight: bold;'>
+                                    <td style='padding: 5px;font-weight: bold;' class="text-right">
                                         <t t-if="total_discount == 0">
                                             <span t-esc="total_discount"
                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
@@ -149,9 +124,7 @@
                                             (<span t-esc="total_discount"
                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
                                         </t>
-                                        <div style="border:1px solid black;height:0px;"></div>
                                         <t t-if="last_date == get_detail_total_loop">
-                                            <br/>
                                             <t t-if="lines_total_data[0].get('discount_total_amount') == 0">
                                                 <t t-esc="lines_total_data[0].get('discount_total_amount')"
                                                    t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
@@ -161,11 +134,10 @@
                                                    t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
                                             </t>
                                             <div style="border:1px solid black;height:0px;"></div>
-                                            <br/>
-                                            <div style="border:1px solid black;height:0px;"></div>
                                         </t>
+                                        <t t-set="total_discount" t-value="0"/>
                                     </td>
-                                    <td style='text-align: center; padding: 5px;font-weight: bold;'>
+                                    <td style='padding: 5px;font-weight: bold;' class="text-right">
                                         <t t-if="total_tax == 0">
                                             <span t-esc="total_tax"
                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
@@ -174,9 +146,7 @@
                                             (<span t-esc="total_tax"
                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
                                         </t>
-                                        <div style="border:1px solid black;height:0px;"></div>
                                         <t t-if="last_date == get_detail_total_loop">
-                                            <br/>
                                             <t t-if="lines_total_data[0].get('amount_tax_total') == 0">
                                                 <t t-esc="lines_total_data[0].get('amount_tax_total')"
                                                    t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
@@ -186,11 +156,10 @@
                                                    t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
                                             </t>
                                             <div style="border:1px solid black;height:0px;"></div>
-                                            <br/>
-                                            <div style="border:1px solid black;height:0px;"></div>
                                         </t>
+                                        <t t-set="total_tax" t-value="0"/>
                                     </td>
-                                    <td style='text-align: center; padding: 5px;font-weight: bold;'>
+                                    <td style='padding: 5px;font-weight: bold;' class="text-right">
                                         <t t-if="total == 0">
                                             <span t-esc="total"
                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
@@ -199,9 +168,7 @@
                                             (<span t-esc="total"
                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
                                         </t>
-                                        <div style="border:1px solid black;height:0px;"></div>
                                         <t t-if="last_date == get_detail_total_loop">
-                                            <br/>
                                             <t t-if="lines_total_data[0].get('total') == 0">
                                                 <t t-esc="lines_total_data[0].get('total')"
                                                    t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
@@ -211,9 +178,8 @@
                                                    t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
                                             </t>
                                             <div style="border:1px solid black;height:0px;"></div>
-                                            <br/>
-                                            <div style="border:1px solid black;height:0px;"></div>
                                         </t>
+                                        <t t-set="total" t-value="0"/>
                                     </td>
                                 </tr>
                                 <tr>
