@@ -16,6 +16,9 @@ class ReportDailyMonthlyReturns(models.AbstractModel):
                  ('date_invoice', '<=', invoice_data[1]),
                  ('type', 'in', ['out_refund', 'in_refund'])])
             for invoice in invoice_rec:
+                invoice_num = ''
+                if invoice.number:
+                    invoice_num = str(invoice.number).replace('INV/', '')
                 invoice_data = {}
                 invoice_amount = discount_amount = 0
                 for invoice_line in invoice.invoice_line_ids:
@@ -25,7 +28,7 @@ class ReportDailyMonthlyReturns(models.AbstractModel):
                 invoice_data.update({
                     'date': invoice.date_invoice.strftime(
                         date_format),
-                    'number': invoice.number or invoice.id,
+                    'number': invoice_num or invoice.id,
                     'cust_no': invoice.partner_id.id,
                     'customer': invoice.partner_id.name,
                     'user': invoice.user_id.name,
@@ -50,6 +53,7 @@ class ReportDailyMonthlyReturns(models.AbstractModel):
                 data.append(invoice.date_invoice.strftime(
                     date_format))
             data = list(set(data))
+        data.sort(key = lambda date: datetime.strptime(date, '%m/%d/%Y'))
         return data
 
     def get_detail_total_loop(self, invoice_data):
@@ -65,10 +69,13 @@ class ReportDailyMonthlyReturns(models.AbstractModel):
             data = len(list(set(data)))
         return data
 
-    def get_total_detail(self):
+    def get_total_detail(self, invoice_data):
         data = []
-        invoice_rec_total = self.env['account.invoice'].search([
-            ('type', 'in', ['out_refund', 'in_refund'])])
+        invoice_rec_total = self.env['account.invoice'].search(
+                [('date_invoice', '>=', invoice_data[0]),
+                 ('date_invoice', '<=', invoice_data[1]),
+                 ('type', 'in', ['out_refund', 'in_refund'])
+                 ])
         invoice_total_amount = discount_total_amount = amount_tax_total =\
             total = 0
         for inv in invoice_rec_total:
@@ -97,7 +104,7 @@ class ReportDailyMonthlyReturns(models.AbstractModel):
             invoice_data = [data['form'].get('from_date'), data['form'].get(
                 'to_date')]
         lines_data = self.get_detail(invoice_data, date_format)
-        lines_total_data = self.get_total_detail()
+        lines_total_data = self.get_total_detail(invoice_data)
         get_detail_date = self.get_detail_date(invoice_data, date_format)
         get_detail_total_loop = self.get_detail_total_loop(invoice_data)
         return {

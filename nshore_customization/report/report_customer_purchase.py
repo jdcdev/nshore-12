@@ -189,7 +189,10 @@ class CustomerPurchasesReportView(models.AbstractModel):
                 grand_total_margin += past_rec[6] or 0.0
                 grand_past_total_purchased_amount += past_total_purchased_amount
                 grand_past_total_gross_profit += past_rec[8] or 0.0
-                grand_past_total_margin += past_rec[9] or 0.0
+                if grand_past_total_margin != 0.0:
+                    grand_past_total_margin = ((grand_past_total_gross_profit / grand_past_total_purchased_amount) * 100)
+                else:
+                    grand_past_total_margin = 0.0
                 total_changed_amount = total_purchased_amount - past_total_purchased_amount
                 total_changed_per = 0.0
 
@@ -264,7 +267,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
                     'total_changed_amount': 0.0,
                     'total_changed_per': 0.0
                 })
-
+        print("\n\n ")
         data = {
             'doc_ids': self.ids,
             'doc_model': model,
@@ -272,7 +275,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
             'grand_total_purchased_amount': grand_total_purchased_amount,
             'grand_total_discounts': grand_total_discounts,
             'grand_total_gross_profit': grand_total_gross_profit,
-            'grand_total_margin': grand_total_margin,
+            'grand_total_margin': ((grand_total_gross_profit / grand_total_purchased_amount) * 100),
             'grand_past_total_purchased_amount': grand_past_total_purchased_amount,
             'grand_past_total_gross_profit': grand_past_total_gross_profit,
             'grand_past_total_margin': grand_past_total_margin,

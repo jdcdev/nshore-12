@@ -66,9 +66,9 @@
                                     <td/>
                                     <td/>
                                     <td colspan="4">
-                                        __________Peroid__________
+                                    __________Peroid__________
                                     </td>
-                                    <td colspan="2">
+                                    <td colspan="3">
                                     ______Gross Profit______
                                     </td>
                                     <td/>
@@ -108,15 +108,11 @@
                                 </tr>
 
                                 <tbody>
-                                    <t t-set="final_total_amount_purchased" t-value="0.00"/>
-                                    <t t-set="final_total_gross_profit" t-value="0.00"/>
-                                    <t t-set="final_total_profit_margin" t-value="0.00"/>
-
                                     <t t-foreach="partner_dict[partner]" t-as="categ">
-                                        <tr>
-                                            <td colspan="2">
+                                        <tr style="font-size:13px">
+                                            <td colspan="2" style="padding-top:0px">
                                                 <strong>
-                                                    <span t-esc="categ"/>
+                                                    Partner<span t-esc="categ"/>
                                                 </strong>
                                                 <div style="border:1px solid black;"></div>
                                             </td>
@@ -141,44 +137,38 @@
                                                t-value="grand_total_gross_profit+rec_data['total_gross_profit']"/>
                                             <t t-set="grand_total_profit_margin"
                                                t-value="float('%.2f'%(grand_total_profit_margin+rec_data['total_profit_margin']))"/>
-                                            <t t-set="final_total_amount_purchased"
-                                               t-value="final_total_amount_purchased + rec_data['total_amount_purchased']"/>
-                                            <t t-set="final_total_gross_profit"
-                                               t-value="final_total_gross_profit + rec_data['total_gross_profit']"/>
-                                            <t t-set="final_total_profit_margin"
-                                               t-value="float('%.2f'%(final_total_profit_margin + rec_data['total_profit_margin']))"/>
-                                            <td>
+                                            <td style="padding-top:0px;padding-bottom:0px; font-size:14px" class="text-left">
                                                 <span t-esc="rec_data['default_code']"/>
                                             </td>
-                                            <td>
+                                            <td style="padding-top:0px;padding-bottom:0px;font-size:13px;white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 350px;" class="text-left">
                                                 <span t-esc="rec_data['description']"/>
                                             </td>
-                                            <td>
+                                            <td style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                                 <span t-esc="rec_data['last_purchased_date']"/>
                                             </td>
-                                            <td class="text-right">
+                                            <td class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px;">
                                                 <span t-esc="rec_data['qty']"/>
                                             </td>
-                                            <td class="text-right">
+                                            <td class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px;">
                                                 <span t-esc="rec_data['total_amount_purchased']"
                                                       t-options="{'widget': 'monetary','display_currency': currency_id}"/>
                                             </td>
-                                            <td class="text-right">
+                                            <td class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                                 <span t-esc="rec_data['price']"
                                                       t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                             </td>
-                                            <td class="text-right">
+                                            <td class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                                 <span t-esc="rec_data['total_discounts']"
                                                       t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                             </td>
-                                            <td class="text-right">
+                                            <td class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                                 <span t-esc="rec_data['total_gross_profit']"
                                                       t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                             </td>
-                                            <td class="text-right">
+                                            <td class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                                 <span t-esc="rec_data['total_profit_margin']"/>%
                                             </td>
-                                            <td class="text-right">
+                                            <td class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                                 <span t-esc="rec_data['list_price']"
                                                       t-options="{'widget': 'monetary','display_currency': currency_id}"/>
                                             </td>
@@ -186,9 +176,9 @@
 
                                         <tr>
                                             <td colspan="2">
-                                                <strong>
-                                                    <span t-esc="categ"/>
-                                                </strong>
+                                                <b>Customer total:</b>
+                                                <div style="border:1px solid black;"></div>
+                                                <div style="border:1px solid black;margin-top:1px;"></div>
                                             </td>
                                             <td/>
                                             <td/>
@@ -210,71 +200,69 @@
                                                 </b>
                                                 <div style="border:1px solid black;"></div>
                                             </td>
-                                            <td class="text-right">
-                                                <div style="border:1px solid black;"></div>
-                                                <b><span t-esc="grand_total_profit_margin"
-                                                         t-options='{"widget": "float", "precision": 2}'/>%
-                                                </b>
-                                                <div style="border:1px solid black;"></div>
-                                            </td>
+                                            <t t-if=" not grand_total_gross_profit == 00">
+                                                <t t-if= " not grand_total_amount_purchased == 00">
+                                                <td class="text-right">
+                                                    <div style="border:1px solid black;"></div>
+                                                    <b><span t-esc="((grand_total_gross_profit/grand_total_amount_purchased) * 100)"
+                                                             t-options='{"widget": "float", "precision": 2}'/>%
+                                                    </b>
+                                                    <div style="border:1px solid black;"></div>
+                                                </td>
+                                                </t>
+                                            </t>
+                                            <t t-if="grand_total_gross_profit == 0">
+                                                <td class="text-right">
+                                                    <div style="border:1px solid black;"></div>
+                                                    <b>0.0%
+                                                    </b>
+                                                    <div style="border:1px solid black;"></div>
+                                                </td>
+                                            </t>
                                             <td/>
                                         </tr>
                                     </t>
-
-                                    <tr>
-                                        <td colspan="2">
-                                            <b>Grand total:</b>
-                                            <div style="border:1px solid black;"></div>
-                                            <div style="border:1px solid black;margin-top:1px;"></div>
-                                        </td>
-                                        <td/>
-                                        <td/>
-                                        <td class="text-right">
-                                            <b>
-                                                <span t-esc="final_total_amount_purchased"
-                                                      t-options="{'widget': 'monetary','display_currency': currency_id}"/>
-                                            </b>
-                                            <div style="border:1px solid black;"></div>
-                                            <div style="border:1px solid black;margin-top:1px;"></div>
-                                        </td>
-                                        <td/>
-                                        <td/>
-                                        <td class="text-right">
-                                            <b>
-                                                <span t-esc="final_total_gross_profit"
-                                                      t-options="{'widget': 'monetary','display_currency': currency_id}"/>
-                                            </b>
-                                            <div style="border:1px solid black;"></div>
-                                            <div style="border:1px solid black ;margin-top:1px;"></div>
-                                        </td>
-                                        <td class="text-right">
-                                            <b><span t-esc="final_total_profit_margin"
-                                                     t-options='{"widget": "float", "precision": 2}'/>%
-                                            </b>
-                                            <div style="border:1px solid black;"></div>
-                                            <div style="border:1px solid black !important;margin-top:1px;"></div>
-                                        </td>
-                                        <td/>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
-
-                    <div class="footer">
-                        <div class="text-center col-md-1">
-                            <ul class="list-inline">
-                                <li class="list-inline-item">Page</li>
-                                <li class="list-inline-item">
-                                    <span class="page"/>
-                                </li>
-                                <li class="list-inline-item">of</li>
-                                <li class="list-inline-item">
-                                    <span class="topage"/>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                </div>
+                <div class="m-0">
+                    <table class="table">
+                        <tr>
+                            <td width='425px;'>
+                                <b>Grand total:</b>
+                                <div style="border:1px solid black;"></div>
+                                <div style="border:1px solid black;margin-top:1px;"></div>
+                            </td>
+                            <td width='145px'></td>
+                            <td class="text-right" width="100px;">
+                                <b>
+                                    <span t-esc="grand_total_purchased_amount" t-options="{'widget': 'monetary','display_currency': currency_id}"/>
+                                </b>
+                                <div style="border:1px solid black;" width="100px;"></div>
+                                <div style="border:1px solid black;margin-top:1px;" width="100px;"></div>
+                            </td>
+                            <td width='135px'></td>
+                            <td class="text-right" width="110px;">
+                                <b>
+                                <span t-esc="grand_total_gross_profit_details"
+                                      t-options="{'widget': 'monetary','display_currency': currency_id}"/>
+                                </b>
+                                <div style="border:1px solid black;" width="110px;"></div>
+                                <div style="border:1px solid black ;margin-top:1px;" width="110px;"></div>
+                            </td>
+                            <td class="text-right" width="110px;">
+                                <b>
+                                    <span t-esc="grand_total_profit_margin_details"
+                                    t-options='{"widget": "float", "precision": 2}'/>%
+                                </b>
+                                <div style="border:1px solid black;" width="110px;"></div>
+                                <div style="border:1px solid black !important;margin-top:1px;" width="110px;"></div>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
                 </div>
             </t>
         </t>

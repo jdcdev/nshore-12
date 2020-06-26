@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--Form View Return Order-->
+    <record id="view_return_order_form" model="ir.ui.view">
+        <field name="name">return.order.form</field>
+        <field name="model">return.order</field>
+        <field name="arch" type="xml">
+            <form string="Sale Return Details">
+                <header>
+                    <button name="process_return"
+                            string="Return" type="object" class="btn btn-primary"
+                            attrs="{'invisible':[('state', '!=', 'approved')]}"/>
+                    <button name="action_to_approve"
+                            string=" Submit" type="object" class="btn btn-primary"
+                            attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                    <button name="action_approve"
+                            string="Approve" type="object" class="btn btn-primary"
+                            attrs="{'invisible':[('state', '!=', 'to_approve')]}"/>
+                    <button name="action_reject"
+                            string="Reject" type="object" class="btn"
+                            attrs="{'invisible':[('state', '!=', 'to_approve')]}"/>
+                    <button name="action_cancel"
+                            string="Cancel" type="object" class="btn"
+                            attrs="{'invisible':[('state', 'not in', ['to_approve', 'draft'])]}"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="reason_id" options="{'no_create': True,'no_edit': True,'no_open': True}" />
+                            <field name="date" />
+                        </group>
+                        <group>
+                            <field name="sale_person_id" options="{'no_create': True,'no_edit': True}" />
+                            <field name="partner_id" domain="[('customer', '=', True)]" options="{'no_create': True,'no_edit': True}" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Order Lines">
+                            <field name="line_ids">
+                                <form name="Return Order Line">
+                                    <sheet>
+                                        <group>
+                                            <group>
+                                                <field name="sale_type" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
+                                                <field name="return_option" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
+                                                <field name="sale_order_id" options="{'no_create': True,'no_edit': True,'no_open': True}" domain="[('state','in', ('done','sale')),('partner_id','=',parent.partner_id)]" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
+                                                <field name="product_id" options="{'no_create': True,'no_edit': True,'no_open': True}" context="{'sale_order_id': sale_order_id}" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
+                                                <field name="qty" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
+                                                <field name="unit_price" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
+                                            </group>
+                                            <group>
+                                                <field name="tax_id" widget="many2many_tags" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
+                                                <field name="value" widget="monetary" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
+                                                <field name="purchase_order_id" domain="[('state','in', ('done','purchase'))]" options="{'no_create': True,'no_edit': True}" force_save="1" attrs="{'readonly': [('sale_order_id','!=',False)]}" />
+                                                <field name="vendor_id" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
+                                                <field name="state" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
+                                            </group>
+                                            <group>
+                                                <separator string="Invoice and Stock" />
+                                                <field name="invoice_id" widget="many2many_tags" options="{'no_create': True,'no_edit': True}" force_save="1" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
+                                                <field name="stock_move_id" widget="many2many_tags" options="{'no_create': True,'no_edit': True}" force_save="1" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
+                                            </group>
+                                        </group>
+                                    </sheet>
+                                </form>
+                                <tree >
+                                    <field name="sale_type" />
+                                    <field name="sale_order_id" />
+                                    <field name="return_option" />
+                                    <field name="product_id" />
+                                    <field name="qty" />
+                                    <field name="unit_price" />
+                                    <field name="value_before_tax" />
+                                    <field name="tax_id" widget="many2many_tags" />
+                                    <field name="value" widget="monetary" />
+                                    <field name="state" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Stock Moves">
+                            <field name="stock_move_ids" />
+                        </page>
+                        <page string="Credit Notes">
+                            <field name="account_invoice_ids" />
+                        </page>
+                    </notebook>
+                    <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                        <field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}" />
+                        <field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}" />
+                        <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                            <label for="amount_total" />
+                        </div>
+                        <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}" />
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" />
+                    <field name="activity_ids" widget="mail_activity" />
+                    <field name="message_ids" widget="mail_thread" options="{'post_refresh': 'recipients'}" />
+                </div>
+            </form>
+        </field>
+    </record>
+    <!--Search View Return Order-->
+    <record model="ir.ui.view" id="view_return_order_search">
+        <field name="model">return.order.view.search</field>
+        <field name="model">return.order</field>
+        <field name="arch" type="xml">
+            <search string="Return Order">
+                <field name="name" />
+                <field name="date" />
+                <field name="reason_id" />
+                <field name="partner_id" />
+                <field name="sale_person_id" />
+                <field name="state" />
+            </search>
+        </field>
+    </record>
+    <!--pivot view Return Order-->
+    <record id="view_order_return_pivot" model="ir.ui.view">
+        <field name="name">return.order.pivot</field>
+        <field name="model">return.order</field>
+        <field name="arch" type="xml">
+            <pivot string="Return Details" disable_linking="True">
+                <field name="name" />
+                <field name="date" interval="month" type="row" />
+                <field name="reason_id" />
+                <field name="amount_total" type="measure" />
+                <field name="partner_id" />
+                <field name="sale_person_id" type="col" />
+                <field name="state" />
+            </pivot>
+        </field>
+    </record>
+    <!--Tree View Return Order-->
+    <record id="view_return_order_tree" model="ir.ui.view">
+        <field name="name">return.order.view.tree</field>
+        <field name="model">return.order</field>
+        <field name="arch" type="xml">
+            <tree string="Return Order" >
+                <field name="name" />
+                <field name="date" />
+                <field name="reason_id" />
+                <field name="partner_id" />
+                <field name="sale_person_id" />
+                <field name="state" />
+                <field name="amount_total" />
+            </tree>
+        </field>
+    </record>
+    <!--Return Order Line Form View-->
+    <record id="view_return_order_line_form" model="ir.ui.view">
+        <field name="name">return.order.line.form</field>
+        <field name="model">return.order.line</field>
+        <field name="arch" type="xml">
+            <form string="Sale Return Order Line Details">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="sale_type" readonly="1" />
+                            <field name="return_option" />
+                            <field name="sale_order_id" />
+                        </group>
+                        <group>
+                            <field name="product_id" />
+                            <field name="qty" />
+                            <field name="unit_price" />
+                            <field name="value_before_tax" />
+                            <field name="tax_id" />
+                            <field name="value" />
+                            <field name="state" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!--Return Order Line Tree View-->
+    <record id="view_return_order_line_tree" model="ir.ui.view">
+        <field name="name">return.order.line.view.tree</field>
+        <field name="model">return.order.line</field>
+        <field name="arch" type="xml">
+            <tree string="Return Order Line" >
+                <field name="sale_type" readonly="1" />
+                <field name="return_option" />
+                <field name="sale_order_id" />
+                <field name="product_id" />
+                <field name="qty" />
+                <field name="unit_price" />
+                <field name="value_before_tax" />
+                <field name="tax_id" />
+                <field name="value" />
+                <field name="state" />
+            </tree>
+        </field>
+    </record>
+    <!--Search View Return Order Line-->
+    <record id="view_return_order_line_search" model="ir.ui.view">
+        <field name="name">return.order.line.view.search</field>
+        <field name="model">return.order.line</field>
+        <field name="arch" type="xml">
+            <search string="Return Order Line">
+                <field name="sale_type" readonly="1" />
+                <field name="return_option" />
+                <field name="sale_order_id" />
+                <field name="product_id" />
+                <field name="qty" />
+                <field name="unit_price" />
+                <field name="value_before_tax" />
+                <field name="tax_id" />
+                <field name="value" />
+                <field name="state" />
+            </search>
+        </field>
+    </record>
+    <!--pivot view Return Order Line-->
+    <record id="view_order_return_line_pivot" model="ir.ui.view">
+        <field name="name">return.order.line.pivot</field>
+        <field name="model">return.order.line</field>
+        <field name="arch" type="xml">
+            <pivot string="Return Order Line Details" disable_linking="True">
+                <field name="sale_type" type="row" />
+                <field name="return_option" />
+                <field name="sale_order_id" type="row" />
+                <field name="product_id" />
+                <field name="qty" />
+                <field name="unit_price" />
+                <field name="value_before_tax" />
+                <field name="tax_id" />
+                <field name="value" type="measure" />
+                <field name="state" />
+            </pivot>
+        </field>
+    </record>
+    <record id="action_open_view" model="ir.actions.act_window">
+        <field name="name">Returns</field>
+        <field name="res_model">return.order</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form,pivot</field>
+    </record>
+    <record id="action_open_view_order_line" model="ir.actions.act_window">
+        <field name="name">Return Order Line</field>
+        <field name="res_model">return.order.line</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,pivot</field>
+    </record>
+    <!--Menu Items-->
+    <menuitem action="action_open_view" id="menu_return_order" web_icon="sale_return,static/description/icon.png" />
+    <menuitem id="menu_configuration" name="Configuration" parent="menu_return_order" sequence="40" />
+    <menuitem id="menu_returns" name="Returns" parent="menu_return_order" sequence="0" />
+    <menuitem id="submenu_returns" name="Return Order" action="action_open_view" parent="menu_returns" />
+    <menuitem id="submenu_returns_line" name="Return Order Line" action="action_open_view_order_line" parent="menu_returns" />
+</odoo>

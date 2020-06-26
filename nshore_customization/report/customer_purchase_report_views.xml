@@ -30,16 +30,17 @@
                                         <td/>
                                         <td/>
                                         <td colspan="4">
-                                            _______________Report Peroid_______________
+                                            _________Report
+                                            Peroid____________
                                         </td>
                                         <td colspan="4">
-                                            _________ Peroid_________
+                                            __________Previous Peroid____________
                                         </td>
                                         <td/>
                                     </tr>
                                 </t>
-                                <tr style="font-size:12px;">
-                                    <th>
+                                <tr style="font-size:13px">
+                                    <th style="width:100px">
                                         <u>Cust #</u>
                                     </th>
                                     <th>
@@ -76,48 +77,48 @@
                                         <u>Chg %</u>
                                     </th>
                                 </tr>
-                                <tbody style="border:0px;">
+                                <tbody>
                                     <tr t-foreach="purchase_rec" t-as="rec_data">
-                                        <td>
+                                        <td style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                             <span t-esc="rec_data['cust_ref']"/>
                                         </td>
-                                        <td>
+                                        <td style="padding-top:0px;padding-bottom:0px;font-size:13px;white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 350px;">
                                             <span t-esc="rec_data['cust_name']"/>
                                         </td>
-                                        <td>
+                                        <td style="padding-top:0px;padding-bottom:0px;font-size:13px;white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 350px;">
                                             <span t-esc="rec_data['purchased_date']"/>
                                         </td>
-                                        <td class="text-right">
+                                        <td class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                             <span t-esc="rec_data['total_purchased_amount']"
                                                   t-options="{'widget': 'monetary','display_currency': currency_id}"/>
                                         </td>
-                                        <td class="text-right">
+                                        <td class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                             <span t-esc="rec_data['total_discounts']"
                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                         </td>
-                                        <td class="text-right">
+                                        <td class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                             <span t-esc="rec_data['total_gross_profit']"
                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                         </td>
-                                        <td class="text-right">
+                                        <td class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                             <span t-esc="rec_data['total_margin']"/>%
                                         </td>
-                                        <td t-if="docs['comparsion'] == True" class="text-right">
+                                        <td t-if="docs['comparsion'] == True" class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                             <span t-esc="rec_data['past_total_purchased_amount']"
                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                         </td>
-                                        <td t-if="docs['comparsion'] == True" class="text-right">
+                                        <td t-if="docs['comparsion'] == True" class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                             <span t-esc="rec_data['past_total_gross_profit']"
                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                         </td>
-                                        <td t-if="docs['comparsion'] == True" class="text-right">
+                                        <td t-if="docs['comparsion'] == True" class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                             <span t-esc="rec_data['past_total_margin']"/>%
                                         </td>
-                                        <td t-if="docs['comparsion'] == True" class="text-right">
+                                        <td t-if="docs['comparsion'] == True" class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                             <span t-esc="rec_data['total_changed_amount']"
                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                         </td>
-                                        <td t-if="docs['comparsion'] == True" class="text-right">
+                                        <td t-if="docs['comparsion'] == True" class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                             <span t-esc="rec_data['total_changed_per']"/>%
                                         </td>
                                     </tr>
