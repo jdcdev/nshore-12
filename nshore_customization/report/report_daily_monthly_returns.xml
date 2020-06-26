@@ -18,10 +18,10 @@
                         <thead >
                             <th class="text-left">Date</th>
                             <th class="text-left">Inv #</th>
-                            <th class="text-left" style="width:10%">Cust #</th>
+                            <th class="text-left" style="width:10%;">Cust #</th>
                             <th class="text-left">Name</th>
                             <th class="text-left">User</th>
-                            <th class="text-right">Amount</th>
+                            <th class="text-right" style="padding-right:10px;">Amount</th>
                             <th class="text-right">Discount</th>
                             <th class="text-right">Tax</th>
                             <th class="text-right">Total</th>

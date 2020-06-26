@@ -230,7 +230,7 @@
                 <div class="m-0">
                     <table class="table">
                         <tr>
-                            <td width='425px;'>
+                            <td width='435px;'>
                                 <b>Grand total:</b>
                                 <div style="border:1px solid black;"></div>
                                 <div style="border:1px solid black;margin-top:1px;"></div>
@@ -243,7 +243,7 @@
                                 <div style="border:1px solid black;" width="100px;"></div>
                                 <div style="border:1px solid black;margin-top:1px;" width="100px;"></div>
                             </td>
-                            <td width='135px'></td>
+                            <td width='130px'></td>
                             <td class="text-right" width="110px;">
                                 <b>
                                 <span t-esc="grand_total_gross_profit_details"
@@ -252,13 +252,13 @@
                                 <div style="border:1px solid black;" width="110px;"></div>
                                 <div style="border:1px solid black ;margin-top:1px;" width="110px;"></div>
                             </td>
-                            <td class="text-right" width="110px;">
+                            <td class="text-right" width="100px;">
                                 <b>
                                     <span t-esc="grand_total_profit_margin_details"
                                     t-options='{"widget": "float", "precision": 2}'/>%
                                 </b>
-                                <div style="border:1px solid black;" width="110px;"></div>
-                                <div style="border:1px solid black !important;margin-top:1px;" width="110px;"></div>
+                                <div style="border:1px solid black;" width="100px;"></div>
+                                <div style="border:1px solid black !important;margin-top:1px;" width="100px;"></div>
                             </td>
                             <td></td>
                         </tr>
