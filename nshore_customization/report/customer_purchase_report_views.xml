@@ -40,10 +40,13 @@
                                     </tr>
                                 </t>
                                 <tr style="font-size:13px">
-                                    <th style="width:100px">
+                                    <th class="text-left" t-if="docs['comparsion'] == False">
                                         <u>Cust #</u>
                                     </th>
-                                    <th>
+                                    <th class="text-left" t-if="docs['comparsion'] == True" style="width:20%;">
+                                        <u>Cust#</u>
+                                    </th>
+                                    <th style="padding-left:10px;">
                                         <u>Name</u>
                                     </th>
                                     <th>
