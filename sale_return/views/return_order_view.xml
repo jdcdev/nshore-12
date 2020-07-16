@@ -9,8 +9,8 @@
                 <header>
                     <button name="process_return"
                             string="Return" type="object" class="btn btn-primary"
-                            attrs="{'invisible':[('state', '!=', 'approved')]}"/>
-                    <button name="action_to_approve"
+                            attrs="{'invisible':[('state', '!=', 'draft')]}"/>
+ <!--                    <button name="action_to_approve"
                             string=" Submit" type="object" class="btn btn-primary"
                             attrs="{'invisible': [('state', '!=', 'draft')]}"/>
                     <button name="action_approve"
@@ -19,12 +19,17 @@
                     <button name="action_reject"
                             string="Reject" type="object" class="btn"
                             attrs="{'invisible':[('state', '!=', 'to_approve')]}"/>
-                    <button name="action_cancel"
+ -->                    <button name="action_cancel"
                             string="Cancel" type="object" class="btn"
-                            attrs="{'invisible':[('state', 'not in', ['to_approve', 'draft'])]}"/>
+                            attrs="{'invisible':[('state', 'not in', ['draft'])]}"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="show_delivery" type="object" class="oe_stat_button" icon="fa-truck" string="Delivery" attrs="{'invisible':[('state', '!=', 'done')]}" >
+                            <!-- <field name="invoice_count" widget="statinfo" string="Invoices"/> -->
+                        </button>
+                    </div>
                     <div class="oe_title">
                         <h1>
                             <field name="name" readonly="1" />
