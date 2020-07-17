@@ -107,6 +107,7 @@ class ReturnOrder(models.Model):
 
         if line_ids_wo_so:
             self.process_return_without_so(lines=line_ids_wo_so)        
+            self.process_refund_customer_wo_so(lines=line_ids_wo_so)        
 
         line_ids = self.env['return.order.line'].search([('return_id','=',self.id),('sale_order_id','!=',False)])
         if line_ids:
@@ -123,6 +124,7 @@ class ReturnOrder(models.Model):
 
 
     def process_return_without_so(self, lines=None):
+        """ Method to process return order record without so"""
         picking_type_id = self.env['stock.picking.type'].search([
             ('code', '=', 'incoming')],limit=1)
         picking_return = self.env['stock.picking'].create({'picking_type_id':picking_type_id.id or False,'partner_id':self.partner_id.id,'location_id':picking_type_id.default_location_dest_id.id,'location_dest_id':picking_type_id.default_location_dest_id.id,'return_order_id':self.id})
@@ -180,6 +182,28 @@ class ReturnOrder(models.Model):
             self.write({'state': 'done'})
             record.sale_order_id.write({'state': 'return'})
             return True
+
+    def process_refund_customer_wo_so(self, lines=None):
+        """ Method to create credit note record without so"""
+        credit_note = self.env['account.invoice'].create({
+            'type': 'out_refund',
+            'partner_id':self.partner_id.id,
+            'return_order_id':self.id,
+            })
+        for line in lines:
+            invoice_line_id = self.env['account.invoice.line'].create({
+                'name':line.product_id.name or '',
+                'product_id':line.product_id.id or False,
+                'account_id':line.product_id.property_account_income_id.id \
+                or line.product_id.categ_id.property_account_income_categ_id.id \
+                or False,
+                'quantity':line.qty or 0.0,
+                'uom_id':line.product_id.product_tmpl_id.uom_id.id or False,
+                'price_unit':line.unit_price or 0.0,
+                'invoice_line_tax_ids':line.tax_id.ids or False,
+                'invoice_id':credit_note and credit_note.id or False 
+                })
+
 
     def process_refund_customer(self, line=None):
         line_record_stock = self.line_ids.filtered(lambda m: m.return_option == 'stock' and m.sale_order_id)
