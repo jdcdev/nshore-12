@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             <!-- Return Order  Button -->
             <button name="action_confirm" position="after">
-                <button name="action_return_order" string="Return Order"
+                <button name="action_return_order" string="Express Return"
                     type="object" class="btn-primary" attrs="{'invisible': [('state', 'not in', ['sale'])]}"/>
             </button>
 
