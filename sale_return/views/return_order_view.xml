@@ -89,10 +89,10 @@
                             </field>
                         </page>
                         <page string="Stock Moves">
-                            <field name="stock_move_ids" />
+                            <field name="stock_move_ids" readonly="1"/>
                         </page>
                         <page string="Credit Notes">
-                            <field name="account_invoice_ids" />
+                            <field name="account_invoice_ids" readonly="1"/>
                         </page>
                     </notebook>
                     <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">

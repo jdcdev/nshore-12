@@ -103,13 +103,13 @@ class ReturnOrder(models.Model):
         """ Main method to process return according the return option"""
         self.check_orderline()
         # self.check_delivery_status()
-        line_ids_wo_so = self.line_ids.filtered(lambda l: not l.sale_order_id)
+        line_ids_wo_so = self.line_ids.sudo().filtered(lambda l: not l.sale_order_id)
 
         if line_ids_wo_so:
             self.process_return_without_so(lines=line_ids_wo_so)        
             self.process_refund_customer_wo_so(lines=line_ids_wo_so)        
 
-        line_ids = self.env['return.order.line'].search([('return_id','=',self.id),('sale_order_id','!=',False)])
+        line_ids = self.env['return.order.line'].sudo().search([('return_id','=',self.id),('sale_order_id','!=',False)])
         if line_ids:
             for record in line_ids:
                 if record.return_option == 'scrap':
@@ -125,11 +125,11 @@ class ReturnOrder(models.Model):
 
     def process_return_without_so(self, lines=None):
         """ Method to process return order record without so"""
-        picking_type_id = self.env['stock.picking.type'].search([
+        picking_type_id = self.env['stock.picking.type'].sudo().search([
             ('code', '=', 'incoming')],limit=1)
-        picking_return = self.env['stock.picking'].create({'picking_type_id':picking_type_id.id or False,'partner_id':self.partner_id.id,'location_id':picking_type_id.default_location_dest_id.id,'location_dest_id':picking_type_id.default_location_dest_id.id,'return_order_id':self.id})
+        picking_return = self.env['stock.picking'].sudo().create({'picking_type_id':picking_type_id.id or False,'partner_id':self.partner_id.id,'location_id':picking_type_id.default_location_dest_id.id,'location_dest_id':picking_type_id.default_location_dest_id.id,'return_order_id':self.id})
         for line in lines:
-            stock_move_id = self.env['stock.move'].create({
+            stock_move_id = self.env['stock.move'].sudo().create({
                 'name':line.product_id.name,
                 'product_id':line.product_id.id,
                 'product_uom':line.product_id.product_tmpl_id.uom_id.id,
@@ -141,14 +141,14 @@ class ReturnOrder(models.Model):
                 'picking_type_id':picking_type_id.id,
                 'quantity_done':line.qty
                 })
-            line.write({'state':'done'})
+            line.sudo().write({'state':'done'})
         if picking_return:
-            picking_return.write({'return_order_id':self.id})
-            picking_return.action_confirm()
-            picking_return.action_assign()
-            picking_return.button_validate()
+            picking_return.sudo().write({'return_order_id':self.id})
+            picking_return.sudo().action_confirm()
+            picking_return.sudo().action_assign()
+            picking_return.sudo().button_validate()
             if picking_return.state == 'done':
-                self.state = 'done'
+                self.sudo().write({'state':'done'}) 
 
     def process_scrap(self, line=None):
         """ Method to create return order record in stock scrap """
@@ -234,11 +234,11 @@ class ReturnOrder(models.Model):
     def process_return_to_stock(self, line=None):
         """ Method to process return order record """
         self.check_orderline()
-        line_record_stock = self.line_ids.filtered(lambda m: m.return_option == 'stock' and m.sale_order_id)
+        line_record_stock = self.line_ids.sudo().filtered(lambda m: m.return_option == 'stock' and m.sale_order_id)
         self.process_refund_customer(line)
-        picking_type_id = self.env['stock.picking.type'].search([
+        picking_type_id = self.env['stock.picking.type'].sudo().search([
             ('code', '=', 'outgoing'), ('warehouse_id', '=', line.sale_order_id.warehouse_id.id)])
-        picking_id = self.env['stock.picking'].search(
+        picking_id = self.env['stock.picking'].sudo().search(
             [('group_id', '=', line.sale_order_id.procurement_group_id.id),
              ('product_id', '=', line.product_id.id),
              ('picking_type_id', '=', picking_type_id.id),
@@ -253,7 +253,7 @@ class ReturnOrder(models.Model):
                                return_data[2]['product_id'] == line.product_id.id]
 
             if actual_line:
-                return_picking_id = self.env['stock.return.picking'].create(vals)
+                return_picking_id = self.env['stock.return.picking'].sudo().create(vals)
                 StockReturnPicking = self.env['stock.return.picking']
 
                 default_data = StockReturnPicking.with_context(active_ids=picking_id.ids,
@@ -266,13 +266,13 @@ class ReturnOrder(models.Model):
                 return_wiz = StockReturnPicking.with_context(active_ids=picking_id.ids,
                                                              active_id=picking_id.ids[0]).create(
                     default_data)
-                return_wiz.product_return_moves.write({'quantity': line.qty, 'to_refund': True})
-                res = return_wiz.create_returns()
-                return_pick = self.env['stock.picking'].browse(res['res_id'])
+                return_wiz.product_return_moves.sudo().write({'quantity': line.qty, 'to_refund': True})
+                res = return_wiz.sudo().create_returns()
+                return_pick = self.env['stock.picking'].sudo().browse(res['res_id'])
                 # Validate picking
-                return_picking_type_id = self.env['stock.picking.type'].search([
+                return_picking_type_id = self.env['stock.picking.type'].sudo().search([
                     ('code', '=', 'incoming'), ('warehouse_id', '=', line.sale_order_id.warehouse_id.id)])
-                pickings = self.env['stock.picking'].search(
+                pickings = self.env['stock.picking'].sudo().search(
                     [('group_id', '=', line.sale_order_id.procurement_group_id.id),
                      ('picking_type_id', '=', return_picking_type_id.id)])
                 if pickings:
@@ -280,11 +280,11 @@ class ReturnOrder(models.Model):
                 # self.stock_move_ids = [(6, 0, [record.id for record in self.env['stock.picking'].search(
                 #     [('group_id', '=', line.sale_order_id.procurement_group_id.id),
                 #      ('picking_type_id', '=', return_picking_type_id.id)]) if record])]
-                return_pick.move_line_ids.write({'qty_done': line.qty, 'to_refund': True})
-                return_pick.button_validate()
-            line.write({'state': 'done'})
-            line.sale_order_id.write({'state': 'return'})
-            self.write({'state': 'done'})
+                return_pick.move_line_ids.sudo().write({'qty_done': line.qty, 'to_refund': True})
+                return_pick.sudo().button_validate()
+            line.sudo().write({'state': 'done'})
+            line.sale_order_id.sudo().write({'state': 'return'})
+            self.sudo().write({'state': 'done'})
 
     def process_return_to_vendor(self, line=None):
         """ Method to process return to vendor """
