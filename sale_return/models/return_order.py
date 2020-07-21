@@ -122,6 +122,9 @@ class ReturnOrder(models.Model):
                     if record.sale_order_id:
                         self.process_return_to_stock(line=record)
 
+        if not any(line.state not in ['done'] for line in self.line_ids):
+            self.sudo().write({'state':'done'})
+
 
     def process_return_without_so(self, lines=None):
         """ Method to process return order record without so"""
@@ -147,8 +150,8 @@ class ReturnOrder(models.Model):
             picking_return.sudo().action_confirm()
             picking_return.sudo().action_assign()
             picking_return.sudo().button_validate()
-            if picking_return.state == 'done':
-                self.sudo().write({'state':'done'}) 
+            # if picking_return.state == 'done':
+            #     self.sudo().write({'state':'done'}) 
 
     def process_scrap(self, line=None):
         """ Method to create return order record in stock scrap """
@@ -284,7 +287,7 @@ class ReturnOrder(models.Model):
                 return_pick.sudo().button_validate()
             line.sudo().write({'state': 'done'})
             line.sale_order_id.sudo().write({'state': 'return'})
-            self.sudo().write({'state': 'done'})
+            # self.sudo().write({'state': 'done'})
 
     def process_return_to_vendor(self, line=None):
         """ Method to process return to vendor """
