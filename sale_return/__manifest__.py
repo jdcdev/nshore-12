@@ -14,7 +14,7 @@
     # any module necessary for this one to work correctly
     'depends': [
         'sale_management',
-        'stock','purchase',
+        'stock','purchase','nshore_customization'
     ],
     # always loaded
     'data': [
