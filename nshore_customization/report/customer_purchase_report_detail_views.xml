@@ -76,34 +76,34 @@
 
                                 <tr style="font-size:12px;border-bottom:hidden">
                                     <th>
-                                        <u>Product</u>
+                                        <u style="text-decoration-color: grey;">Product</u>
                                     </th>
                                     <th>
-                                        <u>Description</u>
+                                        <u style="text-decoration-color: grey;">Description</u>
                                     </th>
                                     <th>
-                                        <u>Last Purchased</u>
+                                        <u style="text-decoration-color: grey;">Last Purchased</u>
                                     </th>
                                     <th class="text-right">
-                                        <u>Qty</u>
+                                        <u style="text-decoration-color: grey;">Qty</u>
                                     </th>
                                     <th class="text-right">
-                                        <u>Amount</u>
+                                        <u style="text-decoration-color: grey;">Amount</u>
                                     </th>
                                     <th class="text-right">
-                                        <u>Price</u>
+                                        <u style="text-decoration-color: grey;">Price</u>
                                     </th>
                                     <th class="text-right">
-                                        <u>Disc%</u>
+                                        <u style="text-decoration-color: grey;">Disc%</u>
                                     </th>
                                     <th class="text-right">
-                                        <u>Amount</u>
+                                        <u style="text-decoration-color: grey;">Amount</u>
                                     </th>
                                     <th class="text-right">
-                                        <u>Margin</u>
+                                        <u style="text-decoration-color: grey;">Margin</u>
                                     </th>
                                     <th class="text-right">
-                                        <u>List Price</u>
+                                        <u style="text-decoration-color: grey;">List Price</u>
                                     </th>
                                 </tr>
 
@@ -114,7 +114,7 @@
                                                 <strong>
                                                     Partner<span t-esc="categ"/>
                                                 </strong>
-                                                <div style="border:1px solid black;"></div>
+                                                <div style="border:1px; border-style: groove;"></div>
                                             </td>
                                             <td/>
                                             <td/>
@@ -177,46 +177,46 @@
                                         <tr>
                                             <td colspan="2">
                                                 <b>Customer total:</b>
-                                                <div style="border:1px solid black;"></div>
-                                                <div style="border:1px solid black;margin-top:1px;"></div>
+                                                <div style="border:1px; border-style: groove;"></div>
+                                                <div style="border:1px; border-style: groove;margin-top:1px;"></div>
                                             </td>
                                             <td/>
                                             <td/>
                                             <td class="text-right">
-                                                <div style="border:1px solid black;"></div>
+                                                <div style="border:1px; border-style: groove;"></div>
                                                 <b>
                                                     <span t-esc="grand_total_amount_purchased"
                                                           t-options="{'widget': 'monetary','display_currency': currency_id}"/>
                                                 </b>
-                                                <div style="border:1px solid black;"></div>
+                                                <div style="border:1px; border-style: groove;"></div>
                                             </td>
                                             <td/>
                                             <td/>
                                             <td class="text-right">
-                                                <div style="border:1px solid black;"></div>
+                                                <div style="border:1px; border-style: groove;"></div>
                                                 <b>
                                                     <span t-esc="grand_total_gross_profit"
                                                           t-options="{'widget': 'monetary','display_currency': currency_id}"/>
                                                 </b>
-                                                <div style="border:1px solid black;"></div>
+                                                <div style="border:1px; border-style: groove;"></div>
                                             </td>
                                             <t t-if=" not grand_total_gross_profit == 00">
                                                 <t t-if= " not grand_total_amount_purchased == 00">
                                                 <td class="text-right">
-                                                    <div style="border:1px solid black;"></div>
+                                                    <div style="border:1px; border-style: groove;"></div>
                                                     <b><span t-esc="((grand_total_gross_profit/grand_total_amount_purchased) * 100)"
                                                              t-options='{"widget": "float", "precision": 2}'/>%
                                                     </b>
-                                                    <div style="border:1px solid black;"></div>
+                                                    <div style="border:1px; border-style: groove;"></div>
                                                 </td>
                                                 </t>
                                             </t>
                                             <t t-if="grand_total_gross_profit == 0">
                                                 <td class="text-right">
-                                                    <div style="border:1px solid black;"></div>
+                                                    <div style="border:1px; border-style: groove;"></div>
                                                     <b>0.0%
                                                     </b>
-                                                    <div style="border:1px solid black;"></div>
+                                                    <div style="border:1px; border-style: groove;"></div>
                                                 </td>
                                             </t>
                                             <td/>
@@ -232,16 +232,16 @@
                         <tr>
                             <td width='435px;'>
                                 <b>Grand total:</b>
-                                <div style="border:1px solid black;"></div>
-                                <div style="border:1px solid black;margin-top:1px;"></div>
+                                <div style="border:1px; border-style: groove;"></div>
+                                <div style="border:1px; border-style: groove;margin-top:1px;"></div>
                             </td>
                             <td width='145px'></td>
                             <td class="text-right" width="100px;">
                                 <b>
                                     <span t-esc="grand_total_purchased_amount" t-options="{'widget': 'monetary','display_currency': currency_id}"/>
                                 </b>
-                                <div style="border:1px solid black;" width="100px;"></div>
-                                <div style="border:1px solid black;margin-top:1px;" width="100px;"></div>
+                                <div style="border:1px; border-style: groove;" width="100px;"></div>
+                                <div style="border:1px; border-style: groove;margin-top:1px;" width="100px;"></div>
                             </td>
                             <td width='130px'></td>
                             <td class="text-right" width="110px;">
@@ -249,16 +249,16 @@
                                 <span t-esc="grand_total_gross_profit_details"
                                       t-options="{'widget': 'monetary','display_currency': currency_id}"/>
                                 </b>
-                                <div style="border:1px solid black;" width="110px;"></div>
-                                <div style="border:1px solid black ;margin-top:1px;" width="110px;"></div>
+                                <div style="border:1px; border-style: groove;;" width="110px;"></div>
+                                <div style="border:1px; border-style: groove;margin-top:1px;" width="110px;"></div>
                             </td>
                             <td class="text-right" width="100px;">
                                 <b>
                                     <span t-esc="grand_total_profit_margin_details"
                                     t-options='{"widget": "float", "precision": 2}'/>%
                                 </b>
-                                <div style="border:1px solid black;" width="100px;"></div>
-                                <div style="border:1px solid black !important;margin-top:1px;" width="100px;"></div>
+                                <div style="border:1px; border-style: groove;" width="100px;"></div>
+                                <div style="border:1px; border-style: groove;margin-top:1px;" width="100px;"></div>
                             </td>
                             <td></td>
                         </tr>
@@ -266,5 +266,20 @@
                 </div>
             </t>
         </t>
+         <t t-raw="0"/>
+        <div class="footer">
+            <div class="text-center col-md-1">
+                <ul class="list-inline">
+                    <li class="list-inline-item">Page</li>
+                    <li class="list-inline-item">
+                        <span class="page"/>
+                    </li>
+                    <li class="list-inline-item">of</li>
+                    <li class="list-inline-item">
+                        <span class="topage"/>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </template>
 </odoo>

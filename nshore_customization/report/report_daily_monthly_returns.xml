@@ -13,7 +13,7 @@
                     </div>
                 </div>
                 <div class="page">
-                    <div style="border:1px solid black;height:0px;"></div>
+                    <div style="border:1px; border-style: groove;height:0px;"></div>
                     <table width="100%">
                         <thead >
                             <th class="text-left">Date</th>
@@ -29,9 +29,9 @@
                         <tbody>
                             <tr>
                                 <td colspan="9">
-                                    <div style="border:1px solid black;height:0px;"></div>
+                                    <div style="border:1px; border-style: groove;height:0px;"></div>
                                     <br/>
-                                    <div style="border:1px solid black;height:0px;"></div>
+                                    <div style="border:1px; border-style: groove;height:0px;"></div>
                                 </td>
                             </tr>
                             <t t-set="total_amount" t-value="0"/>
@@ -82,7 +82,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="9">
-                                        <div style="border:1px solid black;height:0px;"></div>
+                                        <div style="border:1px; border-style: groove;height:0px;"></div>
                                     </td>
                                 </tr>
                                 <tr>
@@ -111,7 +111,7 @@
                                                 (<t t-esc="lines_total_data[0].get('invoice_total_amount')"
                                                    t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
                                             </t>
-                                            <div style="border:1px solid black;height:0px;"></div>
+                                            <div style="border:1px; border-style: groove;height:0px;"></div>
                                         </t>
                                         <t t-set="total_amount" t-value="0"/>
                                     </td>
@@ -133,7 +133,7 @@
                                                 (<t t-esc="lines_total_data[0].get('discount_total_amount')"
                                                    t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
                                             </t>
-                                            <div style="border:1px solid black;height:0px;"></div>
+                                            <div style="border:1px; border-style: groove;height:0px;"></div>
                                         </t>
                                         <t t-set="total_discount" t-value="0"/>
                                     </td>
@@ -155,7 +155,7 @@
                                                 (<t t-esc="lines_total_data[0].get('amount_tax_total')"
                                                    t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
                                             </t>
-                                            <div style="border:1px solid black;height:0px;"></div>
+                                            <div style="border:1px; border-style: groove;height:0px;"></div>
                                         </t>
                                         <t t-set="total_tax" t-value="0"/>
                                     </td>
@@ -177,27 +177,22 @@
                                                 (<t t-esc="lines_total_data[0].get('total')"
                                                    t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
                                             </t>
-                                            <div style="border:1px solid black;height:0px;"></div>
+                                            <div style="border:1px; border-style: groove;height:0px;"></div>
                                         </t>
                                         <t t-set="total" t-value="0"/>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="9">
-                                        <div style="border:1px solid black;height:0px;"></div>
+                                        <div style="border:1px; border-style: groove;height:0px;"></div>
                                     </td>
                                 </tr>
                             </tr>
                         </tbody>
-                        <tr>
-                            <td colspan="9">
-                                <div style="border:1px solid black;height:0px;"></div>
-                            </td>
-                        </tr>
                     </table>
                 </div>
                 <div class="footer">
-                    <div style="border:1px solid black;height:0px;"></div>
+                    <div style="border:1px; border-style: groove;height:0px;"></div>
                     <center>
                         Page
                         <span class="page"/>

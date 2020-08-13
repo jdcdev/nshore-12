@@ -1,6 +1,4 @@
-import datetime
 from datetime import datetime
-
 from dateutil.relativedelta import relativedelta
 from odoo import models, api, _
 from odoo.exceptions import ValidationError
@@ -181,6 +179,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
                 }
 
             for past_rec in past_final_rec:
+                print("***********************************", past_rec[3])
                 total_purchased_amount = past_rec[3] or 0.0
                 past_total_purchased_amount = past_rec[7] or 0.0
                 grand_total_purchased_amount += total_purchased_amount
@@ -224,7 +223,6 @@ class CustomerPurchasesReportView(models.AbstractModel):
         if not is_comparsion_reprot:
             self.env.cr.execute(final_sql_qry, (query_param))
             result = self.env.cr.fetchall()
-
             if not result and not self._context.get('html_report', False):
                 raise ValidationError(_("No data available."))
             elif not result and self._context.get('html_report', False):

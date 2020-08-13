@@ -13,7 +13,7 @@
                     </div>
                 </div>
                 <div class="page">
-                    <div style="border:1px solid black;height:0px;"></div>
+                    <div style="border:1px; border-style: groove;height:0px;"></div>
                     <table width="100%">
                         <thead>
                             <th>DateCreated</th>
@@ -26,9 +26,9 @@
                         <tbody>
                             <tr>
                                 <td colspan="6">
-                                    <div style="border:1px solid black;height:0px;"></div>
+                                    <div style="border:1px; border-style: groove;height:0px;"></div>
                                     <br/>
-                                    <div style="border:1px solid black;height:0px;"></div>
+                                    <div style="border:1px; border-style: groove;height:0px;"></div>
                                 </td>
                             </tr>
                             <t t-set="total" t-value="0"/>
@@ -61,7 +61,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="6">
-                                        <div style="border:1px solid black;height:0px;margin:0px;"></div>
+                                        <div style="border:1px; border-style: groove;height:0px;margin:0px;"></div>
                                     </td>
                                 </tr>
                                 <tr>
@@ -75,11 +75,11 @@
                                     <th class="text-right">
                                         <span t-esc="total"
                                               t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
-                                        <div style="border:1px solid black;height:0px;"></div>
+                                        <div style="border:1px; border-style: groove;height:0px;"></div>
                                         <t t-if="last_date == get_date_loop">
                                             <span t-esc="get_detail_total"
                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
-                                            <div style="border:1px solid black;height:0px;"/>
+                                            <div style="border:1px; border-style: groove;height:0px;"/>
                                         </t>
                                         <t t-set="total" t-value="0"/>
                                     </th>
@@ -87,7 +87,7 @@
                                 <tr>
                                     <td colspan="6">
                                         <br/>
-                                        <div style="border:1px solid black;height:0px;"></div>
+                                        <div style="border:1px; border-style: groove;height:0px;"></div>
                                         <br/>
                                     </td>
                                 </tr>
@@ -96,7 +96,7 @@
                     </table>
                 </div>
                 <div class="footer">
-                    <div style="border:1px solid black;height:0px;"></div>
+                    <div style="border:1px; border-style: groove;height:0px;"></div>
                     <center>Page<span class="page" />of<span class="topage"/></center>
                 </div>
             </t>
