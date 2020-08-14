@@ -170,8 +170,6 @@
         <div class="article o_report_layout_standard">
             <t t-raw="0" />
         </div>
-        <!-- <t t-call="nshore_customization.open_purchase_order_template" /> -->
-        <!-- <t t-call="nshore_customization.open_purchase_order_layout_footer" /> -->
     </template>
 
     <template id="report_open_purchase_order">
