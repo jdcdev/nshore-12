@@ -17,6 +17,15 @@ class ResPartner(models.Model):
     invoice_start_date = fields.Date('Invoice Start Date')
     invoice_end_date = fields.Date('Invoice Start Date')
 
+    @api.multi
+    def name_get(self):
+        """Function call to get name in title."""
+        res = []
+        for partner in self:
+            name = partner._get_name()
+            res.append((partner.id, name.replace('_', ' ').title()))
+        return res
+
     @api.model
     def _send_customer_statement(self):
         today = datetime.datetime.today()
