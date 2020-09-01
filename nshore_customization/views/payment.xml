@@ -145,10 +145,10 @@
                                 <tr style="background-color:black;color:white">
                                     <td style="border: none !important;">Invoice No</td>
                                     <td style="border: none !important;">Invoice Date</td>
-                                    <td style="border: none !important;" class="text-right">Invoice Old Balance</td>
-                                    <td style="border: none !important;" class="text-right">Term Discount</td>
-                                    <td style="border: none !important;" class="text-right">Payment Amount</td>
-                                    <td style="border: none !important;" class="text-right">Invoice New Balance</td>
+                                    <td style="border: none !important;" align="right">Invoice Old Balance</td>
+                                    <td style="border: none !important;" align="right">Term Discount</td>
+                                    <td style="border: none !important;" align="right">Payment Amount</td>
+                                    <td style="border: none !important;" align="right">Invoice New Balance</td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -159,13 +159,13 @@
                                     <td align="left">
                                         <span t-field="inv.date_invoice" />
                                     </td>
-                                    <td align="left">
+                                    <td align="right">
                                         <span t-field="inv.amount_total" />
                                     </td>
                                     <td>
                                         <span></span>
                                     </td>
-                                    <td align="left">
+                                    <td align="right">
                                         <span t-esc="inv.amount_total - inv.residual" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}" />
                                     </td>
                                     <td align="right">
@@ -182,72 +182,92 @@
                                     <th></th>
                                 </tr> -->
                                 
-                                <tr align="right" style="top:850px !important; page-break-inside: avoid;border-top:10px solid black !important;">
+                                <!-- <tr align="right" style="top:850px !important; page-break-inside: avoid;border-top:10px solid black !important;">
                                     <td>
                                         <span></span>
                                     </td>
                                     <td>
                                         <span></span>
-                                    </td>
-                                    <td align="left">
+                                    </td> -->
+                                    <!-- <td align="left">
                                         <span t-esc="sum(line.amount_total for line in o.invoice_ids)" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" />
-                                    </td>
-                                    <td>
+                                    </td> -->
+                                    <!-- <td>
                                         <span></span>
-                                    </td>
-                                    <td align="left">
+                                    </td> -->
+                                    <!-- <td align="left">
                                         <span t-esc="sum(line.amount_total - line.residual for line in o.invoice_ids)" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" />
                                     </td>
                                     <td align="right">
                                         <span t-esc="sum(line.residual for line in o.invoice_ids)" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" />
-                                    </td>
-                                </tr>
+                                    </td> -->
+<!--                                 </tr> -->
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <div class="footer" style="font-size: 20px !important;">
+                <div class="footer" style="font-size: 20px !important;padding-bottom: 20%;">
                     <table class="table table-condensed" style="width:1000px;border: none !important;">
-                            <thead>
-                                <tr style="background-color:black;color:white;">
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                        <tr align="right"><!-- style="top:850px !important; page-break-inside: avoid;border-top:10px solid black !important;"> -->
-                           <td>
-                               <span></span>
-                           </td>
-                           <td>
-                               <span></span>
-                           </td>
-                           <td align="right">
-                               <b><span t-esc="sum(line.amount_total for line in o.invoice_ids)" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" /></b>
-                           </td>
-                           <td>
-                               <span></span>
-                           </td>
-                           <td align="right">
-                               <b><span t-esc="sum(line.amount_total - line.residual for line in o.invoice_ids)" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" /></b>
-                           </td>
-                           <td align="right">
-                               <b><span t-esc="sum(line.residual for line in o.invoice_ids)" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" /></b>
-                           </td>
-                       </tr>
-                   </table>
-                
-                     <div class="col-xs-12 col-xs-offset-3 text-center">
+                        <thead>
+                            <tr style="background-color:black;color:white;">
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr align="right">
+                                <td>
+                                    <span></span>
+                                </td>
+                                <td>
+                                    <span></span>
+                                </td>
+                                <td>
+                                    <span></span>
+                                </td>
+                                <td align="right">
+                                   <b><span t-esc="sum(line.amount_total for line in o.invoice_ids)" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" /></b>
+                                </td>
+                                <td align="right">
+                                   <b><span t-esc="sum(line.amount_total - line.residual for line in o.invoice_ids)" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" /></b>
+                                </td>
+                                <td align="right">
+                                   <b><span t-esc="sum(line.residual for line in o.invoice_ids)" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" /></b>
+                                </td>
+                            </tr>
+                            <tr align="right" style="border:none;">
+                                <td>
+                                    <span></span>
+                                </td>
+                                <td>
+                                    <span></span>
+                                </td>
+                                <td>
+                                    <span></span>
+                                </td>
+                                <td align="right">
+                                   <span></span>
+                                </td>
+                                <td align="right">
+                                   <span><b>New Account Balance</b></span>
+                                </td>
+                                <td align="right">
+                                   <b><span t-esc="o.partner_id.credit - sum(line.amount_total - line.residual for line in o.invoice_ids)" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}" /></b>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="col-xs-12 col-xs-offset-3 text-center">
                         Page:
                         <span class="page"/>
                         of
                         <span class="topage"/>
                     </div>
                </div>
-                
             </xpath>
         </template>
 </odoo>
