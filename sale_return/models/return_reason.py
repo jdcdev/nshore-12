@@ -6,6 +6,3 @@ class ReturnReason (models.Model):
     _description = 'Return Reason'
 
     name = fields.Char(string="Reason Name")
-    
-
-
