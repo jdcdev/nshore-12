@@ -17,6 +17,5 @@ class ProductProduct (models.Model):
                 for line in line.order_line:
                     product_list.append(line.product_id.id)
             args.append(('id', 'in', product_list))
-        return super(ProductProduct, self).name_search(name, args, operator, limit)
-
-
+        return super(ProductProduct, self).name_search(
+            name, args, operator, limit)
