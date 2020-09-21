@@ -2,30 +2,29 @@
 <odoo>
     <data>
         <!--Form view of Product List-->
-        <record model="ir.ui.view" id="view_partner_external_id_wizard">
-            <field name="name">Update Partner Name</field>
-            <field name="model">partner.name</field>
+        <record model="ir.ui.view" id="opening_bal_customer_wizard">
+            <field name="name">Update Opening Balance</field>
+            <field name="model">opening.bal.script</field>
             <field name="arch" type="xml">
                 <form>
+                    <group>
+                        <field name="file_slect"/>
+                    </group>
                     <footer>
-                        <button name="update_name" type="object" string="Update Partner Name" class="oe_highlight" style="margin-left: 5px;"/>
+                        <button name="update_opening_bal" type="object" string="Update Opening Balance" class="oe_highlight" style="margin-left: 5px;"/>
                         <button string="Cancel" class="oe_link" special="cancel"/>
                     </footer>
                 </form>
             </field>
         </record>
 
-        <act_window 
-            id="partner_external_id_action" 
-            multi="True"
-            key2="client_action_multi" 
-            name="Update Partner Name" 
-            res_model="partner.name"
-            src_model="res.partner" 
-            view_mode="form" 
-            target="new" 
-            view_type="form"
-            view_id="view_partner_external_id_wizard" />
-
+        <record id="action_opening_bal_customer" model="ir.actions.act_window">
+            <field name="name">Update Opening Balance</field>
+            <field name="res_model">opening.bal.script</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        <menuitem action="action_opening_bal_customer" name="Update Opening Balance" id="menu_opening_bal_customer" parent="contacts.res_partner_menu_config" />
     </data>
 </odoo>
