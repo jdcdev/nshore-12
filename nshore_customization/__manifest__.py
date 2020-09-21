@@ -20,7 +20,7 @@
         'views/inherited_sale_order.xml',
         'views/inherited_invoice_form.xml',
         'views/inherited_purchase_form.xml',
-        'views/invoice_report.xml',
+        # 'views/invoice_report.xml',
         'views/payment.xml',
         'views/inherited_product_product_view.xml',
         'views/inherited_product_template_view.xml',
