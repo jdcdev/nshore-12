@@ -36,6 +36,7 @@ class InvoiceList(models.TransientModel):
                 partner = self.env['res.partner'].search(
                     [('ref', '=', values['External ID'])])
                 current_bal = float(values['CurrentBalance'])
+                # minus entries value
                 if current_bal < 0:
                     move_line_1 = {
                         'partner_id': partner.id,
@@ -49,6 +50,7 @@ class InvoiceList(models.TransientModel):
                             [('code', '=', 1200)]).id,
                         'debit': 0,
                         'credit': abs(float(current_bal))}
+                # Plus entries value
                 else:
                     move_line_1 = {
                         'partner_id': partner.id,
