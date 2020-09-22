@@ -17,7 +17,7 @@ class InvoiceList(models.TransientModel):
     def update_opening_bal(self):
         """Function call to update opening balance."""
         csv_data = base64.b64decode(self.file_slect)
-        keys = ['Name', 'CurrentBalance']
+        keys = ['External ID', 'CurrentBalance']
         data_file = io.StringIO(csv_data.decode("utf-8"))
         data_file.seek(0)
         file_reader = []
@@ -34,7 +34,7 @@ class InvoiceList(models.TransientModel):
                 field = list(map(str, file_reader[i]))
                 values = dict(zip(keys, field))
                 partner = self.env['res.partner'].search(
-                    [('name', '=', values['Name'])])
+                    [('ref', '=', values['External ID'])])
                 current_bal = float(values['CurrentBalance'])
                 if current_bal < 0:
                     move_line_1 = {
