@@ -23,7 +23,7 @@ class ProductProduct(models.Model):
         domain = []
         if args is None:
             args = []
-        domain = ['|', ('product_tmpl_id.product_ref', operator, name), ('product_ref', operator, name)]
+        domain = ['|', ('product_tmpl_id.product_ref', "=ilike", name +'%s'), ('product_ref',  "ilike", name+'%')]
         products = self.search(domain + args, limit=limit, order='product_ref')
         if products:
             return products.name_get()
