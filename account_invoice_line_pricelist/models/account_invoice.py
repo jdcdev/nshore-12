@@ -26,11 +26,11 @@ class AccountInvoice(models.Model):
                 self.user_id = self.partner_id.user_id
         return res
 
-    @api.model
-    def create(self, vals):
-        if 'pricelist_id' not in vals and 'partner_id' in vals:
-            partner_id = self.env['res.partner'].browse(vals['partner_id'])
-            if partner_id and partner_id.property_product_pricelist:
-                vals.update({'pricelist_id': partner_id.property_product_pricelist.id})
-        res = super(AccountInvoice, self).create(vals)
-        return res
+    # @api.model
+    # def create(self, vals):
+    #     if 'pricelist_id' not in vals and 'partner_id' in vals:
+    #         partner_id = self.env['res.partner'].browse(vals['partner_id'])
+    #         if partner_id and partner_id.property_product_pricelist:
+    #             vals.update({'pricelist_id': partner_id.property_product_pricelist.id})
+    #     res = super(AccountInvoice, self).create(vals)
+    #     return res
