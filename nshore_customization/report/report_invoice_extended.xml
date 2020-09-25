@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_invoice_document_inherit_nshore" inherit_id="account.report_invoice_document">
+        <xpath expr="//t[@t-set=&quot;address&quot;]" position="after">
+            <div class="row">
+                <div class="col-6">
+                    <table class="ship_addrees" style="width:100%">
+                        <tr style="border-bottom:1px solid black !important">
+                            <td class="text-center"
+                                style='padding:5px;border-bottom:1px solid black !important'>
+                                Billing Address
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style='padding: 5px 20px 5px 20px;'>
+                                <span t-field="o.partner_id.display_name"/>
+                                <br/>
+                                <span t-if="o.partner_id.street" t-field="o.partner_id.street"/>
+                                <span t-if="o.partner_id.street2" t-field="o.partner_id.street2"/>
+                                <br/>
+                                <span t-if="o.partner_id.city" t-field="o.partner_id.city"/>,
+                                <span t-if="o.partner_id.state_id" t-field="o.partner_id.state_id"/>,
+                                <span t-if="o.partner_id.zip" t-field="o.partner_id.zip"/>
+                                <br/>
+                                <div t-if="o.partner_id.vat" class="mt16">
+                                    <t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>:
+                                    <span t-field="o.partner_id.vat"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-6">
+                    <table class="ship_addrees" style="width:100%">
+                        <tr>
+                            <td class="text-center"
+                                style='padding: 5px;border-bottom:1px solid black !important'>
+                                Shipping Address
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style='padding: 5px 20px 5px 20px;'>
+                                <span t-field="o.partner_shipping_id.display_name"/>
+                                <br/>
+                                <span t-if="o.partner_shipping_id.street" t-field="o.partner_shipping_id.street"/>
+                                <span t-if="o.partner_shipping_id.street2" t-field="o.partner_shipping_id.street2"/>
+                                <br/>
+                                <span t-if="o.partner_shipping_id.city" t-field="o.partner_shipping_id.city"/>,
+                                <span t-if="o.partner_shipping_id.state_id" t-field="o.partner_shipping_id.state_id"/>,
+                                <span t-if="o.partner_shipping_id.zip" t-field="o.partner_shipping_id.zip"/>
+                                <br/>
+                                <div t-if="o.partner_shipping_id.vat" class="mt16">
+                                    <t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>:
+                                    <span t-field="o.partner_shipping_id.vat"/>
+                                </div>
+                                <div t-if="o.partner_shipping_id.vat" class="mt16">
+                                    <t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>:
+                                    <span t-field="o.partner_shipping_id.vat"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </xpath>
+        <xpath expr='//t[@t-if="o.partner_shipping_id and (o.partner_shipping_id != o.partner_id)"]' position="replace">
+        </xpath>
+        <xpath expr='//address' position="replace">
+        </xpath>
+        <xpath expr="//t[@t-set=&quot;address&quot;]/div" position="attributes">
+            <attribute name="style">display: none;</attribute>
+        </xpath>
+        <th t-attf-class="text-left {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}"
+            position="attributes">
+            <attribute name="style">display: none;</attribute>
+        </th>
+        <td t-attf-class="text-left {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}"
+            position="attributes">
+            <attribute name="style">display: none;</attribute>
+        </td>
+        <xpath expr="//t[@t-foreach='o.amount_by_group']/tr" position="attributes">
+            <attribute name="style">display: none;</attribute>
+        </xpath>
+    </template>
+</odoo>
