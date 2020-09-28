@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!--Form view of Product List-->
+        <record model="ir.ui.view" id="cal_pricelist_items_wizard">
+            <field name="name">Count Pricelist Items</field>
+            <field name="model">calculate.pricelist.item</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <button name="count_pricelist_items" type="object" string="Count Pricelist Items" class="oe_highlight" style="margin-left: 5px;"/>
+                    </group>
+                    <footer>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_cal_pricelist_item" model="ir.actions.act_window">
+            <field name="name">Count Pricelist Items</field>
+            <field name="res_model">calculate.pricelist.item</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        <menuitem action="action_cal_pricelist_item" name="Count Pricelist Items" id="menu_cal_pricelist_item" parent="sale.product_menu_catalog" />
+    </data>
+</odoo>
