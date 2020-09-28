@@ -75,12 +75,7 @@ class AccountPrintStatement(models.TransientModel):
         ])[0]
         start_date = data['start_date']
         end_date = data['end_date']
-        invoice_ids = self.env['account.invoice'].search([
-            ('state', '!=', 'draft'),
-            ('date_invoice', '>=', start_date),
-            ('date_invoice', '<=', end_date),
-            ('type', '=', 'out_invoice')])
-        partner_list = [inv.partner_id.id for inv in invoice_ids]
+        partner_list = self.partner_ids.ids
         data_dict.update({
             'partner_ids': list(set(partner_list)),
             'start_date': start_date,

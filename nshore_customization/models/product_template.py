@@ -19,24 +19,40 @@ class ProductProduct(models.Model):
 
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
-        context = self.env.context
-        domain = []
+        # context = self.env.context
+        # domain = []
         if args is None:
             args = []
-        domain = ['|', ('product_tmpl_id.product_ref', operator, name), ('product_ref', operator, name)]
-        products = self.search(domain + args, limit=limit, order='product_ref')
+        domain = [
+            '|', ('product_tmpl_id.product_ref', "=ilike", name + '%s'),
+            ('product_ref',  "ilike", name+'%')
+        ]
+        products = self.search(
+            domain + args, limit=limit, order='product_ref')
         if products:
             return products.name_get()
         else:
-            domain = ['|', '|', '|',
-                      ('product_tmpl_id.name', operator, name),
-                      ('product_tmpl_id.description', operator, name),
-                      ('name', operator, name),
-                      ('description', operator, name)]
-            products = self.search(domain + args, limit=limit, order='product_ref')
+            domain = [
+                '|', ('product_tmpl_id.product_ref', "=ilike", name),
+                ('product_ref', "ilike", name)
+            ]
+            products = self.search(
+                domain + args, limit=limit, order='product_ref')
             if products:
                 return products.name_get()
-        return super(ProductProduct, self).name_search(name, args=args, operator=operator, limit=limit)
+            domain = [
+                '|', '|', '|',
+                ('product_tmpl_id.name', operator, name),
+                ('product_tmpl_id.description', operator, name),
+                ('name', operator, name),
+                ('description', operator, name)
+            ]
+            products = self.search(
+                domain + args, limit=limit, order='product_ref')
+            if products:
+                return products.name_get()
+        return super(ProductProduct, self).name_search(
+            name, args=args, operator=operator, limit=limit)
 
 
 class PricelistItem(models.Model):

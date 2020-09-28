@@ -13,8 +13,7 @@
         'account', 'account_cancel'
     ],
     'data': [
-        # 'wizard/account_invoice_tax_views.xml',
-        # 'wizard/product_view.xml',
+        'wizard/calculate_pricelist_items_views.xml',
         'wizard/res_partner_view.xml'
     ],
 }

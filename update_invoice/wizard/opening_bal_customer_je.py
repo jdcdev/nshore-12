@@ -69,4 +69,4 @@ class InvoiceList(models.TransientModel):
                     'ref': partner.name,
                     'journal_id': 4,
                     'line_ids': [(0, 0, move_line_1), (0, 0, move_line_2)]})
-                move.action_post()
+                # move.action_post()

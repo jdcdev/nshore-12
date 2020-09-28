@@ -1,4 +1,3 @@
-
 {
     'name': 'Nshore Customization',
     'version': '12.0.1.0.0',
@@ -9,7 +8,7 @@
     'depends': [
         'sale', 'sale_management', 'account_reports', 'sale_margin'
         , 'mail', 'contacts', 'web',
-        'stock', 'purchase','point_of_sale', 'account'
+        'stock', 'purchase', 'point_of_sale', 'account'
     ],
     'data': [
         'security/security.xml',
@@ -22,6 +21,7 @@
         'views/inherited_purchase_form.xml',
         # 'views/invoice_report.xml',
         'views/payment.xml',
+        'report/report_invoice_extended.xml',
         'views/inherited_product_product_view.xml',
         'views/inherited_product_template_view.xml',
         'views/inherited_stock_product_view.xml',
@@ -46,7 +46,9 @@
         'views/customer_statement_unmail_views.xml',
         'views/menus.xml'
     ],
-    'qweb': ['static/src/xml/pos.xml'],
+    'qweb': [
+        'static/src/xml/pos.xml'
+    ],
     'installable': True,
     'auto_install': False,
 }
