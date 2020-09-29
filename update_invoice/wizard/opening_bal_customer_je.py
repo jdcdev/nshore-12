@@ -28,45 +28,51 @@ class InvoiceList(models.TransientModel):
         move_line_2 = {}
         account_account = self.env['account.account']
         for i in range(len(file_reader)):
+            # Remove Header value of sheet.
             if i == 0:
                 continue
+            # Read lines value after header.
             else:
                 field = list(map(str, file_reader[i]))
                 values = dict(zip(keys, field))
-                partner = self.env['res.partner'].search(
-                    [('ref', '=', values['External ID'])])
+                customer_id = 'c' + values['External ID']
+                res_partner = self.env['res.partner'].search([
+                    '|', ('active', '=', True), ('active', '=', False),
+                    ('ref', '=', customer_id)])
                 current_bal = float(values['CurrentBalance'])
+                # print("\n\n res_partner *&*&*&*&*&*", res_partner)
                 # minus entries value
-                if current_bal < 0:
-                    move_line_1 = {
-                        'partner_id': partner.id,
-                        'account_id': account_account.search(
-                            [('code', '=', 30000)]).id,
-                        'debit': abs(float(current_bal)),
-                        'credit': 0}
-                    move_line_2 = {
-                        'partner_id': partner.id,
-                        'account_id': account_account.search(
-                            [('code', '=', 1200)]).id,
-                        'debit': 0,
-                        'credit': abs(float(current_bal))}
-                # Plus entries value
-                else:
-                    move_line_1 = {
-                        'partner_id': partner.id,
-                        'account_id': account_account.search(
-                            [('code', '=', 30000)]).id,
-                        'debit': 0,
-                        'credit': float(current_bal)}
-                    move_line_2 = {
-                        'partner_id': partner.id,
-                        'account_id': account_account.search(
-                            [('code', '=', 1200)]).id,
-                        'debit': float(current_bal),
-                        'credit': 0}
-                move = self.env['account.move'].create({
-                    'date': date.today(),
-                    'ref': partner.name,
-                    'journal_id': 4,
-                    'line_ids': [(0, 0, move_line_1), (0, 0, move_line_2)]})
+                if res_partner:
+                    if current_bal < 0:
+                        move_line_1 = {
+                            'partner_id': res_partner.id,
+                            'account_id': account_account.search(
+                                [('code', '=', 30000)]).id,
+                            'debit': abs(float(current_bal)),
+                            'credit': 0}
+                        move_line_2 = {
+                            'partner_id': res_partner.id,
+                            'account_id': account_account.search(
+                                [('code', '=', 1200)]).id,
+                            'debit': 0,
+                            'credit': abs(float(current_bal))}
+                    # Plus entries value
+                    else:
+                        move_line_1 = {
+                            'partner_id': res_partner.id,
+                            'account_id': account_account.search(
+                                [('code', '=', 30000)]).id,
+                            'debit': 0,
+                            'credit': float(current_bal)}
+                        move_line_2 = {
+                            'partner_id': res_partner.id,
+                            'account_id': account_account.search(
+                                [('code', '=', 1200)]).id,
+                            'debit': float(current_bal),
+                            'credit': 0}
+                    self.env['account.move'].create({
+                        'date': date.today(),
+                        'ref': res_partner.name,
+                        'journal_id': 4,
+                        'line_ids': [(0, 0, move_line_1), (0, 0, move_line_2)]})
                 # move.action_post()
