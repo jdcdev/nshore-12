@@ -42,6 +42,7 @@
         'report/report_inventory_listing.xml',
         'report/customer_purchase_report_views.xml',
         'report/customer_purchase_report_detail_views.xml',
+        'report/report_sale_order_view.xml',
         'data/email_template_partner_statement.xml',
         'views/customer_statement_unmail_views.xml',
         'views/menus.xml'
