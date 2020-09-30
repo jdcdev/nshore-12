@@ -24,8 +24,8 @@ class ProductProduct(models.Model):
         if args is None:
             args = []
         domain = [
-            '|', ('product_tmpl_id.product_ref', "=ilike", name + '%s'),
-            ('product_ref',  "ilike", name+'%')
+            '|', ('product_tmpl_id.product_ref', "=ilike", name + '%'),
+            ('product_ref',  "=ilike", name+'%')
         ]
         products = self.search(
             domain + args, limit=limit, order='product_ref')
@@ -34,7 +34,7 @@ class ProductProduct(models.Model):
         else:
             domain = [
                 '|', ('product_tmpl_id.product_ref', "=ilike", name),
-                ('product_ref', "ilike", name)
+                ('product_ref', "=ilike", name)
             ]
             products = self.search(
                 domain + args, limit=limit, order='product_ref')
