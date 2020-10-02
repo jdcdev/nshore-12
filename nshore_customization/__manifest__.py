@@ -47,7 +47,7 @@
         'views/menus.xml'
     ],
     'qweb': [
-        'static/src/xml/pos.xml'
+        # 'static/src/xml/pos.xml'
     ],
     'installable': True,
     'auto_install': False,
