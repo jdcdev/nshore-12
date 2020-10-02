@@ -3,19 +3,49 @@
     <template id="report_saleorder_document_inherit" inherit_id="sale.report_saleorder_document">
         <xpath expr="//t[@t-set='information_block']" position="replace"/>
         <xpath expr="//t[@t-set='address']" position="replace"/>
-        <xpath expr="//div[@id='informations']" position="replace"></xpath>
-        <xpath expr="//h2[1]" position="replace"></xpath>
+        <xpath expr="//div[@id='informations']" position="replace"/>
+        <xpath expr="//h2[1]" position="replace"/>
+        <xpath expr="//p[@id='fiscal_position_remark']" position="replace"></xpath>
+        <xpath expr="//table/thead/tr/th[5]" position="replace"></xpath>
+        <xpath expr="//table/tbody/t/tr/t/td[5]" position="replace"></xpath>
         <xpath expr="//div[@class='page']" position="before">
             <div class="row ml-auto">
                 <div>
                     <strong>Invoice address:</strong>
-                    <div t-field="doc.partner_invoice_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
+                    <div>
+                        <span t-field="doc.partner_invoice_id"/>
+                        <br/>
+                        <t t-if="doc.partner_id.street">
+                            <span t-field="doc.partner_id.street"/>
+                        </t>
+                        <br/>
+                        <t t-if="doc.partner_id.street2">
+                            <span t-field="doc.partner_id.street2"/>
+                        </t>
+                        <br/>
+                        <span t-field="doc.partner_id.city"/>
+                        <span t-field="doc.partner_id.state_id"/>
+                        <span t-field="doc.partner_id.zip"/></div>
                 </div>
                 <div class="col-6">
                     <strong>Shipping address:</strong>
-                    <div t-field="doc.partner_shipping_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
+                    <div>
+                        <span t-field="doc.partner_shipping_id"/>
+                        <br/>
+                        <t t-if="doc.partner_id.street">
+                            <span t-field="doc.partner_id.street"/>
+                        </t>
+                        <br/>
+                        <t t-if="doc.partner_id.street2">
+                            <span t-field="doc.partner_id.street2"/>
+                        </t>
+                        <br/>
+                        <span t-field="doc.partner_id.city"/>
+                        <span t-field="doc.partner_id.state_id"/>
+                        <span t-field="doc.partner_id.zip"/>
+                    </div>
                 </div>
-                <div class="col-9">
+                <div>
                     <div class="col-auto mw-100 mb-2">
                         <t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
                             <span t-if="doc.state not in ['draft','sent']">Order # </span>
