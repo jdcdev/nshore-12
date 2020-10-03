@@ -17,7 +17,7 @@
         </xpath>
         <xpath expr="//div[@class='page']" position="before">
             <div class="row ml-auto">
-                <div>
+                <div class="col-4">
                     <strong>Shipping address:</strong>
                         <div>
                             <span t-field="o.partner_shipping_id"/>
@@ -34,7 +34,7 @@
                             <span t-field="o.partner_id.zip"/>
                         </div>
                     </div>
-                    <div class="col-6">
+                    <div class="col-4">
                         <div>
                             <span t-field="o.partner_id"/>
                             <br/>
@@ -51,8 +51,8 @@
                             <span t-field="o.partner_id.zip"/>
                         </div>
                     </div>
-                    <div>
-                        <div class="col-auto mw-100 mb-2">
+                    <div class="col-4">
+                        <div>
                             <span t-if="o.type == 'out_invoice' and o.state in ('open', 'in_payment', 'paid')">Invoice</span>
                             <span t-if="o.type == 'out_invoice' and o.state == 'draft'">Draft Invoice</span>
                             <span t-if="o.type == 'out_invoice' and o.state == 'cancel'">Cancelled Invoice</span>

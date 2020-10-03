@@ -43,6 +43,7 @@
                         <group>
                             <field name="sale_person_id" options="{'no_create': True,'no_edit': True}" />
                             <field name="partner_id" domain="[('customer', '=', True)]" options="{'no_create': True,'no_edit': True}" />
+                            <field name="pricelist_id" options="{'no_create': True,'no_edit': True}" />
                         </group>
                     </group>
                     <notebook>
@@ -63,7 +64,9 @@
                                                 <field name="tax_id" widget="many2many_tags" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
                                                 <field name="value" widget="monetary" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
                                                 <field name="purchase_order_id" domain="[('state','in', ('done','purchase'))]" options="{'no_create': True,'no_edit': True}" force_save="1" attrs="{'readonly': [('sale_order_id','!=',False)]}" />
-                                                <field name="vendor_id" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
+                                                <field name="vendor_id" attrs="{'readonly': [('state', 'not in', ('draft'))]}" invisible="1"/>
+                                                <field name="manufacturer_partner_id" attrs="{'readonly': [('state', 'not in', ('draft'))]}"
+                                                options="{'no_create': True,'no_edit': True, 'no_open': True}" />
                                                 <field name="state" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
                                             </group>
                                             <group>
