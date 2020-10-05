@@ -51,6 +51,15 @@ class ReturnOrder(models.Model):
     currency_id = fields.Many2one('res.currency')
     stock_move_ids = fields.One2many('stock.picking', 'return_order_id')
     account_invoice_ids = fields.One2many('account.invoice', 'return_order_id')
+    pricelist_id = fields.Many2one('product.pricelist', string='Pricelist', required=True, readonly=True, states={'draft': [('readonly', False)]})
+
+
+    @api.onchange('partner_id')
+    def onchange_partner(self):
+        values = {
+            'pricelist_id': self.partner_id.property_product_pricelist and self.partner_id.property_product_pricelist.id or False,
+        }
+        self.update(values)
 
     @api.depends('line_ids.value_before_tax')
     def _amount_all(self):
@@ -135,11 +144,15 @@ class ReturnOrder(models.Model):
 
     def process_return_without_so(self, lines=None):
         """Method to process return order record without so."""
+        manufacturer_partner_id = False
+        for line in lines:
+            if line.return_option == 'manufacturer':
+                manufacturer_partner_id = line.manufacturer_partner_id.id
         picking_type_id = self.env['stock.picking.type'].sudo().search([
             ('code', '=', 'incoming')], limit=1)
         picking_return = self.env['stock.picking'].sudo().create({
             'picking_type_id': picking_type_id.id or False,
-            'partner_id': self.partner_id.id,
+            'partner_id': manufacturer_partner_id or self.partner_id.id,
             'location_id': picking_type_id.default_location_dest_id.id,
             'location_dest_id': picking_type_id.default_location_dest_id.id,
             'return_order_id': self.id})
@@ -163,7 +176,7 @@ class ReturnOrder(models.Model):
             picking_return.sudo().action_assign()
             picking_return.sudo().button_validate()
             # if picking_return.state == 'done':
-            #     self.sudo().write({'state':'done'}) 
+            #     self.sudo().write({'state':'done'})
 
     def process_scrap(self, line=None):
         """Method to create return order record in stock scrap."""
@@ -458,6 +471,12 @@ class ReturnOrderLine(models.Model):
     _name = 'return.order.line'
     _description = 'Return Order Line'
 
+    @api.onchange('product_id')
+    def onchange_product(self):
+        if not self.return_id.partner_id or self.return_id.pricelist_id and self.product_id:
+            raise ValidationError(
+                    "Please select Customer first!")
+
     @api.depends('qty', 'unit_price', 'tax_id')
     def _compute_amount(self):
         """Compute the amounts of the Order line."""
@@ -511,6 +530,8 @@ class ReturnOrderLine(models.Model):
         [('draft', 'Draft'), ('done', 'Done')], default='draft', readonly=1)
     partner_id = fields.Many2one(
         "res.partner", string="Customer", related='return_id.partner_id')
+    manufacturer_partner_id = fields.Many2one(
+        'res.partner', string='Manufacturer')
 
     @api.onchange('sale_order_id')
     def _onchange_order_id(self):
@@ -545,7 +566,7 @@ class ReturnOrderLine(models.Model):
                 record.tax_id = rec.tax_id
 
     @api.onchange('product_id')
-    def onchage_product_id(self):
+    def onchange_product_id(self):
         """Function call to get qty of product."""
         for record in self:
             order_line_rec = record.sale_order_id.mapped(
@@ -556,7 +577,24 @@ class ReturnOrderLine(models.Model):
                 self.purchase_order_id = self.env['purchase.order'].search(
                     [('origin', '=', self.sale_order_id.name),
                         ('product_id', '=', reco.product_id.id)], limit=1)
+            if not record.sale_order_id:
+                product = self.product_id
+                self.unit_price = self.env['account.tax']._fix_tax_included_price_company(self._get_display_price(product), product.taxes_id, self.tax_id, self.env.user.company_id)
 
+    @api.multi
+    def _get_display_price(self, product):
+        """ Function to set product's unit price as per pricelist """
+        if self.return_id.pricelist_id.discount_policy == 'with_discount':
+            return product.with_context(pricelist=self.return_id.pricelist_id.id).price
+        product_context = dict(self.env.context, partner_id=self.return_id.partner_id.id, date=self.return_id.date, uom=self.product_id.uom_id.id)
+
+        final_price, rule_id = self.return_id.pricelist_id.with_context(product_context).get_product_price_rule(self.product_id, self.qty or 1.0, self.return_id.partner_id)
+        base_price, currency = self.with_context(product_context)._get_real_price_currency(product, rule_id, self.qty, self.product_id.uom_id, self.return_id.pricelist_id.id)
+        if currency != self.return_id.pricelist_id.currency_id:
+            base_price = currency._convert(
+                base_price, self.return_id.pricelist_id.currency_id,
+                self.return_id.company_id or self.env.user.company_id, self.return_id.date or fields.Date.today())
+        return max(base_price, final_price)
 
 class StockMove(models.Model):
     """Class inherit to add field."""
