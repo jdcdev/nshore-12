@@ -10,7 +10,7 @@
         <xpath expr="//table/tbody/t/tr/t/td[5]" position="replace"></xpath>
         <xpath expr="//div[@class='page']" position="before">
             <div class="row ml-auto">
-                <div>
+                <div class="col-4">
                     <strong>Invoice address:</strong>
                     <div>
                         <span t-field="doc.partner_invoice_id"/>
@@ -27,7 +27,7 @@
                         <span t-field="doc.partner_id.state_id"/>
                         <span t-field="doc.partner_id.zip"/></div>
                 </div>
-                <div class="col-6">
+                <div class="col-4">
                     <strong>Shipping address:</strong>
                     <div>
                         <span t-field="doc.partner_shipping_id"/>
@@ -45,7 +45,7 @@
                         <span t-field="doc.partner_id.zip"/>
                     </div>
                 </div>
-                <div>
+                <div class="col-4">
                     <div class="col-auto mw-100 mb-2">
                         <t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
                             <span t-if="doc.state not in ['draft','sent']">Order # </span>
