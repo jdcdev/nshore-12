@@ -179,7 +179,6 @@ class CustomerPurchasesReportView(models.AbstractModel):
                 }
 
             for past_rec in past_final_rec:
-                print("***********************************", past_rec[3])
                 total_purchased_amount = past_rec[3] or 0.0
                 past_total_purchased_amount = past_rec[7] or 0.0
                 grand_total_purchased_amount += total_purchased_amount
