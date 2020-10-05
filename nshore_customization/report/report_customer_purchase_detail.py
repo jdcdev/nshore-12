@@ -52,7 +52,8 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
                 pt.list_price AS list_price,
                 c.id,
                 c.name,
-                c.phone
+                c.phone,
+                c.parent_id
             FROM account_invoice_line l
                 LEFT JOIN account_invoice i ON (l.invoice_id = i.id)
                 LEFT JOIN res_partner c ON (i.partner_id = c.id)
@@ -91,6 +92,7 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
 
         if result:
             for res in result:
+                parent_id = self.env['res.partner'].browse(res[15]).name
                 grand_total_purchased_amount += res[6] or 0.0
                 grand_total_gross_profit_details += res[9] or 0.0
                 if not grand_total_gross_profit_details == 0:
@@ -107,24 +109,23 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
                     'total_discounts': res[8] or 0.0,
                     'total_gross_profit': res[9] or 0.0,
                     'total_profit_margin': res[10] or 0.0,
-                    'list_price': res[11] or 0.0
+                    'list_price': res[11] or 0.0,
                 }
-                if res[13] not in partner_dict.keys():
+                if parent_id not in partner_dict.keys():
                     partner_contact_dict.update({
-                        res[13]: {'phone_no': res[14]}
+                        parent_id: {'phone_no': res[14]}
                     })
                     partner_dict.update({
-                        res[13]: {
+                        parent_id: {
                             res[1]: [vals_dict]
                         }
                     })
-                elif res[1] not in partner_dict[res[13]].keys():
-                    partner_dict[res[13]].update({
+                elif res[1] not in partner_dict[parent_id].keys():
+                    partner_dict[parent_id].update({
                         res[1]: [vals_dict]
                     })
                 else:
-                    partner_dict[res[13]][res[1]].append(vals_dict)
-
+                    partner_dict[parent_id][res[1]].append(vals_dict)
         data = {
             'doc_ids': self.ids,
             'doc_model': model,
