@@ -473,9 +473,9 @@ class ReturnOrderLine(models.Model):
 
     @api.onchange('product_id')
     def onchange_product(self):
-        if not self.return_id.partner_id or self.return_id.pricelist_id and self.product_id:
-            raise ValidationError(
-                    "Please select Customer first!")
+        """Onchange call when customer is not selected."""
+        if not self.return_id.partner_id or not self.return_id.pricelist_id:
+            raise ValidationError("Please select Customer first!")
 
     @api.depends('qty', 'unit_price', 'tax_id')
     def _compute_amount(self):
