@@ -53,9 +53,9 @@ class ReturnOrder(models.Model):
     account_invoice_ids = fields.One2many('account.invoice', 'return_order_id')
     pricelist_id = fields.Many2one('product.pricelist', string='Pricelist', required=True, readonly=True, states={'draft': [('readonly', False)]})
 
-
     @api.onchange('partner_id')
     def onchange_partner(self):
+        """Onchange call for customer pricelist."""
         values = {
             'pricelist_id': self.partner_id.property_product_pricelist and self.partner_id.property_product_pricelist.id or False,
         }
@@ -473,9 +473,9 @@ class ReturnOrderLine(models.Model):
 
     @api.onchange('product_id')
     def onchange_product(self):
-        if not self.return_id.partner_id or self.return_id.pricelist_id and self.product_id:
-            raise ValidationError(
-                    "Please select Customer first!")
+        """Onchange call when customer is not selected."""
+        if not self.return_id.partner_id or not self.return_id.pricelist_id:
+            raise ValidationError("Please select Customer first!")
 
     @api.depends('qty', 'unit_price', 'tax_id')
     def _compute_amount(self):
