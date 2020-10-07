@@ -2,11 +2,14 @@ from odoo import fields, models, api
 
 
 class ProductProduct (models.Model):
+    """Class inherit to add name search."""
+
     _inherit = 'product.product'
     _description = 'Product'
 
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
+        """Function inherit name search for products."""
         product_list = []
         if args is None:
             args = []

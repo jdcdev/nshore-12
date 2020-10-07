@@ -51,7 +51,9 @@ class ReturnOrder(models.Model):
     currency_id = fields.Many2one('res.currency')
     stock_move_ids = fields.One2many('stock.picking', 'return_order_id')
     account_invoice_ids = fields.One2many('account.invoice', 'return_order_id')
-    pricelist_id = fields.Many2one('product.pricelist', string='Pricelist', required=True, readonly=True, states={'draft': [('readonly', False)]})
+    pricelist_id = fields.Many2one(
+        'product.pricelist', string='Pricelist',
+        readonly=True, states={'draft': [('readonly', False)]})
 
     @api.onchange('partner_id')
     def onchange_partner(self):
@@ -153,7 +155,7 @@ class ReturnOrder(models.Model):
         picking_return = self.env['stock.picking'].sudo().create({
             'picking_type_id': picking_type_id.id or False,
             'partner_id': manufacturer_partner_id or self.partner_id.id,
-            'location_id': picking_type_id.default_location_dest_id.id,
+            'location_id': picking_type_id.default_location_src_id.id,
             'location_dest_id': picking_type_id.default_location_dest_id.id,
             'return_order_id': self.id})
         for line in lines:
@@ -163,7 +165,7 @@ class ReturnOrder(models.Model):
                 'product_id': line.product_id.id,
                 'product_uom': line.product_id.product_tmpl_id.uom_id.id,
                 'product_uom_qty': line.qty,
-                'location_id': picking_type_id.default_location_dest_id.id,
+                'location_id': picking_type_id.default_location_src_id.id,
                 'location_dest_id': picking_type_id.default_location_dest_id.id,
                 'partner_id': self.partner_id.id,
                 'picking_id': picking_return.id,
