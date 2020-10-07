@@ -53,9 +53,9 @@ class ReturnOrder(models.Model):
     account_invoice_ids = fields.One2many('account.invoice', 'return_order_id')
     pricelist_id = fields.Many2one('product.pricelist', string='Pricelist', required=True, readonly=True, states={'draft': [('readonly', False)]})
 
-
     @api.onchange('partner_id')
     def onchange_partner(self):
+        """Onchange call for customer pricelist."""
         values = {
             'pricelist_id': self.partner_id.property_product_pricelist and self.partner_id.property_product_pricelist.id or False,
         }
