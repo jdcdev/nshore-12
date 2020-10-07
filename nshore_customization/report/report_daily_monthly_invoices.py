@@ -28,8 +28,8 @@ class ReportDailyMonthlyInvoices(models.AbstractModel):
                     'date': invoice.date_invoice.strftime(
                         date_format),
                     'number': invoice_num or invoice.id,
-                    'cust_no': invoice.partner_id.id,
-                    'customer': invoice.partner_id.name,
+                    'cust_no': invoice.partner_id.parent_id.ref if invoice.partner_id.parent_id else invoice.partner_id.ref,
+                    'customer': invoice.partner_id.parent_id.name if invoice.partner_id.parent_id else invoice.partner_id.name,
                     'user': invoice.user_id.name,
                     'amount': invoice_amount,
                     'discount': discount_amount,
@@ -43,8 +43,8 @@ class ReportDailyMonthlyInvoices(models.AbstractModel):
     def get_total_detail(self, invoice_data):
         data = []
         invoice_rec_total = self.env['account.invoice'].search(
-                [('date_invoice', '>=', invoice_data[0]),
-                 ('date_invoice', '<=', invoice_data[1])])
+            [('date_invoice', '>=', invoice_data[0]),
+                ('date_invoice', '<=', invoice_data[1])])
         invoice_total_amount = discount_total_amount = amount_tax_total =\
             total = 0
         for inv in invoice_rec_total:
