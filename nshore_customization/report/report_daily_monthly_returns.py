@@ -29,8 +29,8 @@ class ReportDailyMonthlyReturns(models.AbstractModel):
                     'date': invoice.date_invoice.strftime(
                         date_format),
                     'number': invoice_num or invoice.id,
-                    'cust_no': invoice.partner_id.id,
-                    'customer': invoice.partner_id.name,
+                    'cust_no': invoice.partner_id.parent_id.ref if invoice.partner_id.parent_id else invoice.partner_id.ref,
+                    'customer': invoice.partner_id.parent_id.name if invoice.partner_id.parent_id else invoice.partner_id.name,
                     'user': invoice.user_id.name,
                     'amount': invoice_amount,
                     'discount': discount_amount,

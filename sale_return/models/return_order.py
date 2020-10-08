@@ -122,10 +122,18 @@ class ReturnOrder(models.Model):
         # self.check_delivery_status()
         line_ids_wo_so = self.line_ids.sudo().filtered(
             lambda l: not l.sale_order_id)
-
         if line_ids_wo_so:
-            self.process_return_without_so(lines=line_ids_wo_so)
-            self.process_refund_customer_wo_so(lines=line_ids_wo_so)
+            for record in line_ids_wo_so:
+                if record.return_option == 'scrap':
+                    self.process_scrap(line=record)
+                elif record.return_option == 'no_return':
+                    self.process_no_return()
+                elif record.return_option == 'manufacturer':
+                    self.process_return_to_vendor_wo_po(lines=record)
+                    self.process_refund_customer_wo_so(lines=record)
+                elif record.return_option == 'stock':
+                    self.process_return_without_so(lines=line_ids_wo_so)
+                    self.process_refund_customer_wo_so(lines=line_ids_wo_so)
 
         line_ids = self.env['return.order.line'].sudo().search(
             [('return_id', '=', self.id), ('sale_order_id', '!=', False)])
@@ -136,13 +144,50 @@ class ReturnOrder(models.Model):
                 elif record.return_option == 'no_return':
                     self.process_no_return()
                 elif record.return_option == 'manufacturer':
-                    self.process_return_to_vendor(line=record)
+                    self.process_return_to_vendor_wo_po(lines=record)
+                    self.process_refund_customer_wo_so(lines=record)
                 elif record.return_option == 'stock':
                     if record.sale_order_id:
                         self.process_return_to_stock(line=record)
 
         if not any(line.state not in ['done'] for line in self.line_ids):
             self.sudo().write({'state': 'done'})
+
+    def process_return_to_vendor_wo_po(self, lines=None):
+        """Function call to retun product to manuf without SO/PO."""
+        manufacturer_partner_id = False
+        for line in lines:
+            if line.return_option == 'manufacturer':
+                manufacturer_partner_id = line.manufacturer_partner_id.id
+        picking_type_id = self.env['stock.picking.type'].sudo().search([
+            ('code', '=', 'incoming')], limit=1)
+        location = self.env['stock.location'].search(
+            [('usage', '=', 'supplier')], limit=1)
+        picking_return = self.env['stock.picking'].sudo().create({
+            'picking_type_id': picking_type_id.id or False,
+            'partner_id': manufacturer_partner_id or self.partner_id.id,
+            'location_id': picking_type_id.default_location_src_id.id,
+            'location_dest_id': location.id,
+            'return_order_id': self.id})
+        for line in lines:
+            # stock_move_id =
+            self.env['stock.move'].sudo().create({
+                'name': line.product_id.name,
+                'product_id': line.product_id.id,
+                'product_uom': line.product_id.product_tmpl_id.uom_id.id,
+                'product_uom_qty': line.qty,
+                'location_id': picking_type_id.default_location_src_id.id,
+                'location_dest_id': location.id,
+                'partner_id': self.partner_id.id,
+                'picking_id': picking_return.id,
+                'picking_type_id': picking_type_id.id,
+                'quantity_done': line.qty})
+            line.sudo().write({'state': 'done'})
+        if picking_return:
+            picking_return.sudo().write({'return_order_id': self.id})
+            picking_return.sudo().action_confirm()
+            picking_return.sudo().action_assign()
+            picking_return.sudo().button_validate()
 
     def process_return_without_so(self, lines=None):
         """Method to process return order record without so."""
@@ -337,7 +382,7 @@ class ReturnOrder(models.Model):
             # self.sudo().write({'state': 'done'})
 
     def process_return_to_vendor(self, line=None):
-        """Method to process return to vendor."""
+        """Method to process return to vendor(Closed this as of now)."""
         line_record = self.line_ids.filtered(
             lambda m: m.return_option == 'manufacturer')
         self.check_orderline()
@@ -381,7 +426,6 @@ class ReturnOrder(models.Model):
              ('product_id', '=', line.product_id.id),
              ('picking_type_id', '=', picking_type_id.id),
              ('state', '=', 'done')], limit=1)
-
         if picking_id:
             vals = self.env['stock.return.picking'].with_context(
                 {'active_id': picking_id.id}).default_get(
