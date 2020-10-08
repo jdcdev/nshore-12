@@ -21,8 +21,8 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
                 payment_data.update({
                     'date': payment.payment_date.strftime(date_format),
                     'payment_no': payment.name or payment.id,
-                    'cust_no': payment.partner_id.id,
-                    'cust_name': payment.partner_id.name,
+                    'cust_no': payment.partner_id.parent_id.ref if payment.partner_id.parent_id else payment.partner_id.ref,
+                    'cust_name': payment.partner_id.parent_id.name if payment.partner_id.parent_id else payment.partner_id.name,
                     'user': payment.sudo().create_uid.name,
                     'type': payment.journal_id.type,
                     'amount': payment.amount,

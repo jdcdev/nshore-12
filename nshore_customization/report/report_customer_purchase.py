@@ -137,9 +137,9 @@ class CustomerPurchasesReportView(models.AbstractModel):
                     left join product_product p on (p.id=l.product_id)
                     left join product_template pt on (pt.id = p.product_tmpl_id)
                     left join product_category categ on (categ.id = pt.categ_id)""" + past_query_where + """ """ + query_groupby + """)
-                SELECT 
-                cp.cust_ref AS cust_ref, 
-                cp.customer_name AS customer_name, 
+                SELECT
+                cp.cust_ref AS cust_ref,
+                cp.customer_name AS customer_name,
                 cp.last_purchased_date AS last_purchased_date,
                 cp.total_amount_purchased AS total_amount_purchased,
                 cp.total_discounts AS total_discounts,
@@ -147,14 +147,14 @@ class CustomerPurchasesReportView(models.AbstractModel):
                 cp.total_profit_margin AS total_profit_margin,
                 pcp.total_amount_purchased AS past_total_amount_purchased,
                 pcp.total_gross_profit AS past_total_gross_profit,
-                pcp.total_profit_margin AS past_total_profit_margin
+                pcp.total_profit_margin AS past_total_profit_margin,
+                cp.cust_id as cust_id
                 from cuur_customer_purchase cp
                 left join past_customer_purchase pcp on (pcp.cust_id = cp.cust_id)"""
 
             past_query_param = query_param + past_query_param
             self.env.cr.execute(past_sql_qry, past_query_param)
             past_final_rec = self.env.cr.fetchall()
-
             if not past_final_rec and not self._context.get('html_report', False):
                 raise ValidationError(_("No data available."))
             elif not past_final_rec and self._context.get('html_report', False):
@@ -179,6 +179,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
                 }
 
             for past_rec in past_final_rec:
+                partner_data = self.env['res.partner'].browse(past_rec[10])
                 total_purchased_amount = past_rec[3] or 0.0
                 past_total_purchased_amount = past_rec[7] or 0.0
                 grand_total_purchased_amount += total_purchased_amount
@@ -199,8 +200,8 @@ class CustomerPurchasesReportView(models.AbstractModel):
                         (total_changed_amount / past_total_purchased_amount) * 100, 2)
 
                 vals.append({
-                    'cust_ref': past_rec[0] or '',
-                    'cust_name': past_rec[1] or '',
+                    'cust_ref': partner_data.parent_id.ref if partner_data.parent_id else past_rec[0] or '',
+                    'cust_name': partner_data.parent_id.name if partner_data.parent_id else past_rec[1] or '',
                     'purchased_date': past_rec[2] or '',
                     'total_purchased_amount': total_purchased_amount,
                     'total_discounts': past_rec[4] or 0.0,
@@ -214,10 +215,11 @@ class CustomerPurchasesReportView(models.AbstractModel):
                 })
 
             grand_total_changed_amount = grand_total_purchased_amount - \
-                                         grand_past_total_purchased_amount
+                grand_past_total_purchased_amount
 
             if grand_past_total_purchased_amount > 0:
-                grand_total_changed_per = round((grand_total_changed_amount / grand_past_total_purchased_amount) * 100, 2)
+                grand_total_changed_per = round(
+                    (grand_total_changed_amount / grand_past_total_purchased_amount) * 100, 2)
 
         if not is_comparsion_reprot:
             self.env.cr.execute(final_sql_qry, (query_param))
@@ -246,13 +248,14 @@ class CustomerPurchasesReportView(models.AbstractModel):
                 }
 
             for res in result:
+                partner_data = self.env['res.partner'].browse(res[7])
                 grand_total_purchased_amount += res[3] or 0.0
                 grand_total_discounts += res[4] or 0.0
                 grand_total_gross_profit += res[5] or 0.0
                 grand_total_margin += res[6] or 0.0
                 vals.append({
-                    'cust_ref': res[0] or '',
-                    'cust_name': res[1] or '',
+                    'cust_ref': partner_data.parent_id.ref if partner_data.parent_id else res[0] or '',
+                    'cust_name': partner_data.parent_id.name if partner_data.parent_id else res[1] or '',
                     'purchased_date': res[2] or '',
                     'total_purchased_amount': res[3] or 0.0,
                     'total_discounts': res[4] or 0.0,
@@ -264,7 +267,6 @@ class CustomerPurchasesReportView(models.AbstractModel):
                     'total_changed_amount': 0.0,
                     'total_changed_per': 0.0
                 })
-        print("\n\n ")
         data = {
             'doc_ids': self.ids,
             'doc_model': model,
