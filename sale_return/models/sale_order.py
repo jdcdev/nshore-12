@@ -29,12 +29,16 @@ class SaleOrder(models.Model):
             'target': 'current',
         }
 
+
 class ReturnOrderLine(models.Model):
+    """Class inherited to add sales order line info."""
+
     _inherit = 'return.order.line'
     _description = 'Return Order Line'
 
     def _default_sale_order_id(self):
-        return int(self.env['ir.config_parameter'].sudo().get_param('sale.order.id'))
+        return int(self.env['ir.config_parameter'].sudo().get_param(
+            'sale.order.id'))
 
     sale_order_id = fields.Many2one(
         'sale.order', string='Sale Order', default=_default_sale_order_id)
