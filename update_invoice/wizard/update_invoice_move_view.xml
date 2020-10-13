@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!--Form view of Product List-->
+        <record model="ir.ui.view" id="update_invoice_partner_wizard">
+            <field name="name">Update Invoice Partner</field>
+            <field name="model">update.invoice.move</field>
+            <field name="arch" type="xml">
+                <form>
+                    <footer>
+                        <button name="update_invoice_move_partner" type="object" string="Update Invoice Partner" class="oe_highlight" style="margin-left: 5px;"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_update_invoice_partner" model="ir.actions.act_window">
+            <field name="name">Update Invoice Partner</field>
+            <field name="res_model">update.invoice.move</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        <menuitem action="action_update_invoice_partner" name="Update Invoice Partner" id="menu_update_invoice_partner" parent="account.menu_finance_receivables" />
+    </data>
+</odoo>

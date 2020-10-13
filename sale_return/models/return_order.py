@@ -377,7 +377,7 @@ class ReturnOrder(models.Model):
             picking_return.sudo().action_confirm()
             picking_return.sudo().action_assign()
             picking_return.sudo().button_validate()
-        self.sudo.write({'state': 'done'})
+        self.sudo().write({'state': 'done'})
 
     def process_scrap(self, line=None):
         """Method to create return order record in stock scrap."""
@@ -533,7 +533,7 @@ class ReturnOrder(models.Model):
                 return_pick.sudo().button_validate()
             line.sudo().write({'state': 'done'})
             line.sale_order_id.sudo().write({'state': 'return'})
-            # self.sudo().write({'state': 'done'})
+            self.sudo().write({'state': 'done'})
 
     def process_return_to_vendor(self, line=None):
         """Method to process return to vendor(Closed this as of now)."""
