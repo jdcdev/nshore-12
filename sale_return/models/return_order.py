@@ -14,9 +14,6 @@ class ReturnOrder(models.Model):
     name = fields.Char(
         string="Name", required=1,
         default=lambda self: _('New'), track_visibility='always')
-    reason_id = fields.Many2one(
-        "return.reason", string="Return Reason",
-        required=True, track_visibility='always')
     line_ids = fields.One2many("return.order.line", "return_id", copy=True)
     sale_person_id = fields.Many2one(
         "res.users", string="SalesPerson", required=True,
@@ -101,15 +98,10 @@ class ReturnOrder(models.Model):
             if active_model == 'sale.order':
                 sale_order = self.env[active_model].browse(active_id)
                 rec['partner_id'] = sale_order.partner_id.id
-                # sale_order_id = self.env[
-                #     'ir.config_parameter'].sudo().set_param(
-                #         'sale.order.id', active_id)
                 self.env[
                     'ir.config_parameter'].sudo().set_param(
                         'sale.order.id', active_id)
         else:
-            # sale_order_id = self.env['ir.config_parameter'].sudo().set_param(
-            #     'sale.order.id', '')
             self.env['ir.config_parameter'].sudo().set_param(
                 'sale.order.id', '')
         return rec
@@ -195,9 +187,6 @@ class ReturnOrder(models.Model):
                 'invoice_line_tax_ids': line.tax_id.ids or False,
                 'invoice_id': refund and refund.id or False})
 
-            # if not self.line_ids.filtered(lambda m: m.purchase_order_id):
-            #     raise ValidationError("""Can not return to the vendor as there is
-            #         no purchase order linked to this order!""")
         picking_type_id = self.env['stock.picking.type'].search([
             ('code', '=', 'incoming')], limit=1)
         picking_id = self.env['stock.picking'].search(
@@ -781,6 +770,10 @@ class ReturnOrderLine(models.Model):
         """Function call to get qty of product."""
         for record in self:
             if record.return_id.type_partner == 'customer':
+                if record.return_option == 'manufacturer' and record.sale_order_id:
+                    manuf_ids = self.product_id.seller_ids.mapped(
+                        'name').ids
+                    return {'domain': {'manufacturer_partner_id': [('id', 'in', manuf_ids)]}}
                 order_line_rec = record.sale_order_id.mapped(
                     'order_line').filtered(
                     lambda p: p.product_id == record.product_id)
@@ -790,6 +783,7 @@ class ReturnOrderLine(models.Model):
                         [('origin', '=', self.sale_order_id.name),
                             ('product_id', '=', reco.product_id.id)], limit=1)
                 if not record.sale_order_id:
+                    print("\n\n !!!", record.sale_order_id)
                     product = self.product_id
                     self.unit_price = self.env[
                         'account.tax']._fix_tax_included_price_company(

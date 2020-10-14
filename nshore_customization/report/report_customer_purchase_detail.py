@@ -92,7 +92,7 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
 
         if result:
             for res in result:
-                parent_id = self.env['res.partner'].browse(res[15]).name
+                # parent_id = self.env['res.partner'].browse(res[15]).name
                 grand_total_purchased_amount += res[6] or 0.0
                 grand_total_gross_profit_details += res[9] or 0.0
                 if not grand_total_gross_profit_details == 0:
@@ -111,21 +111,21 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
                     'total_profit_margin': res[10] or 0.0,
                     'list_price': res[11] or 0.0,
                 }
-                if parent_id not in partner_dict.keys():
+                if res[13] not in partner_dict.keys():
                     partner_contact_dict.update({
-                        parent_id: {'phone_no': res[14]}
+                        res[13]: {'phone_no': res[14]}
                     })
                     partner_dict.update({
-                        parent_id: {
+                        res[13]: {
                             res[1]: [vals_dict]
                         }
                     })
-                elif res[1] not in partner_dict[parent_id].keys():
-                    partner_dict[parent_id].update({
+                elif res[1] not in partner_dict[res[13]].keys():
+                    partner_dict[res[13]].update({
                         res[1]: [vals_dict]
                     })
                 else:
-                    partner_dict[parent_id][res[1]].append(vals_dict)
+                    partner_dict[res[13]][res[1]].append(vals_dict)
         data = {
             'doc_ids': self.ids,
             'doc_model': model,
