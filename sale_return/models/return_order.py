@@ -23,8 +23,7 @@ class ReturnOrder(models.Model):
         default=lambda self: self.env.user and self.env.user.id or False,
         track_visibility='always')
     partner_id = fields.Many2one(
-        "res.partner", string="Customer",
-        required=True, track_visibility='always')
+        "res.partner", string="Customer", track_visibility='always')
     date = fields.Date(
         string="Date", required=True,
         default=lambda self: date.today(), track_visibility='always')
@@ -54,6 +53,11 @@ class ReturnOrder(models.Model):
     pricelist_id = fields.Many2one(
         'product.pricelist', string='Pricelist',
         readonly=True, states={'draft': [('readonly', False)]})
+    type_partner = fields.Selection([
+        ('supplier', 'Vendor'), ('customer', 'Customer')], default='customer')
+    supplier_id = fields.Many2one(
+        'res.partner', string="Vendor",
+        domain=[('supplier', '=', True)])
 
     @api.onchange('partner_id')
     def onchange_partner(self):
@@ -120,38 +124,188 @@ class ReturnOrder(models.Model):
         """Main method to process return according the return option."""
         self.check_orderline()
         # self.check_delivery_status()
-        line_ids_wo_so = self.line_ids.sudo().filtered(
-            lambda l: not l.sale_order_id)
-        if line_ids_wo_so:
-            for record in line_ids_wo_so:
-                if record.return_option == 'scrap':
-                    self.process_scrap(line=record)
-                elif record.return_option == 'no_return':
-                    self.process_no_return()
-                elif record.return_option == 'manufacturer':
-                    self.process_return_to_vendor_wo_po(lines=record)
-                    self.process_refund_customer_wo_so(lines=record)
-                elif record.return_option == 'stock':
-                    self.process_return_without_so(lines=line_ids_wo_so)
-                    self.process_refund_customer_wo_so(lines=line_ids_wo_so)
+        if self.type_partner == 'customer':
+            line_ids_wo_so = self.line_ids.sudo().filtered(
+                lambda l: not l.sale_order_id)
+            if line_ids_wo_so:
+                for record in line_ids_wo_so:
+                    if record.return_option == 'scrap':
+                        self.process_scrap(line=record)
+                    elif record.return_option == 'no_return':
+                        self.process_no_return()
+                    elif record.return_option == 'manufacturer':
+                        self.process_return_to_vendor_wo_po(lines=record)
+                        self.process_refund_customer_wo_so(lines=record)
+                    elif record.return_option == 'stock':
+                        self.process_return_without_so(lines=line_ids_wo_so)
+                        self.process_refund_customer_wo_so(
+                            lines=line_ids_wo_so)
 
-        line_ids = self.env['return.order.line'].sudo().search(
-            [('return_id', '=', self.id), ('sale_order_id', '!=', False)])
-        if line_ids:
-            for record in line_ids:
-                if record.return_option == 'scrap':
-                    self.process_scrap(line=record)
-                elif record.return_option == 'no_return':
-                    self.process_no_return()
-                elif record.return_option == 'manufacturer':
-                    self.process_return_to_vendor_wo_po(lines=record)
-                    self.process_refund_customer_wo_so(lines=record)
-                elif record.return_option == 'stock':
-                    if record.sale_order_id:
-                        self.process_return_to_stock(line=record)
+            line_ids = self.env['return.order.line'].sudo().search(
+                [('return_id', '=', self.id), ('sale_order_id', '!=', False)])
+            if line_ids:
+                for record in line_ids:
+                    if record.return_option == 'scrap':
+                        self.process_scrap(line=record)
+                    elif record.return_option == 'no_return':
+                        self.process_no_return()
+                    elif record.return_option == 'manufacturer':
+                        self.process_return_to_vendor_wo_po(lines=record)
+                        self.process_refund_customer_wo_so(lines=record)
+                    elif record.return_option == 'stock':
+                        if record.sale_order_id:
+                            self.process_return_to_stock(line=record)
 
-        if not any(line.state not in ['done'] for line in self.line_ids):
-            self.sudo().write({'state': 'done'})
+            if not any(line.state not in ['done'] for line in self.line_ids):
+                self.sudo().write({'state': 'done'})
+        else:
+            line_ids_wo_po = self.line_ids.sudo().filtered(
+                lambda l: not l.purchase_order_id)
+            if line_ids_wo_po:
+                for record in line_ids_wo_po:
+                    if record.return_option_po == 'stock':
+                        self.process_restun_product_vendor_type(lines=record)
+                        self.product_refund_from_vendor_type(lines=record)
+            line_ids = self.line_ids.sudo().filtered(
+                lambda l: l.purchase_order_id)
+            if line_ids:
+                for record in line_ids:
+                    if record.return_option_po == 'stock':
+                        self.process_return_product_vendor_with_po(
+                            lines=record)
+
+    def process_return_product_vendor_with_po(self, lines):
+        """Function call to create retun to vendor with PO."""
+        for record in lines:
+            refund = self.env['account.invoice'].create({
+                'type': 'in_refund',
+                'partner_id': self.supplier_id.id,
+                'return_order_id': self.id})
+        for line in lines:
+            # invoice_line_id =
+            self.env['account.invoice.line'].create({
+                'name': line.product_id.name or '',
+                'product_id': line.product_id.id or False,
+                'account_id': line.product_id.property_account_income_id.id \
+                or line.product_id.categ_id.property_account_income_categ_id.id \
+                or False,
+                'quantity': line.qty or 0.0,
+                'uom_id': line.product_id.product_tmpl_id.uom_id.id or False,
+                'price_unit': line.unit_price or 0.0,
+                'invoice_line_tax_ids': line.tax_id.ids or False,
+                'invoice_id': refund and refund.id or False})
+
+            # if not self.line_ids.filtered(lambda m: m.purchase_order_id):
+            #     raise ValidationError("""Can not return to the vendor as there is
+            #         no purchase order linked to this order!""")
+        picking_type_id = self.env['stock.picking.type'].search([
+            ('code', '=', 'incoming')], limit=1)
+        picking_id = self.env['stock.picking'].search(
+            [('group_id', '=', lines.purchase_order_id.group_id.id),
+             ('product_id', '=', lines.product_id.id),
+             ('picking_type_id', '=', picking_type_id.id),
+             ('state', '=', 'done')], limit=1)
+        if picking_id:
+            vals = self.env['stock.return.picking'].with_context({
+                'active_id': picking_id.id}).default_get(
+                ['product_return_moves', 'move_dest_exists',
+                    'parent_location_id',
+                 'original_location_id', 'location_id', ])
+            actual_line = False
+            if 'product_return_moves' in vals:
+                actual_line = [return_data for return_data in vals[
+                    'product_return_moves'] if
+                    return_data[2]['product_id'] == lines.product_id.id]
+            if actual_line:
+                stock_return_vendor = self.env['stock.return.picking']
+                default_data = stock_return_vendor.with_context(
+                    active_ids=picking_id.ids,
+                    active_id=picking_id.ids[0]).default_get(
+                    ['move_dest_exists', 'original_location_id',
+                        'product_return_moves', 'parent_location_id',
+                     'location_id'])
+                default_data.pop('product_return_moves')
+                actual_line[0][2]['quantity'] = lines.qty
+                default_data['product_return_moves'] = actual_line
+                return_wiz = stock_return_vendor.with_context(
+                    active_ids=picking_id.ids,
+                    active_id=picking_id.ids[0]).create(
+                    default_data)
+                return_wiz.product_return_moves.sudo().write({
+                    'quantity': lines.qty, 'to_refund': True})
+                res = return_wiz.sudo().create_returns()
+                return_pick = self.env['stock.picking'].sudo().browse(
+                    res['res_id'])
+                # Validate picking
+                return_picking_type_id = self.env[
+                    'stock.picking.type'].search(
+                    [('code', '=', 'incoming')], limit=1)
+                stock_picking_ids = self.env['stock.picking'].search(
+                    [('group_id', '=', lines.purchase_order_id.group_id.id),
+                     ('picking_type_id', '=',
+                        return_picking_type_id.id)])
+                self.stock_move_ids = [(4, stock_picking_ids.id)]
+                return_pick.move_line_ids.write({
+                    'qty_done': lines.qty, 'to_refund': True})
+                return_pick.button_validate()
+            lines.write({'state': 'done'})
+            return_pick.sudo().write({'return_order_id': self.id})
+            self.write({'state': 'done'})
+
+    def process_restun_product_vendor_type(self, lines=None):
+        """Function call to return product to vendor when type is vendor."""
+        for record in lines:
+            if record.return_option_po == 'stock':
+                picking_type_id = self.env['stock.picking.type'].sudo().search([
+                    ('code', '=', 'outgoing')], limit=1)
+                location = self.env['stock.location'].search(
+                    [('usage', '=', 'supplier')], limit=1)
+                picking_return = self.env['stock.picking'].sudo().create({
+                    'picking_type_id': picking_type_id.id or False,
+                    'partner_id': self.supplier_id.id,
+                    'location_id': picking_type_id.default_location_src_id.id,
+                    'location_dest_id': location.id,
+                    'return_order_id': self.id})
+                for line in record:
+                    self.env['stock.move'].sudo().create({
+                        'name': line.product_id.name,
+                        'product_id': line.product_id.id,
+                        'product_uom': line.product_id.product_tmpl_id.uom_id.id,
+                        'product_uom_qty': line.qty,
+                        'location_id': picking_type_id.default_location_src_id.id,
+                        'location_dest_id': location.id,
+                        'partner_id': self.supplier_id.id,
+                        'picking_id': picking_return.id,
+                        'picking_type_id': picking_type_id.id,
+                        'quantity_done': line.qty})
+                    line.sudo().write({'state': 'done'})
+                if picking_return:
+                    picking_return.sudo().write(
+                        {'return_order_id': self.id})
+                    picking_return.sudo().action_confirm()
+                    picking_return.sudo().action_assign()
+                    picking_return.sudo().button_validate()
+                self.sudo().write({'state': 'done'})
+
+    def product_refund_from_vendor_type(self, lines):
+        """Method to create refund note without PO."""
+        refund = self.env['account.invoice'].create({
+            'type': 'in_refund',
+            'partner_id': self.supplier_id.id,
+            'return_order_id': self.id})
+        for line in lines:
+            # invoice_line_id =
+            self.env['account.invoice.line'].create({
+                'name': line.product_id.name or '',
+                'product_id': line.product_id.id or False,
+                'account_id': line.product_id.property_account_income_id.id \
+                or line.product_id.categ_id.property_account_income_categ_id.id \
+                or False,
+                'quantity': line.qty or 0.0,
+                'uom_id': line.product_id.product_tmpl_id.uom_id.id or False,
+                'price_unit': line.unit_price or 0.0,
+                'invoice_line_tax_ids': line.tax_id.ids or False,
+                'invoice_id': refund and refund.id or False})
 
     def process_return_to_vendor_wo_po(self, lines=None):
         """Function call to retun product to manuf without SO/PO."""
@@ -188,6 +342,7 @@ class ReturnOrder(models.Model):
             picking_return.sudo().action_confirm()
             picking_return.sudo().action_assign()
             picking_return.sudo().button_validate()
+        self.sudo().write({'state': 'done'})
 
     def process_return_without_so(self, lines=None):
         """Method to process return order record without so."""
@@ -222,8 +377,7 @@ class ReturnOrder(models.Model):
             picking_return.sudo().action_confirm()
             picking_return.sudo().action_assign()
             picking_return.sudo().button_validate()
-            # if picking_return.state == 'done':
-            #     self.sudo().write({'state':'done'})
+        self.sudo().write({'state': 'done'})
 
     def process_scrap(self, line=None):
         """Method to create return order record in stock scrap."""
@@ -379,7 +533,7 @@ class ReturnOrder(models.Model):
                 return_pick.sudo().button_validate()
             line.sudo().write({'state': 'done'})
             line.sale_order_id.sudo().write({'state': 'return'})
-            # self.sudo().write({'state': 'done'})
+            self.sudo().write({'state': 'done'})
 
     def process_return_to_vendor(self, line=None):
         """Method to process return to vendor(Closed this as of now)."""
@@ -520,8 +674,9 @@ class ReturnOrderLine(models.Model):
     @api.onchange('product_id')
     def onchange_product(self):
         """Onchange call when customer is not selected."""
-        if not self.return_id.partner_id or not self.return_id.pricelist_id:
-            raise ValidationError("Please select Customer first!")
+        if self.return_id.type_partner == 'customer':
+            if not self.return_id.partner_id or not self.return_id.pricelist_id:
+                raise ValidationError("Please select Customer first!")
 
     @api.depends('qty', 'unit_price', 'tax_id')
     def _compute_amount(self):
@@ -571,13 +726,23 @@ class ReturnOrderLine(models.Model):
         ('stock', 'Return to Stock'),
         ('manufacturer', 'Returns to Manufacturer'),
         ('scrap', 'Scrap'),
-        ('no_return', 'No Return')], required=True)
+        ('no_return', 'No Return')])
+    return_option_po = fields.Selection([
+        ('stock', 'Return to Stock')], string="Return Option", default="stock")
     state = fields.Selection(
         [('draft', 'Draft'), ('done', 'Done')], default='draft', readonly=1)
     partner_id = fields.Many2one(
         "res.partner", string="Customer", related='return_id.partner_id')
     manufacturer_partner_id = fields.Many2one(
         'res.partner', string='Manufacturer')
+
+    @api.onchange('purchase_order_id')
+    def _onchange_purchase_order(self):
+        if self.return_id.type_partner == 'supplier':
+            if self.purchase_order_id:
+                product_ids = self.purchase_order_id.order_line.mapped(
+                    'product_id').ids
+                return {'domain': {'product_id': [('id', 'in', product_ids)]}}
 
     @api.onchange('sale_order_id')
     def _onchange_order_id(self):
@@ -615,32 +780,48 @@ class ReturnOrderLine(models.Model):
     def onchange_product_id(self):
         """Function call to get qty of product."""
         for record in self:
-            order_line_rec = record.sale_order_id.mapped(
-                'order_line').filtered(
-                lambda p: p.product_id == record.product_id)
-            for reco in order_line_rec:
-                record.qty = reco.product_uom_qty
-                self.purchase_order_id = self.env['purchase.order'].search(
-                    [('origin', '=', self.sale_order_id.name),
-                        ('product_id', '=', reco.product_id.id)], limit=1)
-            if not record.sale_order_id:
-                product = self.product_id
-                self.unit_price = self.env['account.tax']._fix_tax_included_price_company(self._get_display_price(product), product.taxes_id, self.tax_id, self.env.user.company_id)
+            if record.return_id.type_partner == 'customer':
+                order_line_rec = record.sale_order_id.mapped(
+                    'order_line').filtered(
+                    lambda p: p.product_id == record.product_id)
+                for reco in order_line_rec:
+                    record.qty = reco.product_uom_qty
+                    self.purchase_order_id = self.env['purchase.order'].search(
+                        [('origin', '=', self.sale_order_id.name),
+                            ('product_id', '=', reco.product_id.id)], limit=1)
+                if not record.sale_order_id:
+                    product = self.product_id
+                    self.unit_price = self.env[
+                        'account.tax']._fix_tax_included_price_company(
+                            self._get_display_price(
+                                product), product.taxes_id,
+                            self.tax_id, self.env.user.company_id)
+            else:
+                if not record.purchase_order_id:
+                    self.unit_price = record.product_id.standard_price
+                if record.purchase_order_id:
+                    order_line_rec = record.purchase_order_id.mapped(
+                        'order_line').filtered(
+                        lambda p: p.product_id == record.product_id)
+                    for reco in order_line_rec:
+                        record.qty = reco.product_qty
+                        self.unit_price = reco.price_unit
 
     @api.multi
     def _get_display_price(self, product):
         """ Function to set product's unit price as per pricelist """
-        if self.return_id.pricelist_id.discount_policy == 'with_discount':
-            return product.with_context(pricelist=self.return_id.pricelist_id.id).price
-        product_context = dict(self.env.context, partner_id=self.return_id.partner_id.id, date=self.return_id.date, uom=self.product_id.uom_id.id)
+        if self.return_id.type_partner == 'customer':
+            if self.return_id.pricelist_id.discount_policy == 'with_discount':
+                return product.with_context(pricelist=self.return_id.pricelist_id.id).price
+            product_context = dict(self.env.context, partner_id=self.return_id.partner_id.id, date=self.return_id.date, uom=self.product_id.uom_id.id)
 
-        final_price, rule_id = self.return_id.pricelist_id.with_context(product_context).get_product_price_rule(self.product_id, self.qty or 1.0, self.return_id.partner_id)
-        base_price, currency = self.with_context(product_context)._get_real_price_currency(product, rule_id, self.qty, self.product_id.uom_id, self.return_id.pricelist_id.id)
-        if currency != self.return_id.pricelist_id.currency_id:
-            base_price = currency._convert(
-                base_price, self.return_id.pricelist_id.currency_id,
-                self.return_id.company_id or self.env.user.company_id, self.return_id.date or fields.Date.today())
-        return max(base_price, final_price)
+            final_price, rule_id = self.return_id.pricelist_id.with_context(product_context).get_product_price_rule(self.product_id, self.qty or 1.0, self.return_id.partner_id)
+            base_price, currency = self.with_context(product_context)._get_real_price_currency(product, rule_id, self.qty, self.product_id.uom_id, self.return_id.pricelist_id.id)
+            if currency != self.return_id.pricelist_id.currency_id:
+                base_price = currency._convert(
+                    base_price, self.return_id.pricelist_id.currency_id,
+                    self.return_id.company_id or self.env.user.company_id, self.return_id.date or fields.Date.today())
+            return max(base_price, final_price)
 
 class StockMove(models.Model):
     """Class inherit to add field."""
