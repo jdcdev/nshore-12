@@ -10,16 +10,7 @@
                     <button name="process_return"
                             string="Return" type="object" class="btn btn-primary"
                             attrs="{'invisible':[('state', '!=', 'draft')]}"/>
- <!--                    <button name="action_to_approve"
-                            string=" Submit" type="object" class="btn btn-primary"
-                            attrs="{'invisible': [('state', '!=', 'draft')]}"/>
-                    <button name="action_approve"
-                            string="Approve" type="object" class="btn btn-primary"
-                            attrs="{'invisible':[('state', '!=', 'to_approve')]}"/>
-                    <button name="action_reject"
-                            string="Reject" type="object" class="btn"
-                            attrs="{'invisible':[('state', '!=', 'to_approve')]}"/>
- -->                    <button name="action_cancel"
+                    <button name="action_cancel"
                             string="Cancel" type="object" class="btn"
                             attrs="{'invisible':[('state', 'not in', ['draft'])]}"/>
                     <field name="state" widget="statusbar"/>
@@ -27,7 +18,6 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="show_delivery" type="object" class="oe_stat_button" icon="fa-truck" string="Delivery" attrs="{'invisible':[('state', '!=', 'done')]}" >
-                            <!-- <field name="invoice_count" widget="statinfo" string="Invoices"/> -->
                         </button>
                     </div>
                     <div class="oe_title">
@@ -37,12 +27,10 @@
                     </div>
                     <group>
                         <group>
-                            <field name="reason_id" options="{'no_create': True,'no_edit': True,'no_open': True}" />
-                            <field name="date" />
-                        </group>
-                        <group>
                             <field name="type_partner"/>
                             <field name="sale_person_id" options="{'no_create': True,'no_edit': True}" />
+                        </group>
+                        <group>
                             <field name="partner_id" domain="[('customer', '=', True)]" options="{'no_create': True,'no_edit': True}" attrs="{'invisible': [('type_partner', '=', ('supplier'))]}" />
                             <field name="supplier_id" options="{'no_create': True,'no_edit': True}" attrs="{'invisible': [('type_partner', '=', ('customer'))]}" />
                             <field name="pricelist_id" options="{'no_create': True,'no_edit': True}" attrs="{'invisible': [('type_partner', '=', ('supplier'))]}"/>
@@ -51,48 +39,30 @@
                     <notebook>
                         <page string="Order Lines">
                             <field name="line_ids">
-                                <form name="Return Order Line">
-                                    <sheet>
-                                        <group>
-                                            <group>
-                                                <field name="sale_type" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
-                                                <field name="return_option" attrs="{'invisible': [('parent.type_partner', '=', 'supplier' )], 'readonly': [('state', 'not in', ('draft'))]}" />
-                                                <field name="return_option_po" attrs="{'invisible': [('parent.type_partner', '=', 'customer' )]}"/>
-                                                <field name="sale_order_id" options="{'no_create': True,'no_edit': True,'no_open': True}" domain="[('state','in', ('done','sale')),('partner_id','=',parent.partner_id)]" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
-                                                <field name="product_id" options="{'no_create': True,'no_edit': True,'no_open': True}" context="{'sale_order_id': sale_order_id}" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
-                                                <field name="qty" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
-                                                <field name="unit_price" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
-                                            </group>
-                                            <group>
-                                                <field name="tax_id" widget="many2many_tags" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
-                                                <field name="value" widget="monetary" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
-                                                <field name="purchase_order_id"
-                                                 domain="[('state','in', ('done','purchase')),('partner_id','=',parent.supplier_id)]" options="{'no_create': True,'no_edit': True}" force_save="1" attrs="{'readonly': [('sale_order_id','!=',False)],'invisible': [('parent.type_partner', '=', 'customer' )]}" />
-                                                <field name="vendor_id" attrs="{'readonly': [('state', 'not in', ('draft'))]}" invisible="1"/>
-                                                <field name="manufacturer_partner_id" attrs="{'readonly': [('state', 'not in', ('draft'))]}"
-                                                options="{'no_create': True,'no_edit': True, 'no_open': True}" />
-                                                <field name="state" invisible="1" />
-                                            </group>
-                                            <group>
-                                                <separator string="Invoice and Stock" />
-                                                <field name="invoice_id" widget="many2many_tags" options="{'no_create': True,'no_edit': True}" force_save="1" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
-                                                <field name="stock_move_id" widget="many2many_tags" options="{'no_create': True,'no_edit': True}" force_save="1" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
-                                            </group>
-                                        </group>
-                                    </sheet>
-                                </form>
-                                <tree >
-                                    <field name="sale_type" />
-                                    <field name="sale_order_id" />
+                                <tree editable="bottom">
                                     <field name="return_option" attrs="{'column_invisible': [('parent.type_partner', '=', 'supplier' )]}" />
                                     <field name="return_option_po" attrs="{'column_invisible': [('parent.type_partner', '=', 'customer' )]}"/>
-                                    <field name="product_id" />
+                                    <field name="sale_order_id" options="{'no_create': True,'no_edit': True,'no_open': True}" domain="[('state','in', ('done','sale')),('partner_id','=',parent.partner_id)]" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
+                                    <field name="product_id" options="{'no_create': True,'no_edit': True,'no_open': True}" context="{'sale_order_id': sale_order_id}" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
+                                    <field name="qty" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
+                                    <field name="unit_price" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
+                                    <field name="tax_id" widget="many2many_tags" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
+                                    <field name="value" widget="monetary" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
+                                    <field name="purchase_order_id"
+                                     domain="[('state','in', ('done','purchase')),('partner_id','=',parent.supplier_id)]" options="{'no_create': True,'no_edit': True}" force_save="1" attrs="{'readonly': [('sale_order_id','!=',False)],'invisible': [('parent.type_partner', '=', 'customer' )]}" />
+                                    <field name="vendor_id" attrs="{'readonly': [('state', 'not in', ('draft'))]}" invisible="1"/>
+                                    <field name="manufacturer_partner_id" attrs="{'readonly': [('state', 'not in', ('draft'))]}"
+                                    options="{'no_create': True,'no_edit': True, 'no_open': True}" />
+                                    <!-- <field name="state" invisible="1" />
+                                    <field name="sale_type" />
+                                    <field name="sale_order_id" /> -->
+                                   <!--  <field name="product_id" />
                                     <field name="qty" />
-                                    <field name="unit_price" />
+                                    <field name="unit_price" /> -->
                                     <field name="value_before_tax" />
-                                    <field name="tax_id" widget="many2many_tags" />
+                                   <!--  <field name="tax_id" widget="many2many_tags" /> -->
                                     <field name="value" widget="monetary" />
-                                    <field name="state" />
+                                    <field name="state" invisible="1"/>
                                 </tree>
                             </field>
                         </page>
@@ -128,7 +98,7 @@
             <search string="Return Order">
                 <field name="name" />
                 <field name="date" />
-                <field name="reason_id" />
+                <!-- <field name="reason_id" /> -->
                 <field name="partner_id" />
                 <field name="sale_person_id" />
                 <field name="state" />
@@ -143,7 +113,7 @@
             <pivot string="Return Details" disable_linking="True">
                 <field name="name" />
                 <field name="date" interval="month" type="row" />
-                <field name="reason_id" />
+                <!-- <field name="reason_id" /> -->
                 <field name="amount_total" type="measure" />
                 <field name="partner_id" />
                 <field name="sale_person_id" type="col" />
@@ -159,7 +129,6 @@
             <tree string="Return Order" >
                 <field name="name" />
                 <field name="date" />
-                <field name="reason_id" />
                 <field name="partner_id" />
                 <field name="sale_person_id" />
                 <field name="state" />

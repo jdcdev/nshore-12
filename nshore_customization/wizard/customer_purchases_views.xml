@@ -22,7 +22,7 @@
                 <group string="Product Selection">
                     <group>
                         <field name="product_id"
-                               attrs="{'readonly': [('product', '=', True)], 'required': [('product', '=', False)]}"/>
+                               attrs="{'readonly': [('product', '=', True)]}"/>
                         <field name="product_category_id"
                                attrs="{'readonly': [('product', '=', True)]}"/>
                     </group>
