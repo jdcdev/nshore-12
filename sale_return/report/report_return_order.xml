@@ -38,6 +38,7 @@
                 <!-- TODO: remove in master -->
                 <th class="text-left">Sale Type</th>
                 <th class="text-left">Sales Order</th>
+                <th class="text-left">Purchase Order</th>
                 <th class="text-left" t-if="doc.type_partner == 'customer'">Return Option</th>
                 <th class="text-left" t-if="doc.type_partner == 'supplier'">Return Option</th>
                 <th class="text-left">Product</th>
@@ -53,6 +54,9 @@
                         <td><span t-field="line.sale_type"/></td>
                         <t>
                           <td><span t-field="line.sale_order_id"/></td>
+                        </t>
+                        <t>
+                          <td><span t-field="line.purchase_order_id"/></td>
                         </t>
                         <t t-if="doc.type_partner == 'customer'">
                           <td><span t-field="line.return_option"/></td>

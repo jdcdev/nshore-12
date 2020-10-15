@@ -129,9 +129,9 @@ class ReturnOrder(models.Model):
                         self.process_return_to_vendor_wo_po(lines=record)
                         self.process_refund_customer_wo_so(lines=record)
                     elif record.return_option == 'stock':
-                        self.process_return_without_so(lines=line_ids_wo_so)
+                        self.process_return_without_so(lines=record)
                         self.process_refund_customer_wo_so(
-                            lines=line_ids_wo_so)
+                            lines=record)
 
             line_ids = self.env['return.order.line'].sudo().search(
                 [('return_id', '=', self.id), ('sale_order_id', '!=', False)])
@@ -225,20 +225,11 @@ class ReturnOrder(models.Model):
                 res = return_wiz.sudo().create_returns()
                 return_pick = self.env['stock.picking'].sudo().browse(
                     res['res_id'])
-                # Validate picking
-                return_picking_type_id = self.env[
-                    'stock.picking.type'].search(
-                    [('code', '=', 'incoming')], limit=1)
-                stock_picking_ids = self.env['stock.picking'].search(
-                    [('group_id', '=', lines.purchase_order_id.group_id.id),
-                     ('picking_type_id', '=',
-                        return_picking_type_id.id)])
-                self.stock_move_ids = [(4, stock_picking_ids.id)]
+                return_pick.sudo().write({'return_order_id': self.id})
                 return_pick.move_line_ids.write({
                     'qty_done': lines.qty, 'to_refund': True})
                 return_pick.button_validate()
             lines.write({'state': 'done'})
-            return_pick.sudo().write({'return_order_id': self.id})
             self.write({'state': 'done'})
 
     def process_restun_product_vendor_type(self, lines=None):
@@ -313,7 +304,6 @@ class ReturnOrder(models.Model):
             'location_dest_id': location.id,
             'return_order_id': self.id})
         for line in lines:
-            # stock_move_id =
             self.env['stock.move'].sudo().create({
                 'name': line.product_id.name,
                 'product_id': line.product_id.id,
@@ -344,17 +334,16 @@ class ReturnOrder(models.Model):
         picking_return = self.env['stock.picking'].sudo().create({
             'picking_type_id': picking_type_id.id or False,
             'partner_id': manufacturer_partner_id or self.partner_id.id,
-            'location_id': picking_type_id.default_location_src_id.id,
+            'location_id': picking_type_id.default_location_dest_id.id,
             'location_dest_id': picking_type_id.default_location_dest_id.id,
             'return_order_id': self.id})
         for line in lines:
-            # stock_move_id =
-            self.env['stock.move'].sudo().create({
+            self.env['stock.move'].create({
                 'name': line.product_id.name,
                 'product_id': line.product_id.id,
                 'product_uom': line.product_id.product_tmpl_id.uom_id.id,
                 'product_uom_qty': line.qty,
-                'location_id': picking_type_id.default_location_src_id.id,
+                'location_id': picking_type_id.default_location_dest_id.id,
                 'location_dest_id': picking_type_id.default_location_dest_id.id,
                 'partner_id': self.partner_id.id,
                 'picking_id': picking_return.id,
@@ -425,37 +414,40 @@ class ReturnOrder(models.Model):
 
     def process_refund_customer(self, line=None):
         """Function call to refund customer."""
-        line_record_stock = self.line_ids.filtered(
-            lambda m: m.return_option == 'stock' and m.sale_order_id)
-        for record in line_record_stock:
-            invoice_ids_customer = record.sale_order_id.invoice_ids.filtered(
-                lambda m: m.state not in ['draft', 'cancelled'])
-            if not invoice_ids_customer:
-                raise ValidationError(
-                    "Please create a Invoice of this Sale Order first!")
+        # line_record_stock = self.line_ids.filtered(
+        #     lambda m: m.return_option == 'stock' and m.sale_order_id)
+        # print("\n\n line_record_stock !!!!!!", line_record_stock)
+        invoice_ids_customer = False
+        # for record in line_record_stock:
+        invoice_ids_customer = line.sale_order_id.invoice_ids.filtered(
+            lambda m: m.state not in ['draft', 'cancelled'])
+        if not invoice_ids_customer:
+            raise ValidationError(
+                "Please create a Invoice of this Sale Order first!")
 
-            # Make a credit note customer
-            credit_note_wizard = self.env[
-                'account.invoice.refund'].with_context(
-                {'active_ids': invoice_ids_customer.ids}).create(
-                {'filter_refund': 'refund',
-                    'description': self.reason_id.name})
-            # Check the result
-            credit_invoice = credit_note_wizard.invoice_refund()
-            credit_note_domain = credit_invoice.get('domain')[1]
-            inv_id = self.env['account.invoice'].search([credit_note_domain])
-            for invoice in inv_id:
-                for invoice_line in invoice.invoice_line_ids:
-                    if invoice_line.product_id == line.product_id:
+        # Make a credit note customer
+        credit_note_wizard = self.env[
+            'account.invoice.refund'].with_context(
+            {'active_ids': invoice_ids_customer.ids}).create(
+            {'filter_refund': 'refund',
+                })
+            # 'description': self.reason_id.name
+        # Check the result
+        credit_invoice = credit_note_wizard.invoice_refund()
+        credit_note_domain = credit_invoice.get('domain')[1]
+        inv_id = self.env['account.invoice'].search([credit_note_domain])
+        for invoice in inv_id:
+            for invoice_line in invoice.invoice_line_ids:
+                if invoice_line.product_id == line.product_id:
 
-                        invoice_line.update({
-                            "quantity": line.qty,
-                            "price_unit": line.unit_price})
-                    else:
-                        # unlink invoice line which does not contains line
-                        # products
-                        invoice_line.sudo().unlink()
-                    self.account_invoice_ids = [(4, invoice.id)]
+                    invoice_line.update({
+                        "quantity": line.qty,
+                        "price_unit": line.unit_price})
+                else:
+                    # unlink invoice line which does not contains line
+                    # products
+                    invoice_line.sudo().unlink()
+                self.account_invoice_ids = [(4, invoice.id)]
 
     def process_return_to_stock(self, line=None):
         """Method to process return order record."""
@@ -544,7 +536,8 @@ class ReturnOrder(models.Model):
                 'account.invoice.refund'].with_context(
                 {'active_ids': invoice_id.ids}).create({
                     'filter_refund': 'refund',
-                    'description': self.reason_id.name})
+                    })
+                # 'description': self.reason_id.name
             # Check the result
             credit_invoice = credit_note_wizard.invoice_refund()
             credit_note_domain = credit_invoice.get('domain')[1]
@@ -766,14 +759,19 @@ class ReturnOrderLine(models.Model):
                 record.tax_id = rec.tax_id
 
     @api.onchange('product_id')
+    def onchange_product_manuf(self):
+        """Onchange call to get vendors of selected product."""
+        for record in self:
+            if record.return_option == 'manufacturer':
+                manuf_ids = self.product_id.seller_ids.mapped('name').ids
+                return {'domain': {'manufacturer_partner_id': [
+                    ('id', 'in', manuf_ids)]}}
+
+    @api.onchange('product_id')
     def onchange_product_id(self):
         """Function call to get qty of product."""
         for record in self:
             if record.return_id.type_partner == 'customer':
-                if record.return_option == 'manufacturer' and record.sale_order_id:
-                    manuf_ids = self.product_id.seller_ids.mapped(
-                        'name').ids
-                    return {'domain': {'manufacturer_partner_id': [('id', 'in', manuf_ids)]}}
                 order_line_rec = record.sale_order_id.mapped(
                     'order_line').filtered(
                     lambda p: p.product_id == record.product_id)
@@ -783,7 +781,6 @@ class ReturnOrderLine(models.Model):
                         [('origin', '=', self.sale_order_id.name),
                             ('product_id', '=', reco.product_id.id)], limit=1)
                 if not record.sale_order_id:
-                    print("\n\n !!!", record.sale_order_id)
                     product = self.product_id
                     self.unit_price = self.env[
                         'account.tax']._fix_tax_included_price_company(
@@ -799,7 +796,7 @@ class ReturnOrderLine(models.Model):
                         lambda p: p.product_id == record.product_id)
                     for reco in order_line_rec:
                         record.qty = reco.product_qty
-                        self.unit_price = reco.price_unit
+                        record.unit_price = reco.price_unit
 
     @api.multi
     def _get_display_price(self, product):
