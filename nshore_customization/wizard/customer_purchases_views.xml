@@ -17,6 +17,7 @@
                         <field name="partner_id"
                                attrs="{'readonly': [('customer', '=', True)]}"/>
                         <field name="customer"/>
+                        <!-- <field name="customer_assigned_salesperson"/> -->
                     </group>
                 </group>
                 <group string="Product Selection">
