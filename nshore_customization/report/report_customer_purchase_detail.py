@@ -53,7 +53,8 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
                 c.id,
                 c.name,
                 c.phone,
-                c.parent_id
+                c.parent_id,
+                pt.product_ref as product_ref
             FROM account_invoice_line l
                 LEFT JOIN account_invoice i ON (l.invoice_id = i.id)
                 LEFT JOIN res_partner c ON (i.partner_id = c.id)
@@ -82,8 +83,10 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
             if user_id:
                 query_where += " AND (i.user_id = %s)" % user_id
 
-        groupby = "group by pc.id, pc.name,pt.default_code,pt.name,pt.list_price,c.id,c.name"
+        groupby = "group by pc.id, pc.name,pt.default_code,pt.name,pt.list_price,c.id,c.name,pt.product_ref"
+        # sort_by = "ORDER BY pt.categ_id"
         final_sql_qry = sqlstr + ' ' + query_where + ' ' + groupby
+        final_sql_qry += ' ORDER BY category, product_ref'
 
         self.env.cr.execute(final_sql_qry, query_param)
         result = self.env.cr.fetchall()

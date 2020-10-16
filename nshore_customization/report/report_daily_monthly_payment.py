@@ -24,7 +24,7 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
                     'cust_no': payment.partner_id.parent_id.ref if payment.partner_id.parent_id else payment.partner_id.ref,
                     'cust_name': payment.partner_id.parent_id.name if payment.partner_id.parent_id else payment.partner_id.name,
                     'user': payment.sudo().create_uid.name,
-                    'type': payment.journal_id.type,
+                    'journal': payment.journal_id.name,
                     'amount': payment.amount,
                     'final_total': final_total,
                 })
