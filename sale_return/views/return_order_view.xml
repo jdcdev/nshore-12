@@ -55,8 +55,6 @@
                                     options="{'no_create': True,'no_edit': True, 'no_open': True}" />
                                     <field name="value_before_tax" />
                                     <field name="value" widget="monetary" />
-                                    <field name="invoice_id" widget="many2many_tags" options="{'no_create': True,'no_edit': True}" force_save="1" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
-                                    <field name="stock_move_id" widget="many2many_tags" options="{'no_create': True,'no_edit': True}" force_save="1" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
                                     <field name="state" invisible="1"/>
                                 </tree>
                             </field>

@@ -12,9 +12,9 @@
         </td>
         <xpath expr="//tr[@class='border-black o_subtotal']" position="after">
             <t t-if="not o.amount_by_group">
-                <td><strong>Tax</strong></td>
+                <td><strong>Taxes</strong></td>
                 <td class="text-right">
-                    0.0
+                    <span t-field="o.company_id.currency_id.symbol" /> 0.00
                 </td>
             </t>
         </xpath>
