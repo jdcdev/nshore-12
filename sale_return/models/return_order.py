@@ -331,10 +331,12 @@ class ReturnOrder(models.Model):
                 manufacturer_partner_id = line.manufacturer_partner_id.id
         picking_type_id = self.env['stock.picking.type'].sudo().search([
             ('code', '=', 'incoming')], limit=1)
+        location = self.env['stock.location'].search(
+            [('usage', '=', 'customer')], limit=1)
         picking_return = self.env['stock.picking'].sudo().create({
             'picking_type_id': picking_type_id.id or False,
             'partner_id': manufacturer_partner_id or self.partner_id.id,
-            'location_id': picking_type_id.default_location_dest_id.id,
+            'location_id': location.id,
             'location_dest_id': picking_type_id.default_location_dest_id.id,
             'return_order_id': self.id})
         for line in lines:
@@ -343,7 +345,7 @@ class ReturnOrder(models.Model):
                 'product_id': line.product_id.id,
                 'product_uom': line.product_id.product_tmpl_id.uom_id.id,
                 'product_uom_qty': line.qty,
-                'location_id': picking_type_id.default_location_dest_id.id,
+                'location_id': location.id,
                 'location_dest_id': picking_type_id.default_location_dest_id.id,
                 'partner_id': self.partner_id.id,
                 'picking_id': picking_return.id,
