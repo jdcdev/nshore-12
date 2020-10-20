@@ -22,7 +22,7 @@
         'security/ir.model.access.csv',
         'data/return_sequence.xml',
         'views/return_order_view.xml',
-        'views/return_reason_views.xml',
+        # 'views/return_reason_views.xml',
         'views/sale_order_view.xml',
         'report/report_return_order.xml'
 	],
