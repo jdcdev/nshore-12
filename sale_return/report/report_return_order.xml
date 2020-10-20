@@ -7,15 +7,13 @@
           <t t-call="web.external_layout">
             <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)" />
             <t t-set="address">
-              <t t-if="doc.partner_id">
+              <t t-if="doc.type_partner == 'customer'">
                 <div t-field="doc.partner_id"
                   t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />
-                  <p t-if="doc.partner_id.vat"><t t-esc="doc.company_id.country_id.vat_label or 'Tax ID'"/>: <span t-field="doc.partner_id.vat"/></p>
               </t>
-              <t t-if="doc.supplier_id">
+              <t t-if="doc.type_partner == 'supplier'">
                 <div t-field="doc.supplier_id"
                   t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />
-                  <p t-if="doc.supplier_id.vat"><t t-esc="doc.company_id.country_id.vat_label or 'Tax ID'"/>: <span t-field="doc.supplier_id.vat"/></p>
               </t>
             </t>
           <div class="page">
@@ -25,10 +23,6 @@
               </h2>
           </div>
           <div class="row mt32 mb32" id="informations">
-            <div t-if="doc.reason_id" class="col-auto mw-100 mb-2">
-              <strong>Return Reason:</strong>
-              <p class="m-0" t-field="doc.reason_id"/>
-            </div>
             <div t-if="doc.date" class="col-auto mw-100 mb-2">
               <strong>Date Ordered:</strong>
               <p class="m-0" t-field="doc.date"/>
@@ -37,27 +31,20 @@
               <strong>Partner Type:</strong>
               <p class="m-0" t-field="doc.type_partner"/>
             </div>
-            <div t-if="doc.supplier_id" class="col-auto mw-100 mb-2">
-              <strong>Vendor:</strong>
-              <p class="m-0" t-field="doc.supplier_id"/>
-            </div>
-            <div t-if="doc.partner_id" class="col-auto mw-100 mb-2">
-              <strong>Customer:</strong>
-              <p class="m-0" t-field="doc.partner_id"/>
-            </div>
           </div>
           <table class="table table-sm o_main_table">
             <thead>
               <tr>
                 <!-- TODO: remove in master -->
                 <th class="text-left">Sale Type</th>
-                <th class="text-left" t-if="doc.type_partner == 'customer'">Sales Order</th>
-                <th class="text-left">Return Option</th>
+                <th class="text-left">Sales Order</th>
+                <th class="text-left">Purchase Order</th>
+                <th class="text-left" t-if="doc.type_partner == 'customer'">Return Option</th>
+                <th class="text-left" t-if="doc.type_partner == 'supplier'">Return Option</th>
                 <th class="text-left">Product</th>
                 <th class="text-right">Quantity</th>
                 <th class="text-right">Unit Price</th>
                 <th class="text-right">Total</th>
-                <th class="text-right">Tax</th>
                 <th class="text-right">Subtotal</th>
               </tr>
             </thead>
@@ -68,19 +55,19 @@
                         <t>
                           <td><span t-field="line.sale_order_id"/></td>
                         </t>
-                        <t t-if="line.return_option">
+                        <t>
+                          <td><span t-field="line.purchase_order_id"/></td>
+                        </t>
+                        <t t-if="doc.type_partner == 'customer'">
                           <td><span t-field="line.return_option"/></td>
                         </t>
-                        <t t-if="line.return_option_po">
+                        <t t-if="doc.type_partner == 'supplier'">
                           <td><span t-field="line.return_option_po"/></td>
                         </t>
                         <td><span t-field="line.product_id.name"/></td>
                         <td class="text-right"><span t-field="line.qty"/></td>
                         <td class="text-right"><span t-field="line.unit_price"/></td>
                         <td class="text-right"><span t-field="line.value_before_tax"/></td>
-                        <td class="text-right">
-                          <span t-esc="', '.join(map(lambda x: (x.description or x.name), line.tax_id))"/>
-                        </td>
                         <td class="text-right"><span t-field="line.value"/></td>
                       </tr>
                     </t>
@@ -97,7 +84,7 @@
                                 </td>
                             </tr>
                             <tr class="border-black">
-                              <td></td>
+                              <td><strong>Tax</strong></td>
                               <td class="text-right">
                                 <span t-esc="doc.amount_tax"/>
                               </td>
