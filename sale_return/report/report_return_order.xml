@@ -68,7 +68,7 @@
                         <td class="text-right"><span t-field="line.qty"/></td>
                         <td class="text-right"><span t-field="line.unit_price"/></td>
                         <td class="text-right"><span t-field="line.value_before_tax"/></td>
-                        <td class="text-right"><span t-field="line.value"/></td>
+                        <td class="text-right"><span t-field="line.value" t-options='{"widget": "float", "precision": 2}'/></td>
                       </tr>
                     </t>
                 </tbody>
@@ -80,19 +80,19 @@
                             <tr class="border-black">
                                 <td><strong>Subtotal</strong></td>
                                 <td class="text-right">
-                                  <span t-esc="doc.amount_untaxed"/>
+                                  <span t-esc="doc.amount_untaxed" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>
                             </tr>
                             <tr class="border-black">
                               <td><strong>Tax</strong></td>
                               <td class="text-right">
-                                <span t-esc="doc.amount_tax"/>
+                                <span t-esc="doc.amount_tax" t-options='{"widget": "float", "precision": 2}'/>
                               </td>
                             </tr>
                             <tr class="border-black">
                                 <td><strong>Total</strong></td>
                                 <td class="text-right">
-                                  <span t-esc="doc.amount_total"/>
+                                  <span t-esc="doc.amount_total" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>
                             </tr>
                         </table>
