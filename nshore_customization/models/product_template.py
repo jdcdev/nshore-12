@@ -4,6 +4,8 @@ from odoo import models, fields, api
 
 
 class ProductTemplate(models.Model):
+    """Class inherit to add some net cost fields."""
+
     _inherit = 'product.template'
 
     net_cost = fields.Float(string='Net Cost')
@@ -11,21 +13,23 @@ class ProductTemplate(models.Model):
 
 
 class ProductProduct(models.Model):
+    """Class inherit for modify some functions."""
+
     _inherit = 'product.product'
 
     @api.multi
     def name_get(self):
+        """Function inherit to get product name with product ref."""
         return [(product.id, '%s' % (product.name)) for product in self]
 
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
-        # context = self.env.context
-        # domain = []
+        """Function call to search name of product with product ref."""
         if args is None:
             args = []
         domain = [
             '|', ('product_tmpl_id.product_ref', "=ilike", name + '%'),
-            ('product_ref',  "=ilike", name+'%')
+            ('product_ref', "=ilike", name + '%')
         ]
         products = self.search(
             domain + args, limit=limit, order='product_ref')
@@ -111,6 +115,7 @@ class ProductProduct(models.Model):
             if product.cost_method in ['standard', 'average']:
                 qty_available = product.with_context(
                     company_owned=True, owner_id=False).qty_available
+                # changed price used with product net cost.
                 price_used = product.net_cost
                 if to_date:
                     price_used = product.get_history_price(
@@ -129,22 +134,29 @@ class ProductProduct(models.Model):
                             product_move_ids[product.id])
                     elif product.product_tmpl_id.valuation == 'real_time':
                         valuation_account_id = product.categ_id.property_stock_valuation_account_id.id
-                        value, quantity, aml_ids = fifo_automated_values.get((product.id, valuation_account_id)) or (0, 0, [])
+                        value, quantity, aml_ids = fifo_automated_values.get(
+                            (product.id, valuation_account_id)) or (0, 0, [])
                         product.stock_value = value
                         product.qty_at_date = quantity
-                        product.stock_fifo_real_time_aml_ids = self.env['account.move.line'].browse(aml_ids)
+                        product.stock_fifo_real_time_aml_ids = self.env[
+                            'account.move.line'].browse(aml_ids)
                 else:
                     product.stock_value = product_values[product.id]
-                    product.qty_at_date = product.with_context(company_owned=True, owner_id=False).qty_available
+                    product.qty_at_date = product.with_context(
+                        company_owned=True, owner_id=False).qty_available
                     if product.product_tmpl_id.valuation == 'manual_periodic':
-                        product.stock_fifo_manual_move_ids = StockMove.browse(product_move_ids[product.id])
+                        product.stock_fifo_manual_move_ids = StockMove.browse(
+                            product_move_ids[product.id])
                     elif product.product_tmpl_id.valuation == 'real_time':
                         valuation_account_id = product.categ_id.property_stock_valuation_account_id.id
-                        value, quantity, aml_ids = fifo_automated_values.get((product.id, valuation_account_id)) or (0, 0, [])
-                        product.stock_fifo_real_time_aml_ids = self.env['account.move.line'].browse(aml_ids)
+                        value, quantity, aml_ids = fifo_automated_values.get(
+                            (product.id, valuation_account_id)) or (0, 0, [])
+                        product.stock_fifo_real_time_aml_ids = self.env[
+                            'account.move.line'].browse(aml_ids)
 
 
 class PricelistItem(models.Model):
+    """Class inherit to add field."""
 
     _inherit = "product.pricelist.item"
 
@@ -152,10 +164,13 @@ class PricelistItem(models.Model):
 
 
 class ProductCategory(models.Model):
+    """Class Inherit to add report option."""
+
     _inherit = 'product.category'
 
     @api.multi
     def print_report(self):
+        """Function call to print report."""
         data = {}
         categories = self.search([])
         data['categories'] = categories
@@ -164,4 +179,6 @@ class ProductCategory(models.Model):
             'model': 'product.category',
             'form': data,
         }
-        return self.env.ref('nshore_customization.action_report_inventory_listing').report_action(categories, data=datas)
+        return self.env.ref(
+            'nshore_customization.action_report_inventory_listing').report_action(
+            categories, data=datas)
