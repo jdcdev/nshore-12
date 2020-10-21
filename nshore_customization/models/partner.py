@@ -1,6 +1,4 @@
 # See LICENSE file for full copyright and licensing details.
-
-import os
 import base64
 import datetime
 from calendar import monthrange
@@ -9,6 +7,8 @@ from odoo import api, fields, models
 
 
 class ResPartner(models.Model):
+    """Class inherit to add some fields and function."""
+
     _inherit = 'res.partner'
 
     over_credit = fields.Boolean('Allow Over Credit?', default=True)
@@ -38,9 +38,9 @@ class ResPartner(models.Model):
             final_end_date = final_start_date.replace(
                 day=monthrange(final_start_date.year,
                                final_start_date.month)[1])
+
         invoices = self.env['account.invoice'].search(
-            [('type', '=', 'out_invoice')])
-        payments = self.env['account.payment'].search([])
+            [('type', '=', 'out_invoice'), ('state', '!=', 'draft')])
         partner_obj = self.env['res.partner']
         log = self.env['customer.statement.unmail']
         partner_list = []
@@ -53,15 +53,6 @@ class ResPartner(models.Model):
                     str(invoices_date_format), "%d/%m/%Y")
                 if final_start_date <= final_invoices_date <= final_end_date:
                     partner_list.append(invoice.partner_id.id)
-        for payment in payments:
-            if payment.payment_date:
-                payment_date = datetime.datetime.strptime(
-                    str(payment.payment_date), "%Y-%m-%d")
-                payment_date_format = payment_date.strftime("%d/%m/%Y")
-                final_payment_date = datetime.datetime.strptime(
-                    str(payment_date_format), "%d/%m/%Y")
-                if final_start_date <= final_payment_date <= final_end_date:
-                    partner_list.append(payment.partner_id.id)
         if partner_list:
             partner_list = list(set(partner_list))
             template_id = self.env.ref(
@@ -80,22 +71,16 @@ class ResPartner(models.Model):
                     template_id.write({'email_to': partner.email})
                     template_id.with_context(ctx).send_mail(partner.id,
                                                             force_send=False)
-            remains = partners.filtered(lambda l: not l.email)
-            if remains:
-                cst_stmt_pdf = self.env.ref(
-                    'nshore_customization.custom_customer_statement'
-                ).with_context(ctx).render_qweb_pdf(remains.ids)[0]
-                cst_stmt_pdf_encode = base64.b64encode(cst_stmt_pdf)
-                pdf_name = 'Customer Statement Report: %s.pdf' % today
-                log = log.create({
-                    'date': today,
-                })
-                attachment = self.env['ir.attachment'].sudo().create({
-                    'name': pdf_name,
-                    'datas_fname': pdf_name,
-                    'datas': cst_stmt_pdf_encode,
-                    'res_model': log._name,
-                    'res_id': log.id,
-                    'type': 'binary',
-                    'mimetype': 'application/pdf'})
-                log.attachment_id = attachment.id
+            cst_stmt_pdf = self.env.ref(
+                'nshore_customization.custom_customer_statement'
+            ).with_context(ctx).render_qweb_pdf(partners.ids)[0]
+            cst_stmt_pdf_encode = base64.b64encode(cst_stmt_pdf)
+            pdf_name = 'Customer Statement Report: %s.pdf' % today
+            self.env['ir.attachment'].sudo().create({
+                'name': pdf_name,
+                'datas_fname': pdf_name,
+                'datas': cst_stmt_pdf_encode,
+                'res_model': log._name,
+                'res_id': log.id,
+                'type': 'binary',
+                'mimetype': 'application/pdf'})

@@ -38,8 +38,13 @@
                             <table class="div-rounded" width="100%">
                                 <tr>
                                     <th style='padding: 5px;'>
-                                        <strong>Billing Address</strong>
+                                        <center><strong>Billing Address</strong></center>
                                     </th>
+                                </tr>
+                                <tr>
+                                    <th style='padding-top: 0px; padding-bottom: 0px;'>
+                                    <b>______________________________
+                                    </b></th>
                                 </tr>
                                 <tr>
                                     <td style='padding: 5px;'>
@@ -54,8 +59,13 @@
                             <table class="div-rounded" width="100%">
                                 <tr>
                                     <th style='padding: 5px;'>
-                                        <strong>Shipping Address</strong>
+                                        <center><strong>Shipping Address</strong></center>
                                     </th>
+                                </tr>
+                                <tr>
+                                    <th style='padding-top: 0px; padding-bottom: 0px;'>
+                                    <b>______________________________
+                                    </b></th>
                                 </tr>
                                 <tr>
                                     <td style='padding: 5px;'>
@@ -75,6 +85,8 @@
                         </div>
                         <div class="col-4">
                             <h4>Customer <br/><br/> Statement</h4><br/>
+                            <br/>
+                            <br/>
                             <strong>Date:<span t-esc="date"/></strong>
                         </div>
                     </div>
@@ -86,12 +98,12 @@
                             <t t-set="total_balance" t-value="0"/>
                             <thead>
                                 <tr style="background-color:black;color:white">
-                                    <th>Date</th>
-                                    <th>Type</th>
-                                    <th>Reference</th>
-                                    <th class="text-right">Invoiced</th>
-                                    <th class="text-right">Paid</th>
-                                    <th class="text-right">Balance</th>
+                                    <th style="padding-top:0px; padding-bottom:0px;">Date</th>
+                                    <th style="padding-top:0px; padding-bottom:0px;">Type</th>
+                                    <th style="padding-top:0px; padding-bottom:0px;">Reference</th>
+                                    <th class="text-right" style="padding-top:0px; padding-bottom:0px;">Invoiced</th>
+                                    <th class="text-right" style="padding-top:0px; padding-bottom:0px;">Paid</th>
+                                    <th class="text-right" style="padding-top:0px; padding-bottom:0px;">Balance</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -124,20 +136,40 @@
                                         <span t-esc="new_list.get('amount_total', 0)" t-options='{"widget": "float", "precision": 2}'/>
                                         <t t-set="total_invoice" t-value="total_invoice+new_list.get('amount_total', 0)"/>
                                     </td>
-                                    <td class="text-right">
-                                        <span t-esc="new_list.get('amount_total', 0)-new_list.get('residual', 0)" t-options='{"widget": "float", "precision": 2}'/>
-                                        <t t-set="total_paid" t-value="total_paid+(new_list.get('amount_total', 0)-new_list.get('residual', 0))"/>
-                                    </td>
-
+                                    <td></td>
                                     <td class="text-right">
                                         <span t-esc="total_amount" t-options='{"widget": "float", "precision": 2}'/>
                                         <t t-set="total_balance" t-value="total_balance+total_amount"/>
                                     </td>
+                                    <t t-if="new_list.get('payment')">
+                                        <tr t-foreach="new_list.get('payment')" t-as="payment">
+                                            <t t-set="line_amount" t-value="payment.amount"/>
+                                            <t t-set="total_amount" t-value="total_amount - line_amount"/>
+                                            <td>
+                                                <span t-esc="new_list.get('date_invoice')"/>
+                                            </td>
+                                            <td>
+                                                Payment
+                                            </td>
+                                            <td>
+                                                <span t-esc="payment.name"/>
+                                            </td>
+                                            <td></td>
+                                            <td class="text-right">
+                                                <span t-esc="payment.amount"/>
+                                                <t t-set="total_paid" t-value="total_paid+payment.amount"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <span t-esc="total_amount" t-options='{"widget": "float", "precision": 2}'/>
+                                                <t t-set="total_balance" t-value="total_balance+total_amount"/>
+                                            </td>
+                                        </tr>
+                                    </t>
                                 </tr>
                             </tbody>
                             <tbody>
                                 <tr style="background-color:black;color:white">
-                                    <td colspan="6">&#160;</td>
+                                    <td colspan="6"></td>
                                 </tr>
                             </tbody>
                             <tbody>
