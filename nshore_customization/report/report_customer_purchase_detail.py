@@ -111,21 +111,21 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
                     'total_profit_margin': res[10] or 0.0,
                     'list_price': res[11] or 0.0,
                 }
-                if parent_id not in partner_dict.keys():
+                if res[13] not in partner_dict.keys():
                     partner_contact_dict.update({
-                        parent_id: {'phone_no': res[14]}
+                        res[13]: {'phone_no': res[14]}
                     })
                     partner_dict.update({
-                        parent_id: {
+                        res[13]: {
                             res[1]: [vals_dict]
                         }
                     })
-                elif res[1] not in partner_dict[parent_id].keys():
-                    partner_dict[parent_id].update({
+                elif res[1] not in partner_dict[res[13]].keys():
+                    partner_dict[res[13]].update({
                         res[1]: [vals_dict]
                     })
                 else:
-                    partner_dict[parent_id][res[1]].append(vals_dict)
+                    partner_dict[res[13]][res[1]].append(vals_dict)
         data = {
             'doc_ids': self.ids,
             'doc_model': model,
