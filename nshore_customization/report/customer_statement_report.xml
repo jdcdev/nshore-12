@@ -119,9 +119,9 @@
                                 <t t-set="total_amount" t-value="lines_data[o].get('open_inv_amount', 0)"/>
                                 <tr t-foreach="lines_data[o].get('invoice_line', [])" t-as="new_list">
                                     <t t-set="line_amount" t-value="new_list.get('amount_total', 0)"/>
-                                    <t t-if="new_list.get('state') == 'paid'">
+                                    <!-- <t t-if="new_list.get('state') == 'paid'">
                                         <t t-set="line_amount" t-value="0"/>
-                                    </t>
+                                    </t> -->
                                     <t t-set="total_amount" t-value="total_amount + line_amount"/>
                                     <td>
                                         <span t-esc="new_list.get('date_invoice')"/>
