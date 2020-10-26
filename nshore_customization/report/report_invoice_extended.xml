@@ -10,8 +10,13 @@
         <td t-attf-class="text-left {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}" position="attributes">
             <attribute name="style">display: none;</attribute>
         </td>
-        <xpath expr="//t[@t-foreach='o.amount_by_group']/tr" position="attributes">
-            <attribute name="style">display: none;</attribute>
+        <xpath expr="//tr[@class='border-black o_subtotal']" position="after">
+            <t t-if="not o.amount_by_group">
+                <td><strong>Taxes</strong></td>
+                <td class="text-right">
+                    <span t-field="o.company_id.currency_id.symbol" /> 0.00
+                </td>
+            </t>
         </xpath>
         <xpath expr="//p[@name='note']" position="replace">
         </xpath>
