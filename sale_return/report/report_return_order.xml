@@ -44,7 +44,7 @@
                 <th class="text-left">Product</th>
                 <th class="text-right">Quantity</th>
                 <th class="text-right">Unit Price</th>
-                <th class="text-right">Total</th>
+                <!-- <th class="text-right">Total</th> -->
                 <th class="text-right">Subtotal</th>
               </tr>
             </thead>
@@ -67,7 +67,7 @@
                         <td><span t-field="line.product_id.name"/></td>
                         <td class="text-right"><span t-field="line.qty"/></td>
                         <td class="text-right"><span t-field="line.unit_price"/></td>
-                        <td class="text-right"><span t-field="line.value_before_tax"/></td>
+                       <!--  <td class="text-right"><span t-field="line.value_before_tax"/></td> -->
                         <td class="text-right"><span t-field="line.value" t-options='{"widget": "float", "precision": 2}'/></td>
                       </tr>
                     </t>
