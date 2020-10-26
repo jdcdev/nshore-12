@@ -48,12 +48,6 @@
                                     <field name="product_id" options="{'no_create': True,'no_edit': True,'no_open': True}" context="{'sale_order_id': sale_order_id}" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
                                     <field name="qty" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
                                     <field name="unit_price" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
-                                    <field name="tax_id" widget="many2many_tags" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
-                                    <field name="value" widget="monetary" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
-                                    <field name="vendor_id" attrs="{'readonly': [('state', 'not in', ('draft'))]}" invisible="1"/>
-                                    <field name="manufacturer_partner_id" attrs="{'readonly': [('state', 'not in', ('draft'))], 'invisible':[('return_option', '!=','manufacturer')]}"
-                                    options="{'no_create': True,'no_edit': True, 'no_open': True}" />
-                                    <field name="value_before_tax" />
                                     <field name="value" widget="monetary" />
                                     <field name="state" invisible="1"/>
                                 </tree>
