@@ -99,8 +99,8 @@
                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                         </t>
                                         <t t-if="not total_amount == 0">
-                                            (<span t-esc="total_amount"
-                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
+                                            <span t-esc="total_amount"
+                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                         </t>
                                         <br/>
                                         <t t-if="last_date == get_detail_total_loop">
@@ -109,8 +109,8 @@
                                                    t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                             </t>
                                             <t t-if="not lines_total_data[0].get('invoice_total_amount') == 0">
-                                                (<t t-esc="lines_total_data[0].get('invoice_total_amount')"
-                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
+                                                <t t-esc="lines_total_data[0].get('invoice_total_amount')"
+                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                             </t>
 
                                             <div style="border:1px ; border-style: groove;height:0px;"></div>
@@ -123,8 +123,8 @@
                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                         </t>
                                         <t t-if="not total_discount == 0">
-                                            (<span t-esc="total_discount"
-                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
+                                            <span t-esc="total_discount"
+                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                         </t>
                                         <br/>
                                         <t t-if="last_date == get_detail_total_loop">
@@ -133,8 +133,8 @@
                                                    t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                             </t>
                                             <t t-if="not lines_total_data[0].get('discount_total_amount') == 0">
-                                                (<t t-esc="lines_total_data[0].get('discount_total_amount')"
-                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
+                                                <t t-esc="lines_total_data[0].get('discount_total_amount')"
+                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                             </t>
                                             <div style="border:1px ; border-style: groove;height:0px;"></div>
                                         </t>
@@ -146,8 +146,8 @@
                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                         </t>
                                         <t t-if="not total_tax == 0">
-                                            (<span t-esc="total_tax"
-                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
+                                            <span t-esc="total_tax"
+                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                         </t>
                                         <br/>
                                         <t t-if="last_date == get_detail_total_loop">
@@ -156,8 +156,8 @@
                                                    t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                             </t>
                                             <t t-if="not lines_total_data[0].get('amount_tax_total') == 0">
-                                                (<t t-esc="lines_total_data[0].get('amount_tax_total')"
-                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
+                                                <t t-esc="lines_total_data[0].get('amount_tax_total')"
+                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                             </t>
                                             <div style="border:1px ; border-style: groove;height:0px;"></div>
                                         </t>
@@ -169,8 +169,8 @@
                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                         </t>
                                         <t t-if="not total == 0">
-                                            (<span t-esc="total"
-                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
+                                            <span t-esc="total"
+                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                         </t>
                                         <br/>
                                         <t t-if="last_date == get_detail_total_loop">
@@ -179,8 +179,8 @@
                                                    t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                             </t>
                                             <t t-if="not lines_total_data[0].get('total') == 0">
-                                                (<t t-esc="lines_total_data[0].get('total')"
-                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
+                                                <t t-esc="lines_total_data[0].get('total')"
+                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                             </t>
                                             <div style="border:1px ; border-style: groove;height:0px;"></div>
                                         </t>

@@ -13,7 +13,8 @@ class ReportDailyMonthlyInvoices(models.AbstractModel):
         if invoice_data:
             invoice_rec = self.env['account.invoice'].search(
                 [('date_invoice', '>=', invoice_data[0]),
-                 ('date_invoice', '<=', invoice_data[1])])
+                 ('date_invoice', '<=', invoice_data[1]),
+                 ('state', '=', 'paid')])
             for invoice in invoice_rec:
                 invoice_num = ''
                 if invoice.number:
@@ -55,7 +56,8 @@ class ReportDailyMonthlyInvoices(models.AbstractModel):
         data = []
         invoice_rec_total = self.env['account.invoice'].search(
             [('date_invoice', '>=', invoice_data[0]),
-                ('date_invoice', '<=', invoice_data[1])])
+                ('date_invoice', '<=', invoice_data[1]),
+                ('state', '=', 'paid')])
         invoice_total_amount = discount_total_amount = amount_tax_total =\
             total = 0
         for inv in invoice_rec_total:
@@ -83,7 +85,8 @@ class ReportDailyMonthlyInvoices(models.AbstractModel):
         if invoice_data:
             invoice_rec = self.env['account.invoice'].search(
                 [('date_invoice', '>=', invoice_data[0]),
-                 ('date_invoice', '<=', invoice_data[1])])
+                 ('date_invoice', '<=', invoice_data[1]),
+                 ('state', '=', 'paid')])
             for invoice in invoice_rec:
                 data.append(invoice.date_invoice.strftime(date_format))
             data = list(set(data))
@@ -95,7 +98,8 @@ class ReportDailyMonthlyInvoices(models.AbstractModel):
         if invoice_data:
             invoice_rec = self.env['account.invoice'].search(
                 [('date_invoice', '>=', invoice_data[0]),
-                 ('date_invoice', '<=', invoice_data[1])])
+                 ('date_invoice', '<=', invoice_data[1]),
+                 ('state', '=', 'paid')])
             for invoice in invoice_rec:
                 data.append(invoice.date_invoice)
             data = len(list(set(data)))
