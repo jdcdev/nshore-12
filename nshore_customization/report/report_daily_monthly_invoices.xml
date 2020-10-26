@@ -46,10 +46,10 @@
                                         <td class="text-left" style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                             <span t-esc="b.get('date')"/>
                                         </td>
-                                        <td class="text-left" style="padding-top:0px;padding-bottom:0px;font-size:13px">
+                                        <td class="text-left" style="padding-top:0px;padding-bottom:0px;padding-right:5px;font-size:13px">
                                             <span t-esc="b.get('number')"/>
                                         </td>
-                                        <td class="text-left" style="padding-top:0px;padding-bottom:0px;font-size:13px">
+                                        <td class="text-left" style="padding-top:0px;padding-bottom:0px;padding-left:5px;font-size:13px">
                                             <span t-esc="b.get('cust_no')"/>
                                         </td>
                                         <td class="text-left" style="padding-top:0px;padding-bottom:0px;font-size:13px;white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 350px;">
@@ -112,6 +112,7 @@
                                                 (<t t-esc="lines_total_data[0].get('invoice_total_amount')"
                                                    t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>)
                                             </t>
+
                                             <div style="border:1px ; border-style: groove;height:0px;"></div>
                                         </t>
                                         <t t-set="total_amount" t-value="0"/>
