@@ -13,7 +13,8 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
         if payment_data:
             payment_rec = self.env['account.payment'].search(
                 [('payment_date', '>=', payment_data[0]),
-                 ('payment_date', '<=', payment_data[1])])
+                 ('payment_date', '<=', payment_data[1]),
+                 ('state', '=', 'posted')])
             final_total = 0.0
             for payment in payment_rec:
                 final_total += payment.amount
@@ -37,7 +38,8 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
         if payment_data:
             payment_rec = self.env['account.payment'].search(
                 [('payment_date', '>=', payment_data[0]),
-                 ('payment_date', '<=', payment_data[1])])
+                 ('payment_date', '<=', payment_data[1]),
+                 ('state', '=', 'posted')])
             for payment in payment_rec:
                 data.append(payment.payment_date.strftime(date_format))
             data = list(set(data))
@@ -49,7 +51,8 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
         if payment_data:
             payment_rec = self.env['account.payment'].search(
                 [('payment_date', '>=', payment_data[0]),
-                 ('payment_date', '<=', payment_data[1])])
+                 ('payment_date', '<=', payment_data[1]),
+                 ('state', '=', 'posted')])
             for payment in payment_rec:
                 data.append(payment.payment_date)
             data = len(list(set(data)))
@@ -60,7 +63,8 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
         if payment_data:
             payment_rec = self.env['account.payment'].search(
                 [('payment_date', '>=', payment_data[0]),
-                 ('payment_date', '<=', payment_data[1])])
+                 ('payment_date', '<=', payment_data[1]),
+                 ('state', '=', 'posted')])
         for payment in payment_rec:
             total += payment.amount
         return total

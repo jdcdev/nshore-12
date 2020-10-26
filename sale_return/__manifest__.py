@@ -21,6 +21,7 @@
         'security/security.xml',
         'security/ir.model.access.csv',
         'data/return_sequence.xml',
+        'views/invoice_view.xml',
         'views/return_order_view.xml',
         # 'views/return_reason_views.xml',
         'views/sale_order_view.xml',

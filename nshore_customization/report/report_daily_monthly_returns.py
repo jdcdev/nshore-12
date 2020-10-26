@@ -14,7 +14,8 @@ class ReportDailyMonthlyReturns(models.AbstractModel):
             invoice_rec = self.env['account.invoice'].search(
                 [('date_invoice', '>=', invoice_data[0]),
                  ('date_invoice', '<=', invoice_data[1]),
-                 ('type', 'in', ['out_refund', 'in_refund'])])
+                 ('type', 'in', ['out_refund', 'in_refund']),
+                 ('state', '=', 'paid')])
             for invoice in invoice_rec:
                 invoice_num = ''
                 if invoice.number:
@@ -55,8 +56,8 @@ class ReportDailyMonthlyReturns(models.AbstractModel):
             invoice_rec = self.env['account.invoice'].search(
                 [('date_invoice', '>=', invoice_data[0]),
                  ('date_invoice', '<=', invoice_data[1]),
-                 ('type', 'in', ['out_refund', 'in_refund'])
-                 ])
+                 ('type', 'in', ['out_refund', 'in_refund']),
+                 ('state', '=', 'paid')])
             for invoice in invoice_rec:
                 data.append(invoice.date_invoice.strftime(
                     date_format))
@@ -70,7 +71,8 @@ class ReportDailyMonthlyReturns(models.AbstractModel):
             invoice_rec = self.env['account.invoice'].search(
                 [('date_invoice', '>=', invoice_data[0]),
                  ('date_invoice', '<=', invoice_data[1]),
-                 ('type', 'in', ['out_refund', 'in_refund'])
+                 ('type', 'in', ['out_refund', 'in_refund']),
+                 ('state', '=', 'paid')
                  ])
             for invoice in invoice_rec:
                 data.append(invoice.date_invoice)
@@ -82,7 +84,8 @@ class ReportDailyMonthlyReturns(models.AbstractModel):
         invoice_rec_total = self.env['account.invoice'].search(
             [('date_invoice', '>=', invoice_data[0]),
              ('date_invoice', '<=', invoice_data[1]),
-             ('type', 'in', ['out_refund', 'in_refund'])])
+             ('type', 'in', ['out_refund', 'in_refund']),
+             ('state', '=', 'paid')])
         invoice_total_amount = discount_total_amount = amount_tax_total =\
             total = 0
         for inv in invoice_rec_total:
