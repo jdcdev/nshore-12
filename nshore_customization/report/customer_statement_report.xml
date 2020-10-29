@@ -10,12 +10,23 @@
                                 <h3>
                                     <t t-esc="o.company_id.name" />
                                 </h3>
+                                <div>
+                                    <span t-if="o.company_id.street" t-field="o.company_id.street" />
+                                    <span t-field="o.company_id.street2" />
+                                    <br />
+                                    <span t-field="o.company_id.city" />, <span t-field="o.company_id.state_id" /> <span t-field="o.company_id.country_id" /><br /><span t-field="o.company_id.phone" />
+                                    <br />
+                                </div>
                             </div>
                             <div class="col-4">
-                                <span t-if="o.company_id.street" t-field="o.company_id.street" />
+                                <div>
+                                    <h4>Customer Statement</h4>
+                                    <strong>Date:<span t-esc="date"/></strong>
+                                </div>
+                                <!-- <span t-if="o.company_id.street" t-field="o.company_id.street" />
                                 <span t-field="o.company_id.street2" />
                                 <br />
-                                <span t-field="o.company_id.city" />, <span t-field="o.company_id.state_id" />, <span t-field="o.company_id.country_id" /><br /><span t-field="o.company_id.zip" /><br />
+                                <span t-field="o.company_id.city" />, <span t-field="o.company_id.state_id" />, <span t-field="o.company_id.country_id" /><br /><span t-field="o.company_id.zip" /><br /> -->
                             </div>
                          </div>
                     </div>
@@ -55,7 +66,7 @@
                                 </tr>
                             </table>
                         </div>
-                        <div class="col-4">
+                        <!-- <div class="col-4">
                             <table class="div-rounded" width="100%">
                                 <tr>
                                     <th style='padding: 5px;'>
@@ -82,13 +93,13 @@
                                     </td>
                                 </tr>
                             </table>
-                        </div>
-                        <div class="col-4">
+                        </div> -->
+                        <!-- <div class="col-4">
                             <h4>Customer <br/><br/> Statement</h4><br/>
                             <br/>
                             <br/>
                             <strong>Date:<span t-esc="date"/></strong>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="row mt16">
                         <table class="table table-condensed div-data"
@@ -102,6 +113,7 @@
                                     <th style="padding-top:0px; padding-bottom:0px;">Type</th>
                                     <th style="padding-top:0px; padding-bottom:0px;">Reference</th>
                                     <th class="text-right" style="padding-top:0px; padding-bottom:0px;">Invoiced</th>
+                                    <th class="text-right" style="padding-top:0px; padding-bottom:0px;">Due Date</th>
                                     <th class="text-right" style="padding-top:0px; padding-bottom:0px;">Paid</th>
                                     <th class="text-right" style="padding-top:0px; padding-bottom:0px;">Balance</th>
                                 </tr>
@@ -111,7 +123,7 @@
                                     <td colspan="2" class="text-right">
                                         Opening Balance
                                     </td>
-                                    <td colspan="3"/>
+                                    <td colspan="4"/>
                                     <td class="text-right">
                                         <t t-esc="lines_data[o].get('open_inv_amount', 0)" t-options='{"widget": "float", "precision": 2}'/>
                                     </td>
@@ -126,8 +138,11 @@
                                     <td>
                                         <span t-esc="new_list.get('date_invoice')"/>
                                     </td>
-                                    <td>
+                                    <td t-if="new_list.get('type') == 'out_invoice'">
                                         Invoice
+                                    </td>
+                                    <td t-if="new_list.get('type') == 'out_refund'">
+                                        Credit Note
                                     </td>
                                     <td>
                                         <span t-esc="new_list.get('name')"/>
@@ -136,6 +151,7 @@
                                         <span t-esc="new_list.get('amount_total', 0)" t-options='{"widget": "float", "precision": 2}'/>
                                         <t t-set="total_invoice" t-value="total_invoice+new_list.get('amount_total', 0)"/>
                                     </td>
+                                    <td class="text-right"><span t-esc="new_list.get('due_date')"/></td>
                                     <td></td>
                                     <td class="text-right">
                                         <span t-esc="total_amount" t-options='{"widget": "float", "precision": 2}'/>
@@ -155,6 +171,8 @@
                                                 <span t-esc="payment.name"/>
                                             </td>
                                             <td></td>
+                                            <td></td>
+                                            <!-- <td></td> -->
                                             <td class="text-right">
                                                 <span t-esc="payment.amount"/>
                                                 <t t-set="total_paid" t-value="total_paid+payment.amount"/>
@@ -169,7 +187,7 @@
                             </tbody>
                             <tbody>
                                 <tr style="background-color:black;color:white">
-                                    <td colspan="6"></td>
+                                    <td colspan="7"></td>
                                 </tr>
                             </tbody>
                             <tbody>
@@ -180,6 +198,7 @@
                                     <td colspan="3" class="text-right">
                                         <span t-esc="total_invoice" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                     </td>
+                                    <td></td>
                                     <td class="text-right">
                                         <span t-esc="total_paid" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                     </td>
@@ -203,7 +222,10 @@
                                     <b>60 Days</b>
                                 </td>
                                 <td class="text-right">
-                                    <b>90 + Days</b>
+                                    <b>90 Days</b>
+                                </td>
+                                <td class="text-right">
+                                    <b>90+ Days</b>
                                 </td>
                                 <td class="text-right">
                                     <b>On Account</b>
@@ -211,7 +233,8 @@
                             </tr>
                             <tr>
                                 <td class="text-right">
-                                    <span t-esc="lines_data[o].get('current_amount', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                    <!-- <span t-esc="lines_data[o].get('current_amount', 0)" t-options='{"widget": "float", "precision": 2}'/> -->
+                                    <span t-esc="total_amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                 </td>
                                 <td class="text-right">
                                     <span t-esc="lines_data[o].get('between_30days', 0)" t-options='{"widget": "float", "precision": 2}'/>
@@ -222,7 +245,12 @@
                                 <td class="text-right">
                                     <span t-esc="lines_data[o].get('between_90days', 0)" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>
-                                <td class="text-right">0.0</td>
+                                <td class="text-right">
+                                    <span t-esc="lines_data[o].get('plus_90days', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="lines_data[o].get('on_account', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
                             </tr>
                         </table>
                     </div>
