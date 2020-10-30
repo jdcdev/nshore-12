@@ -7,9 +7,9 @@
                     <div class="header">
                         <div class="row">
                             <div class="col-8">
-                                <h3>
-                                    <t t-esc="o.company_id.name" />
-                                </h3>
+                                <h2>
+                                    <t style="font-size:30px" t-esc="o.company_id.name" />
+                                </h2>
                                 <div>
                                     <span t-if="o.company_id.street" t-field="o.company_id.street" />
                                     <span t-field="o.company_id.street2" />
@@ -19,16 +19,19 @@
                                 </div>
                             </div>
                             <div class="col-4">
-                                <div>
-                                    <h4>Customer Statement</h4>
-                                    <strong>Date:<span t-esc="date"/></strong>
+                                <div class="text-right">
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 45px;" alt="Logo"/>
                                 </div>
-                                <!-- <span t-if="o.company_id.street" t-field="o.company_id.street" />
-                                <span t-field="o.company_id.street2" />
-                                <br />
-                                <span t-field="o.company_id.city" />, <span t-field="o.company_id.state_id" />, <span t-field="o.company_id.country_id" /><br /><span t-field="o.company_id.zip" /><br /> -->
+                                <div class="text-right" >
+                                    <span style="font-size:25px;" t-esc="date"/>
+                                </div>
                             </div>
                          </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <center><h4>Customer Statement</h4></center>
+                        </div>
                     </div>
                     <div class="row">
                         <style type="text/css">
@@ -45,17 +48,13 @@
                                 border-top: none !important;
                             }
                         </style>
+
                         <div class="col-4">
-                            <table class="div-rounded" width="100%">
+                            <table width="100%">
                                 <tr>
                                     <th style='padding: 5px;'>
-                                        <center><strong>Billing Address</strong></center>
+                                        <strong>Billing Address</strong>
                                     </th>
-                                </tr>
-                                <tr>
-                                    <th style='padding-top: 0px; padding-bottom: 0px;'>
-                                    <b>______________________________
-                                    </b></th>
                                 </tr>
                                 <tr>
                                     <td style='padding: 5px;'>
@@ -66,40 +65,6 @@
                                 </tr>
                             </table>
                         </div>
-                        <!-- <div class="col-4">
-                            <table class="div-rounded" width="100%">
-                                <tr>
-                                    <th style='padding: 5px;'>
-                                        <center><strong>Shipping Address</strong></center>
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <th style='padding-top: 0px; padding-bottom: 0px;'>
-                                    <b>______________________________
-                                    </b></th>
-                                </tr>
-                                <tr>
-                                    <td style='padding: 5px;'>
-                                        <t t-if="not lines_data.get('partner_shipping_id')">
-                                            <address t-esc="o" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}" />
-                                            <div t-if="o.vat" class="mt16">
-                                                <t t-esc="o.company_id.country_id.vat_label or 'TIN'" />: <span t-field="o.vat" /></div>
-                                        </t>
-                                        <t t-if="lines_data.get('partner_shipping_id')">
-                                            <address t-esc="lines_data.get('partner_shipping_id')" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}" />
-                                            <div t-if="o.vat" class="mt16">
-                                                <t t-esc="o.company_id.country_id.vat_label or 'TIN'" />: <span t-field="o.vat" /></div>
-                                        </t>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div> -->
-                        <!-- <div class="col-4">
-                            <h4>Customer <br/><br/> Statement</h4><br/>
-                            <br/>
-                            <br/>
-                            <strong>Date:<span t-esc="date"/></strong>
-                        </div> -->
                     </div>
                     <div class="row mt16">
                         <table class="table table-condensed div-data"
