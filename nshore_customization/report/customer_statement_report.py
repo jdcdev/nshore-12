@@ -65,21 +65,27 @@ class CustomerStatementReport(models.AbstractModel):
                     ('type', 'in', ['out_invoice', 'out_refund']),
                     ('state', 'not in', ['draft', 'cancel']),
                     ('date_invoice', '>=', start_date),
-                    ('date_invoice', '<=', end_date)]):
+                    ('date_invoice', '<=', end_date)], order='date desc'):
                 amount_total = 0.0
                 if invoice.type == 'out_invoice':
                     amount_total = invoice.amount_total
                 elif invoice.type == 'out_refund':
                     amount_total = -1 * invoice.amount_total
+                invoice_num = ''
+                if len(invoice.number) != 6:
+                    invoice_num = invoice.number[-6:]
+                else:
+                    invoice_num = invoice.number
                 vals_dict = {
                     'date_invoice': invoice.date_invoice.strftime(
                         date_format),
-                    'name': invoice.number,
+                    'name': invoice_num,
                     'amount_total': amount_total,
                     'residual': invoice.residual,
                     'partner_shipping_id': invoice.partner_shipping_id,
                     'payment': invoice.payment_ids,
-                    'due_date': invoice.date_due,
+                    'due_date': invoice.date_due.strftime(
+                        date_format),
                     'type': invoice.type
                 }
                 if partner not in partner_dict.keys():

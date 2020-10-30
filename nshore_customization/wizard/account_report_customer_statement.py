@@ -39,14 +39,6 @@ class AccountPrintStatement(models.TransientModel):
             template_id = self.env.ref(
                 'nshore_customization.email_template_partner_statement')
             if template_id:
-                # invoice_ids = self.env['account.invoice'].search([
-                #     ('state', '!=', 'draft'),
-                #     ('date_invoice', '>=', start_date),
-                #     ('date_invoice', '<=', end_date),
-                #     ('type', '=', 'out_invoice')])
-                # partner_list = [inv.partner_id for inv in invoice_ids]
-                # partner_list = [partner.id for partner in self.partner_ids]
-                # print("\n\n partner_list !!!!!!! partner_list", partner_list)
                 partner_list = self.partner_ids
                 partner_ids = list(set(partner_list))
                 email_partner_list = [partner for partner in partner_ids if partner.email]
