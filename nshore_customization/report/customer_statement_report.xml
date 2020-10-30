@@ -14,13 +14,13 @@
                                     <span t-if="o.company_id.street" t-field="o.company_id.street" />
                                     <span t-field="o.company_id.street2" />
                                     <br />
-                                    <span t-field="o.company_id.city" />, <span t-field="o.company_id.state_id" /> <span t-field="o.company_id.country_id" /><br /><span t-field="o.company_id.phone" />
+                                    <span t-field="o.company_id.city" /><span t-field="o.company_id.state_id" /> <span t-field="o.company_id.country_id" /><span t-field="o.company_id.phone" />
                                     <br />
                                 </div>
                             </div>
                             <div class="col-4">
                                 <div class="text-right">
-                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 45px;" alt="Logo"/>
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 75px;" alt="Logo"/>
                                 </div>
                                 <div class="text-right" >
                                     <span style="font-size:25px;" t-esc="date"/>
@@ -30,7 +30,7 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <center><h4>Customer Statement</h4></center>
+                            <center><h2>Customer Statement</h2></center>
                         </div>
                     </div>
                     <div class="row">
@@ -174,7 +174,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="row mt16" style="page-break-before: always">
+                    <div class="row mt16">
                         <table class="table div-rounded" width="100%">
                             <tr>
                                 <td class="text-right">

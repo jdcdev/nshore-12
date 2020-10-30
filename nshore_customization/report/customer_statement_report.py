@@ -60,17 +60,20 @@ class CustomerStatementReport(models.AbstractModel):
             opening_balance = (
                 total_open_inv_amount + total_open_move_amount - open_credit_amount - payment)
             # Get all invoices and credit notes between selected dates.
+            current_amount = 0.0
             for invoice in self.env['account.invoice'].search([
                     ('partner_id', '=', partner.id),
                     ('type', 'in', ['out_invoice', 'out_refund']),
                     ('state', 'not in', ['draft', 'cancel']),
                     ('date_invoice', '>=', start_date),
-                    ('date_invoice', '<=', end_date)], order='date desc'):
-                amount_total = 0.0
+                    ('date_invoice', '<=', end_date)], order='date asc'):
+                total_credit_note_amount = total_invoice_amount = 0.0
                 if invoice.type == 'out_invoice':
                     amount_total = invoice.amount_total
+                    total_invoice_amount += invoice.amount_total
                 elif invoice.type == 'out_refund':
                     amount_total = -1 * invoice.amount_total
+                    total_credit_note_amount += (-1 * invoice.amount_total)
                 invoice_num = ''
                 if len(invoice.number) != 6:
                     invoice_num = invoice.number[-6:]
@@ -121,7 +124,7 @@ class CustomerStatementReport(models.AbstractModel):
             domain_30days_invoice = ([
                 ('partner_id', '=', partner.id),
                 ('type', 'in', ['out_invoice']),
-                ('state', 'not in', ['draft', 'cancel']),
+                ('state', 'not in', ['open']),
                 ('date_invoice', '>=', stop_30days),
                 ('date_invoice', '<=', start_date)])
             invoice_30days = sum(
@@ -131,7 +134,7 @@ class CustomerStatementReport(models.AbstractModel):
             domain_30days_creditnote = ([
                 ('partner_id', '=', partner.id),
                 ('type', 'in', ['out_refund']),
-                ('state', 'not in', ['draft', 'cancel']),
+                ('state', 'not in', ['open']),
                 ('date_invoice', '>=', stop_30days),
                 ('date_invoice', '<=', start_date)])
             creditnote_30days = sum(
@@ -141,7 +144,7 @@ class CustomerStatementReport(models.AbstractModel):
             domain_60days_invoice = ([
                 ('partner_id', '=', partner.id),
                 ('type', 'in', ['out_invoice']),
-                ('state', 'not in', ['draft', 'cancel']),
+                ('state', 'not in', ['open']),
                 ('date_invoice', '<=', stop_30days),
                 ('date_invoice', '>=', stop_60days)])
             invoice_60days = sum(
@@ -151,7 +154,7 @@ class CustomerStatementReport(models.AbstractModel):
             domain_60days_creditnote = ([
                 ('partner_id', '=', partner.id),
                 ('type', 'in', ['out_refund']),
-                ('state', 'not in', ['draft', 'cancel']),
+                ('state', 'not in', ['open']),
                 ('date_invoice', '<=', stop_30days),
                 ('date_invoice', '>=', stop_60days)])
             creditnote_60days = sum(
@@ -161,7 +164,7 @@ class CustomerStatementReport(models.AbstractModel):
             domain_90days_invoice = ([
                 ('partner_id', '=', partner.id),
                 ('type', 'in', ['out_invoice']),
-                ('state', 'not in', ['draft', 'cancel']),
+                ('state', 'not in', ['open']),
                 ('date_invoice', '<=', stop_60days),
                 ('date_invoice', '>=', stop_90days)])
             invoice_90days = sum(
@@ -171,7 +174,7 @@ class CustomerStatementReport(models.AbstractModel):
             domain_90days_creditnote = ([
                 ('partner_id', '=', partner.id),
                 ('type', 'in', ['out_refund']),
-                ('state', 'not in', ['draft', 'cancel']),
+                ('state', 'not in', ['open']),
                 ('date_invoice', '<=', stop_60days),
                 ('date_invoice', '>=', stop_90days)])
             creditnote_90days = sum(
@@ -181,7 +184,7 @@ class CustomerStatementReport(models.AbstractModel):
             domain_90plusdays_invoice = ([
                 ('partner_id', '=', partner.id),
                 ('type', 'in', ['out_invoice']),
-                ('state', 'not in', ['draft', 'cancel']),
+                ('state', 'not in', ['open']),
                 ('date_invoice', '<=', stop_90days)])
             invoice_90plusdays = sum(
                 [invoice.amount_total for invoice in invoice_obj.search(
@@ -190,7 +193,7 @@ class CustomerStatementReport(models.AbstractModel):
             domain_90plusdays_creditnote = ([
                 ('partner_id', '=', partner.id),
                 ('type', 'in', ['out_refund']),
-                ('state', 'not in', ['draft', 'cancel']),
+                ('state', 'not in', ['open']),
                 ('date_invoice', '<=', stop_90days)])
             creditnote_90plusdays = sum(
                 [invoice.amount_total for invoice in invoice_obj.search(
