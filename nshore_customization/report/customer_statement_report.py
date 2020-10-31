@@ -12,7 +12,9 @@ class CustomerStatementReport(models.AbstractModel):
 
     def get_invoice_details(self, data, date_format):
         """Function call to get invoice."""
+        print("\n\n selfn*******************", self)
         partner_ids = self.env['res.partner'].browse(data['partner_ids'])
+        print("\n\n partner_ids ((((((((((()))))))))))",partner_ids)
         partner_dict = {}
         start_date = data['start_date']
         end_date = data['end_date']
@@ -53,10 +55,16 @@ class CustomerStatementReport(models.AbstractModel):
             if open_credit_note:
                 open_credit_amount = sum(
                     [inv.amount_total for inv in open_credit_note])
-            for inv in open_invoices:
-                for pay in inv.payment_ids.filtered(
-                        lambda p: p.state == 'posted'):
-                    payment += pay.amount or 0.0
+            for pay in self.env['account.payment'].search([
+                ('partner_id','=',partner.id),
+                ('partner_type', '=', 'customer'),
+                ('state','=', 'posted'),
+                ('payment_date', '<', start_date)]): 
+                payment +=pay.amount
+            # for inv in open_invoices:
+            #     for pay in inv.payment_ids.filtered(
+            #             lambda p: p.state == 'posted'):
+            #         payment += pay.amount or 0.0
             opening_balance = (
                 total_open_inv_amount + total_open_move_amount - open_credit_amount - payment)
             # Get all invoices and credit notes between selected dates.
@@ -103,6 +111,27 @@ class CustomerStatementReport(models.AbstractModel):
                     partner_dict[partner][
                         'open_inv_amount'] = opening_balance
                 # partner_shipping_id = invoice.partner_shipping_id
+            payment_records = []
+            for pay in self.env['account.payment'].search([
+                    ('partner_id', '=', partner.id),
+                    ('partner_type', '=', 'customer'),
+                    ('state', 'in', ['posted']),
+                    ('payment_date', '>=', start_date),
+                    ('payment_date', '<=', end_date)]):
+                print("\n\n pay ********** pay",pay)
+                pay_dict = {
+                    'pay_name': pay.name,
+                    'pay_date': pay.payment_date,
+                    'pay_amount': pay.amount,
+                }
+                if partner not in partner_dict.keys():
+                    payment_records.update({
+                    partner: {'payment_line': pay_dict}
+                })
+                else:
+                    print("\n\n partner_dict[partner][ in else ]", type(partner_dict[partner]))
+                    payment_records.append(pay_dict)
+            partner_dict[partner]['payment_line'] = payment_records
             if partner not in partner_dict.keys():
                 partner_dict.update({
                     partner: {'partner_shipping_id': partner}
@@ -220,6 +249,7 @@ class CustomerStatementReport(models.AbstractModel):
                 'on_account': on_account
             }
             partner_dict[partner].update(cust_dict)
+            print("\n\n partner_dict ****************** partner_dict", partner_dict)
         return partner_dict
 
     @api.model
