@@ -14,7 +14,7 @@
                                     <span t-if="o.company_id.street" t-field="o.company_id.street" />
                                     <span t-field="o.company_id.street2" />
                                     <br />
-                                    <span t-field="o.company_id.city" /><span t-field="o.company_id.state_id" /> <span t-field="o.company_id.country_id" /><span t-field="o.company_id.phone" />
+                                    <span t-field="o.company_id.city" /><span t-field="o.company_id.state_id" /> <span t-field="o.company_id.country_id" /><br /><span t-field="o.company_id.phone" />
                                     <br />
                                 </div>
                             </div>
@@ -122,33 +122,30 @@
                                         <span t-esc="total_amount" t-options='{"widget": "float", "precision": 2}'/>
                                         <t t-set="total_balance" t-value="total_balance+total_amount"/>
                                     </td>
-                                    <t t-if="new_list.get('payment')">
-                                        <tr t-foreach="new_list.get('payment')" t-as="payment">
-                                            <t t-set="line_amount" t-value="payment.amount"/>
-                                            <t t-set="total_amount" t-value="total_amount - line_amount"/>
-                                            <td>
-                                                <span t-esc="new_list.get('date_invoice')"/>
-                                            </td>
-                                            <td>
-                                                Payment
-                                            </td>
-                                            <td>
-                                                <span t-esc="payment.name"/>
-                                            </td>
-                                            <td></td>
-                                            <td></td>
-                                            <!-- <td></td> -->
-                                            <td class="text-right">
-                                                <span t-esc="payment.amount"/>
-                                                <t t-set="total_paid" t-value="total_paid+payment.amount"/>
-                                            </td>
-                                            <td class="text-right">
-                                                <span t-esc="total_amount" t-options='{"widget": "float", "precision": 2}'/>
-                                                <t t-set="total_balance" t-value="total_balance+total_amount"/>
-                                            </td>
-                                        </tr>
-                                    </t>
                                 </tr>
+                                    <tr t-foreach="lines_data[o].get('payment_line', [])" t-as="payment">
+                                        <t t-set="line_amount" t-value="payment.get('pay_amount')"/>
+                                        <t t-set="total_amount" t-value="total_amount - line_amount"/>
+                                        <td>
+                                            <span t-esc="payment.get('pay_date')"/>
+                                        </td>
+                                        <td>
+                                            Payment
+                                        </td>
+                                        <td>
+                                            <span t-esc="payment.get('pay_name')"/>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="text-right">
+                                            <span t-esc="payment.get('pay_amount')"/>
+                                            <t t-set="total_paid" t-value="total_paid+payment.get('pay_amount')"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="total_amount" t-options='{"widget": "float", "precision": 2}'/>
+                                            <t t-set="total_balance" t-value="total_balance+total_amount"/>
+                                        </td>
+                                    </tr>
                             </tbody>
                             <tbody>
                                 <tr style="background-color:black;color:white">
