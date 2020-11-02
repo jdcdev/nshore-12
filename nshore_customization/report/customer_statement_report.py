@@ -12,9 +12,7 @@ class CustomerStatementReport(models.AbstractModel):
 
     def get_invoice_details(self, data, date_format):
         """Function call to get invoice."""
-        print("\n\n selfn*******************", self)
         partner_ids = self.env['res.partner'].browse(data['partner_ids'])
-        print("\n\n partner_ids ((((((((((()))))))))))",partner_ids)
         partner_dict = {}
         start_date = data['start_date']
         end_date = data['end_date']
@@ -56,11 +54,11 @@ class CustomerStatementReport(models.AbstractModel):
                 open_credit_amount = sum(
                     [inv.amount_total for inv in open_credit_note])
             for pay in self.env['account.payment'].search([
-                ('partner_id','=',partner.id),
-                ('partner_type', '=', 'customer'),
-                ('state','=', 'posted'),
-                ('payment_date', '<', start_date)]): 
-                payment +=pay.amount
+                    ('partner_id', '=', partner.id),
+                    ('partner_type', '=', 'customer'),
+                    ('state', '=', 'posted'),
+                    ('payment_date', '<', start_date)]):
+                payment += pay.amount or 0.0
             # for inv in open_invoices:
             #     for pay in inv.payment_ids.filtered(
             #             lambda p: p.state == 'posted'):
@@ -68,13 +66,12 @@ class CustomerStatementReport(models.AbstractModel):
             opening_balance = (
                 total_open_inv_amount + total_open_move_amount - open_credit_amount - payment)
             # Get all invoices and credit notes between selected dates.
-            current_amount = 0.0
             for invoice in self.env['account.invoice'].search([
                     ('partner_id', '=', partner.id),
                     ('type', 'in', ['out_invoice', 'out_refund']),
                     ('state', 'not in', ['draft', 'cancel']),
                     ('date_invoice', '>=', start_date),
-                    ('date_invoice', '<=', end_date)], order='date asc'):
+                    ('date_invoice', '<=', end_date)], order='date_invoice asc'):
                 total_credit_note_amount = total_invoice_amount = 0.0
                 if invoice.type == 'out_invoice':
                     amount_total = invoice.amount_total
@@ -117,19 +114,20 @@ class CustomerStatementReport(models.AbstractModel):
                     ('partner_type', '=', 'customer'),
                     ('state', 'in', ['posted']),
                     ('payment_date', '>=', start_date),
-                    ('payment_date', '<=', end_date)]):
-                print("\n\n pay ********** pay",pay)
+                    ('payment_date', '<=', end_date)], order='payment_date asc'):
+                payment_name = ''
+                if pay.name:
+                    payment_name = pay.name[-4:]
                 pay_dict = {
-                    'pay_name': pay.name,
-                    'pay_date': pay.payment_date,
+                    'pay_name': payment_name,
+                    'pay_date': pay.payment_date.strftime(
+                        date_format),
                     'pay_amount': pay.amount,
                 }
                 if partner not in partner_dict.keys():
                     payment_records.update({
-                    partner: {'payment_line': pay_dict}
-                })
+                        partner: {'payment_line': pay_dict}})
                 else:
-                    print("\n\n partner_dict[partner][ in else ]", type(partner_dict[partner]))
                     payment_records.append(pay_dict)
             partner_dict[partner]['payment_line'] = payment_records
             if partner not in partner_dict.keys():
@@ -152,88 +150,87 @@ class CustomerStatementReport(models.AbstractModel):
             # get 30days invoices
             domain_30days_invoice = ([
                 ('partner_id', '=', partner.id),
-                ('type', 'in', ['out_invoice']),
-                ('state', 'not in', ['open']),
-                ('date_invoice', '>=', stop_30days),
-                ('date_invoice', '<=', start_date)])
+                ('type', '=', 'out_invoice'),
+                ('state', '=', 'open'),
+                ('date_due', '>=', stop_30days),
+                ('date_due', '<=', start_date)])
             invoice_30days = sum(
-                [invoice.amount_total for invoice in invoice_obj.search(
-                    domain_30days_invoice)])
-            # get 30days Credit notes
+                [invoice.amount_untaxed for invoice in invoice_obj.search(
+                    domain_30days_invoice)])priu# get 30days Credit notes
             domain_30days_creditnote = ([
                 ('partner_id', '=', partner.id),
-                ('type', 'in', ['out_refund']),
-                ('state', 'not in', ['open']),
-                ('date_invoice', '>=', stop_30days),
-                ('date_invoice', '<=', start_date)])
+                ('type', '=', 'out_refund'),
+                ('state', '=', 'open'),
+                ('date_due', '>=', stop_30days),
+                ('date_due', '<=', start_date)])
             creditnote_30days = sum(
-                [invoice.amount_total for invoice in invoice_obj.search(
+                [invoice.amount_untaxed for invoice in invoice_obj.search(
                     domain_30days_creditnote)])
             # Get 60Dyas amount
             domain_60days_invoice = ([
                 ('partner_id', '=', partner.id),
-                ('type', 'in', ['out_invoice']),
-                ('state', 'not in', ['open']),
-                ('date_invoice', '<=', stop_30days),
-                ('date_invoice', '>=', stop_60days)])
+                ('type', '=', 'out_invoice'),
+                ('state', '=', 'open'),
+                ('date_due', '<=', stop_30days),
+                ('date_due', '>=', stop_60days)])
             invoice_60days = sum(
-                [invoice.amount_total for invoice in invoice_obj.search(
+                [invoice.amount_untaxed for invoice in invoice_obj.search(
                     domain_60days_invoice)])
             # get 60Dyas Credit notes
             domain_60days_creditnote = ([
                 ('partner_id', '=', partner.id),
-                ('type', 'in', ['out_refund']),
-                ('state', 'not in', ['open']),
-                ('date_invoice', '<=', stop_30days),
-                ('date_invoice', '>=', stop_60days)])
+                ('type', '=', 'out_refund'),
+                ('state', '=', 'open'),
+                ('date_due', '<=', stop_30days),
+                ('date_due', '>=', stop_60days)])
             creditnote_60days = sum(
-                [invoice.amount_total for invoice in invoice_obj.search(
+                [invoice.amount_untaxed for invoice in invoice_obj.search(
                     domain_60days_creditnote)])
             # Get 90Dyas amount
             domain_90days_invoice = ([
                 ('partner_id', '=', partner.id),
-                ('type', 'in', ['out_invoice']),
-                ('state', 'not in', ['open']),
-                ('date_invoice', '<=', stop_60days),
-                ('date_invoice', '>=', stop_90days)])
+                ('type', '=', 'out_invoice'),
+                ('state', '=', 'open'),
+                ('date_due', '<=', stop_60days),
+                ('date_due', '>=', stop_90days)])
             invoice_90days = sum(
-                [invoice.amount_total for invoice in invoice_obj.search(
+                [invoice.amount_untaxed for invoice in invoice_obj.search(
                     domain_90days_invoice)])
             # get 90Dyas Credit notes
             domain_90days_creditnote = ([
                 ('partner_id', '=', partner.id),
-                ('type', 'in', ['out_refund']),
-                ('state', 'not in', ['open']),
-                ('date_invoice', '<=', stop_60days),
-                ('date_invoice', '>=', stop_90days)])
+                ('type', '=', 'out_refund'),
+                ('state', '=', 'open'),
+                ('date_due', '<=', stop_60days),
+                ('date_due', '>=', stop_90days)])
             creditnote_90days = sum(
-                [invoice.amount_total for invoice in invoice_obj.search(
+                [invoice.amount_untaxed for invoice in invoice_obj.search(
                     domain_90days_creditnote)])
             # Get 90+Dyas amount
             domain_90plusdays_invoice = ([
                 ('partner_id', '=', partner.id),
-                ('type', 'in', ['out_invoice']),
-                ('state', 'not in', ['open']),
-                ('date_invoice', '<=', stop_90days)])
+                ('type', '=', 'out_invoice'),
+                ('state', '=', 'open'),
+                ('date_due', '<=', stop_90days)])
             invoice_90plusdays = sum(
-                [invoice.amount_total for invoice in invoice_obj.search(
+                [invoice.amount_untaxed for invoice in invoice_obj.search(
                     domain_90plusdays_invoice)])
             # get 90+Dyas Credit notes
             domain_90plusdays_creditnote = ([
                 ('partner_id', '=', partner.id),
-                ('type', 'in', ['out_refund']),
-                ('state', 'not in', ['open']),
-                ('date_invoice', '<=', stop_90days)])
+                ('type', '=', 'out_refund'),
+                ('state', '=', 'open'),
+                ('date_due', '<=', stop_90days)])
             creditnote_90plusdays = sum(
-                [invoice.amount_total for invoice in invoice_obj.search(
+                [invoice.amount_untaxed for invoice in invoice_obj.search(
                     domain_90plusdays_creditnote)])
             on_account_cr_note = ([
                 ('partner_id', '=', partner.id),
-                ('type', 'in', ['out_refund']),
-                ('state', 'in', ['open']),
+                ('type', '=', 'out_refund'),
+                ('state', '=', 'open'),
                 ('date_invoice', '<', start_date)])
             on_account = sum(
-                [invoice.amount_total for invoice in invoice_obj.search(
+                [invoice.amount_untaxed for invoice in invoice_obj.search(
                     on_account_cr_note)])
             # Sum of all 30,60,90 and 90+ invoices - credit notes
             between_30days = invoice_30days - creditnote_30days
@@ -249,7 +246,6 @@ class CustomerStatementReport(models.AbstractModel):
                 'on_account': on_account
             }
             partner_dict[partner].update(cust_dict)
-            print("\n\n partner_dict ****************** partner_dict", partner_dict)
         return partner_dict
 
     @api.model
