@@ -156,7 +156,8 @@ class CustomerStatementReport(models.AbstractModel):
                 ('date_due', '<=', start_date)])
             invoice_30days = sum(
                 [invoice.amount_untaxed for invoice in invoice_obj.search(
-                    domain_30days_invoice)])priu# get 30days Credit notes
+                    domain_30days_invoice)])
+            # get 30days Credit notes
             domain_30days_creditnote = ([
                 ('partner_id', '=', partner.id),
                 ('type', '=', 'out_refund'),
