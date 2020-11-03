@@ -10,6 +10,37 @@ class CustomerStatementReport(models.AbstractModel):
 
     _description = 'Report Customer Statement'
 
+    def get_detail_date(self, data, date_format):
+        """Function call to get all date value."""
+        data_date = []
+        partner_ids = self.env['res.partner'].browse(data['partner_ids'])
+        start_date = data['start_date']
+        end_date = data['end_date']
+        if data:
+            for partner in partner_ids:
+                invoice_rec = self.env['account.invoice'].search(
+                    [('partner_id', '=', partner.id),
+                        ('type', 'in', ['out_invoice', 'out_refund']),
+                        ('state', 'not in', ['draft', 'cancel']),
+                        ('date_invoice', '>=', start_date),
+                        ('date_invoice', '<=', end_date)])
+                payment_rec = self.env['account.payment'].search([
+                    ('partner_id', '=', partner.id),
+                    ('partner_type', '=', 'customer'),
+                    ('state', 'in', ['posted']),
+                    ('payment_date', '>=', start_date),
+                    ('payment_date', '<=', end_date)])
+                for pay in payment_rec:
+                    data_date.append(pay.payment_date.strftime(
+                        date_format))
+                    data_date = list(set(data_date))
+                for invoice in invoice_rec:
+                    data_date.append(invoice.date_invoice.strftime(
+                        date_format))
+                    data_date = list(set(data_date))
+        data_date.sort(key=lambda date: datetime.strptime(date, '%m/%d/%Y'))
+        return data_date
+
     def get_invoice_details(self, data, date_format):
         """Function call to get invoice."""
         partner_ids = self.env['res.partner'].browse(data['partner_ids'])
@@ -17,16 +48,18 @@ class CustomerStatementReport(models.AbstractModel):
         start_date = data['start_date']
         end_date = data['end_date']
         # get all open invoice and credit not for opening balance.
+        invoice_obj = self.env['account.invoice']
+        payment_obj = self.env['account.payment']
         for partner in partner_ids:
             # Open Invoices
-            open_invoices = self.env['account.invoice'].search([
+            open_invoices = invoice_obj.search([
                 ('partner_id', '=', partner.id),
                 ('type', '=', 'out_invoice'),
                 ('state', '=', 'open'),
                 ('date_invoice', '<', start_date),
             ])
             # Open Credit notes.
-            open_credit_note = self.env['account.invoice'].search([
+            open_credit_note = invoice_obj.search([
                 ('partner_id', '=', partner.id),
                 ('type', '=', 'out_refund'),
                 ('state', '=', 'open'),
@@ -53,20 +86,16 @@ class CustomerStatementReport(models.AbstractModel):
             if open_credit_note:
                 open_credit_amount = sum(
                     [inv.amount_total for inv in open_credit_note])
-            for pay in self.env['account.payment'].search([
+            for pay in payment_obj.search([
                     ('partner_id', '=', partner.id),
                     ('partner_type', '=', 'customer'),
                     ('state', '=', 'posted'),
                     ('payment_date', '<', start_date)]):
                 payment += pay.amount or 0.0
-            # for inv in open_invoices:
-            #     for pay in inv.payment_ids.filtered(
-            #             lambda p: p.state == 'posted'):
-            #         payment += pay.amount or 0.0
             opening_balance = (
                 total_open_inv_amount + total_open_move_amount - open_credit_amount - payment)
             # Get all invoices and credit notes between selected dates.
-            for invoice in self.env['account.invoice'].search([
+            for invoice in invoice_obj.search([
                     ('partner_id', '=', partner.id),
                     ('type', 'in', ['out_invoice', 'out_refund']),
                     ('state', 'not in', ['draft', 'cancel']),
@@ -109,7 +138,7 @@ class CustomerStatementReport(models.AbstractModel):
                         'open_inv_amount'] = opening_balance
                 # partner_shipping_id = invoice.partner_shipping_id
             payment_records = []
-            for pay in self.env['account.payment'].search([
+            for pay in payment_obj.search([
                     ('partner_id', '=', partner.id),
                     ('partner_type', '=', 'customer'),
                     ('state', 'in', ['posted']),
@@ -146,7 +175,6 @@ class CustomerStatementReport(models.AbstractModel):
                 stop_30days = start - relativedelta(days=29)
                 stop_60days = start - relativedelta(days=59)
                 stop_90days = start - relativedelta(days=89)
-            invoice_obj = self.env['account.invoice']
             # get 30days invoices
             domain_30days_invoice = ([
                 ('partner_id', '=', partner.id),
@@ -260,10 +288,12 @@ class CustomerStatementReport(models.AbstractModel):
         data.update(self._context)
         partner_ids = data.get('partner_ids')
         lines_data = self.get_invoice_details(data, date_format)
+        get_detail_date = self.get_detail_date(data, date_format)
         return {
             'doc_ids': docids,
             'doc_model': 'res.partner',
             'docs': self.env['res.partner'].browse(partner_ids),
             'date': datetime.now().strftime(date_format),
             'lines_data': lines_data,
+            'date_data': get_detail_date
         }
