@@ -11,7 +11,7 @@
         <field name="lang">${ctx['email_to']|safe}</field>
         <field name="body_html">
             <![CDATA[
-                <p>Hello !!</p>
+                <p>Hello,</p>
                 <h2>Stetement is in the attachment.</h2>
             ]]>
         </field>
