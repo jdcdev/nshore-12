@@ -40,7 +40,6 @@ class ResPartner(models.Model):
                                final_start_date.month)[1])
         invoices = self.env['account.invoice'].search(
             [('type', '=', 'out_invoice')])
-        # payments = self.env['account.payment'].search([])
         partner_obj = self.env['res.partner']
         log = self.env['customer.statement.unmail']
         partner_list = []
@@ -53,15 +52,6 @@ class ResPartner(models.Model):
                     str(invoices_date_format), "%d/%m/%Y")
                 if final_start_date <= final_invoices_date <= final_end_date:
                     partner_list.append(invoice.partner_id.id)
-        # for payment in payments:
-        #     if payment.payment_date:
-        #         payment_date = datetime.datetime.strptime(
-        #             str(payment.payment_date), "%Y-%m-%d")
-        #         payment_date_format = payment_date.strftime("%d/%m/%Y")
-        #         final_payment_date = datetime.datetime.strptime(
-        #             str(payment_date_format), "%d/%m/%Y")
-        #         if final_start_date <= final_payment_date <= final_end_date:
-        #             partner_list.append(payment.partner_id.id)
         if partner_list:
             partner_list = list(set(partner_list))
             template_id = self.env.ref(
