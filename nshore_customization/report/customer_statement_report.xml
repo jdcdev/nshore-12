@@ -147,7 +147,8 @@
                                             <td></td>
                                             <td></td>
                                             <td class="text-right">
-                                                <span t-esc="payment.get('pay_amount')"/>
+                                                <!-- <span t-esc="payment.get('pay_amount')"/> -->
+                                                <span t-esc="payment.get('pay_amount', 0)" t-options='{"widget": "float", "precision": 2}'/>
                                                 <t t-set="total_paid" t-value="total_paid+payment.get('pay_amount')"/>
                                             </td>
                                             <td class="text-right">
