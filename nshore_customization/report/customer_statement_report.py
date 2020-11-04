@@ -143,7 +143,8 @@ class CustomerStatementReport(models.AbstractModel):
                     ('partner_type', '=', 'customer'),
                     ('state', 'in', ['posted']),
                     ('payment_date', '>=', start_date),
-                    ('payment_date', '<=', end_date)], order='payment_date asc'):
+                    ('payment_date', '<=', end_date)],
+                    order='payment_date asc'):
                 payment_name = ''
                 if pay.name:
                     payment_name = pay.name[-4:]
@@ -158,7 +159,8 @@ class CustomerStatementReport(models.AbstractModel):
                         partner: {'payment_line': pay_dict}})
                 else:
                     payment_records.append(pay_dict)
-            partner_dict[partner]['payment_line'] = payment_records
+            if payment_records:
+                partner_dict[partner]['payment_line'] = payment_records
             if partner not in partner_dict.keys():
                 partner_dict.update({
                     partner: {'partner_shipping_id': partner}
