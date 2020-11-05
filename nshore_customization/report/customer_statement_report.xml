@@ -95,17 +95,9 @@
                                 </tr>
                                 <t t-set="total_amount" t-value="lines_data[o].get('open_inv_amount', 0)"/>
                                 <t t-foreach="date_data" t-as="date">
-                                    <!-- <tr>
-                                        <td>
-                                            <span t-esc="date"/>
-                                        </td>
-                                    </tr> -->
                                     <tr t-foreach="lines_data[o].get('invoice_line', [])" t-as="new_list">
                                         <t t-if="new_list.get('date_invoice') == date">
                                             <t t-set="line_amount" t-value="new_list.get('amount_total', 0)"/>
-                                            <!-- <t t-if="new_list.get('state') == 'paid'">
-                                                <t t-set="line_amount" t-value="0"/>
-                                            </t> -->
                                             <t t-set="total_amount" t-value="total_amount + line_amount"/>
                                             <td>
                                                 <span t-esc="new_list.get('date_invoice')"/>
@@ -147,7 +139,6 @@
                                             <td></td>
                                             <td></td>
                                             <td class="text-right">
-                                                <!-- <span t-esc="payment.get('pay_amount')"/> -->
                                                 <span t-esc="payment.get('pay_amount', 0)" t-options='{"widget": "float", "precision": 2}'/>
                                                 <t t-set="total_paid" t-value="total_paid+payment.get('pay_amount')"/>
                                             </td>
@@ -183,7 +174,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="row mt16">
+                    <div class="row mt16" style="page-break-before: always">
                         <table class="table div-rounded" width="100%">
                             <tr>
                                 <td class="text-right">
