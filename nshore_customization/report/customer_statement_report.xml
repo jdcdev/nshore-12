@@ -67,6 +67,50 @@
                         </div>
                     </div>
                     <div class="row mt16">
+                        <table class="table div-rounded" width="100%">
+                            <tr>
+                                <td class="text-right">
+                                    <b>Current</b>
+                                </td>
+                                <td class="text-right">
+                                    <b>30 Days</b>
+                                </td>
+                                <td class="text-right">
+                                    <b>60 Days</b>
+                                </td>
+                                <td class="text-right">
+                                    <b>90 Days</b>
+                                </td>
+                                <td class="text-right">
+                                    <b>90+ Days</b>
+                                </td>
+                                <td class="text-right">
+                                    <b>On Account</b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-right">
+                                    <span t-esc="lines_data[o].get('current_amount', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="lines_data[o].get('between_30days', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="lines_data[o].get('between_60days', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="lines_data[o].get('between_90days', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="lines_data[o].get('plus_90days', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="lines_data[o].get('on_account', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="row mt16">
                         <table class="table table-condensed div-data"
                                 style="border-left:solid white 1px;border-right:solid white 1px;border-bottom:solid white 1px;border-top:solid white 1px;">
                             <t t-set="total_invoice" t-value="0"/>
@@ -172,51 +216,6 @@
                                     </td>
                                 </tr>
                             </tbody>
-                        </table>
-                    </div>
-                    <div class="row mt16">
-                        <table class="table div-rounded" width="100%">
-                            <tr>
-                                <td class="text-right">
-                                    <b>Current</b>
-                                </td>
-                                <td class="text-right">
-                                    <b>30 Days</b>
-                                </td>
-                                <td class="text-right">
-                                    <b>60 Days</b>
-                                </td>
-                                <td class="text-right">
-                                    <b>90 Days</b>
-                                </td>
-                                <td class="text-right">
-                                    <b>90+ Days</b>
-                                </td>
-                                <td class="text-right">
-                                    <b>On Account</b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-right">
-                                    <!-- <span t-esc="lines_data[o].get('current_amount', 0)" t-options='{"widget": "float", "precision": 2}'/> -->
-                                    <span t-esc="total_amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
-                                </td>
-                                <td class="text-right">
-                                    <span t-esc="lines_data[o].get('between_30days', 0)" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>
-                                <td class="text-right">
-                                    <span t-esc="lines_data[o].get('between_60days', 0)" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>
-                                <td class="text-right">
-                                    <span t-esc="lines_data[o].get('between_90days', 0)" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>
-                                <td class="text-right">
-                                    <span t-esc="lines_data[o].get('plus_90days', 0)" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>
-                                <td class="text-right">
-                                    <span t-esc="lines_data[o].get('on_account', 0)" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>
-                            </tr>
                         </table>
                     </div>
                     <t t-raw="0" />

@@ -95,13 +95,13 @@ class CustomerStatementReport(models.AbstractModel):
             opening_balance = (
                 total_open_inv_amount + total_open_move_amount - open_credit_amount - payment)
             # Get all invoices and credit notes between selected dates.
+            total_credit_note_amount = total_invoice_amount = total_pay = 0.0
             for invoice in invoice_obj.search([
                     ('partner_id', '=', partner.id),
                     ('type', 'in', ['out_invoice', 'out_refund']),
                     ('state', 'not in', ['draft', 'cancel']),
                     ('date_invoice', '>=', start_date),
                     ('date_invoice', '<=', end_date)], order='date_invoice asc'):
-                total_credit_note_amount = total_invoice_amount = 0.0
                 if invoice.type == 'out_invoice':
                     amount_total = invoice.amount_total
                     total_invoice_amount += invoice.amount_total
@@ -145,6 +145,7 @@ class CustomerStatementReport(models.AbstractModel):
                     ('payment_date', '>=', start_date),
                     ('payment_date', '<=', end_date)],
                     order='payment_date asc'):
+                total_pay += pay.amount
                 payment_name = ''
                 if pay.name:
                     payment_name = pay.name[-4:]
@@ -268,13 +269,15 @@ class CustomerStatementReport(models.AbstractModel):
             between_60days = invoice_60days - creditnote_60days
             between_90days = invoice_90days - creditnote_90days
             plus_90days = invoice_90plusdays - creditnote_90plusdays
+            current_amount = (
+                opening_balance + total_invoice_amount - total_credit_note_amount - total_pay)
             cust_dict = {
-                'current_amount': 0.0,
-                'between_30days': between_30days,
-                'between_60days': between_60days,
-                'between_90days': between_90days,
-                'plus_90days': plus_90days,
-                'on_account': on_account
+                'current_amount': current_amount or 0.0,
+                'between_30days': between_30days or 0.0,
+                'between_60days': between_60days or 0.0,
+                'between_90days': between_90days or 0.0,
+                'plus_90days': plus_90days or 0.0,
+                'on_account': on_account or 0.0
             }
             partner_dict[partner].update(cust_dict)
         return partner_dict
