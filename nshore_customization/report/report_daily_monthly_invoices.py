@@ -1,19 +1,22 @@
 from datetime import datetime
-
 from odoo import api, models
 
 
 class ReportDailyMonthlyInvoices(models.AbstractModel):
+    """Class added for DM invoice report."""
+
     _name = 'report.nshore_customization.report_daily_monthly_invoices'
 
     _description = 'Report Daily Monthly Invoices'
 
     def get_detail(self, invoice_data, date_format):
+        """Function call to get invoice data."""
         data = []
         if invoice_data:
             invoice_rec = self.env['account.invoice'].search(
                 [('date_invoice', '>=', invoice_data[0]),
-                 ('date_invoice', '<=', invoice_data[1])])
+                 ('date_invoice', '<=', invoice_data[1]),
+                 ('state', '=', 'paid')])
             for invoice in invoice_rec:
                 invoice_num = ''
                 if invoice.number:
@@ -52,10 +55,12 @@ class ReportDailyMonthlyInvoices(models.AbstractModel):
         return data
 
     def get_total_detail(self, invoice_data):
+        """Function call o get total details."""
         data = []
         invoice_rec_total = self.env['account.invoice'].search(
             [('date_invoice', '>=', invoice_data[0]),
-                ('date_invoice', '<=', invoice_data[1])])
+                ('date_invoice', '<=', invoice_data[1]),
+                ('state', '=', 'paid')])
         invoice_total_amount = discount_total_amount = amount_tax_total =\
             total = 0
         for inv in invoice_rec_total:
@@ -63,7 +68,8 @@ class ReportDailyMonthlyInvoices(models.AbstractModel):
                 amount_tax_total += (-1 * inv.amount_tax)
                 total += (-1 * inv.amount_total)
                 for inv_line in inv.invoice_line_ids:
-                    invoice_total_amount += (-1 * (inv_line.price_unit * inv_line.quantity))
+                    invoice_total_amount += (-1 * (
+                        inv_line.price_unit * inv_line.quantity))
                     discount_total_amount += (-1 * inv_line.discount)
             elif inv.type == 'out_invoice':
                 amount_tax_total += inv.amount_tax
@@ -79,28 +85,31 @@ class ReportDailyMonthlyInvoices(models.AbstractModel):
         return data
 
     def get_detail_date(self, invoice_data, date_format):
+        """Function call to get date details."""
         data = []
         if invoice_data:
             invoice_rec = self.env['account.invoice'].search(
                 [('date_invoice', '>=', invoice_data[0]),
-                 ('date_invoice', '<=', invoice_data[1])])
+                 ('date_invoice', '<=', invoice_data[1]),
+                 ('state', '=', 'paid')])
             for invoice in invoice_rec:
                 data.append(invoice.date_invoice.strftime(date_format))
             data = list(set(data))
-        data.sort(key = lambda date: datetime.strptime(date, '%m/%d/%Y'))
+        data.sort(key=lambda date: datetime.strptime(date, '%m/%d/%Y'))
         return data
 
     def get_date_loop(self, invoice_data):
+        """Function call to get loop dates."""
         data = []
         if invoice_data:
             invoice_rec = self.env['account.invoice'].search(
                 [('date_invoice', '>=', invoice_data[0]),
-                 ('date_invoice', '<=', invoice_data[1])])
+                 ('date_invoice', '<=', invoice_data[1]),
+                 ('state', '=', 'paid')])
             for invoice in invoice_rec:
                 data.append(invoice.date_invoice)
             data = len(list(set(data)))
         return data
-
 
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -109,7 +118,6 @@ class ReportDailyMonthlyInvoices(models.AbstractModel):
         lang_id = lang._lang_get(lang_code)
         date_format = lang_id.date_format
         register_ids = self.env.context.get('active_ids', [])
-        invoice = self.env['account.invoice'].browse(register_ids)
         invoice_data = []
         if data['form'].get('from_date') and data['form'].get('to_date'):
             invoice_data = [data['form'].get('from_date'), data['form'].get(

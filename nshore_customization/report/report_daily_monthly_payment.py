@@ -1,19 +1,22 @@
 from datetime import datetime
-
 from odoo import api, models
 
 
 class ReportDailyMonthlyPayment(models.AbstractModel):
+    """Class added for DM Payment report."""
+
     _name = 'report.nshore_customization.report_daily_monthly_payment_1'
 
     _description = 'Report Daily Monthly Payment'
 
     def get_detail(self, payment_data, date_format):
+        """Function call to get Payment data."""
         data = []
         if payment_data:
             payment_rec = self.env['account.payment'].search(
                 [('payment_date', '>=', payment_data[0]),
-                 ('payment_date', '<=', payment_data[1])])
+                 ('payment_date', '<=', payment_data[1]),
+                 ('state', '=', 'posted')])
             final_total = 0.0
             for payment in payment_rec:
                 final_total += payment.amount
@@ -24,7 +27,7 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
                     'cust_no': payment.partner_id.parent_id.ref if payment.partner_id.parent_id else payment.partner_id.ref,
                     'cust_name': payment.partner_id.parent_id.name if payment.partner_id.parent_id else payment.partner_id.name,
                     'user': payment.sudo().create_uid.name,
-                    'type': payment.journal_id.type,
+                    'journal': payment.journal_id.name,
                     'amount': payment.amount,
                     'final_total': final_total,
                 })
@@ -33,34 +36,40 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
         return data
 
     def get_detail_date(self, payment_data, date_format):
+        """Function call to get total details."""
         data = []
         if payment_data:
             payment_rec = self.env['account.payment'].search(
                 [('payment_date', '>=', payment_data[0]),
-                 ('payment_date', '<=', payment_data[1])])
+                 ('payment_date', '<=', payment_data[1]),
+                 ('state', '=', 'posted')])
             for payment in payment_rec:
                 data.append(payment.payment_date.strftime(date_format))
             data = list(set(data))
-        data.sort(key = lambda date: datetime.strptime(date, '%m/%d/%Y'))
+        data.sort(key=lambda date: datetime.strptime(date, '%m/%d/%Y'))
         return data
 
     def get_date_loop(self, payment_data):
+        """Function call to get date details."""
         data = []
         if payment_data:
             payment_rec = self.env['account.payment'].search(
                 [('payment_date', '>=', payment_data[0]),
-                 ('payment_date', '<=', payment_data[1])])
+                 ('payment_date', '<=', payment_data[1]),
+                 ('state', '=', 'posted')])
             for payment in payment_rec:
                 data.append(payment.payment_date)
             data = len(list(set(data)))
         return data
 
     def get_detail_total(self, payment_data):
+        """Function call to get loop dates."""
         total = 0
         if payment_data:
             payment_rec = self.env['account.payment'].search(
                 [('payment_date', '>=', payment_data[0]),
-                 ('payment_date', '<=', payment_data[1])])
+                 ('payment_date', '<=', payment_data[1]),
+                 ('state', '=', 'posted')])
         for payment in payment_rec:
             total += payment.amount
         return total
