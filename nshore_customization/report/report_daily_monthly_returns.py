@@ -1,20 +1,23 @@
 from datetime import datetime
-
 from odoo import api, models
 
 
 class ReportDailyMonthlyReturns(models.AbstractModel):
+    """Class added for DM Return report."""
+
     _name = 'report.nshore_customization.report_daily_monthly_returns_1'
 
     _description = 'Report Daily Monthly Returns'
 
     def get_detail(self, invoice_data, date_format):
+        """Function call to get return invoice data."""
         data = []
         if invoice_data:
             invoice_rec = self.env['account.invoice'].search(
                 [('date_invoice', '>=', invoice_data[0]),
                  ('date_invoice', '<=', invoice_data[1]),
-                 ('type', 'in', ['out_refund', 'in_refund'])])
+                 ('type', 'in', ['out_refund', 'in_refund']),
+                 ('state', '=', 'paid')])
             for invoice in invoice_rec:
                 invoice_num = ''
                 if invoice.number:
@@ -25,13 +28,15 @@ class ReportDailyMonthlyReturns(models.AbstractModel):
                     invoice_amount_tax = -1 * invoice.amount_tax
                     invoice_amount_total = -1 * invoice.amount_total
                     for invoice_line in invoice.invoice_line_ids:
-                        invoice_amount += (-1 * (invoice_line.price_unit * invoice_line.quantity))
+                        invoice_amount += (-1 * (
+                            invoice_line.price_unit * invoice_line.quantity))
                         discount_amount += -1 * invoice_line.discount
                 elif invoice.type == 'in_refund':
                     invoice_amount_tax = invoice.amount_tax
                     invoice_amount_total = invoice.amount_total
                     for invoice_line in invoice.invoice_line_ids:
-                        invoice_amount += invoice_line.price_unit * invoice_line.quantity
+                        invoice_amount += (
+                            invoice_line.price_unit * invoice_line.quantity)
                         discount_amount += invoice_line.discount
                 invoice_data.update({
                     'date': invoice.date_invoice.strftime(
@@ -50,27 +55,30 @@ class ReportDailyMonthlyReturns(models.AbstractModel):
         return data
 
     def get_detail_date(self, invoice_data, date_format):
+        """Function call to get total details."""
         data = []
         if invoice_data:
             invoice_rec = self.env['account.invoice'].search(
                 [('date_invoice', '>=', invoice_data[0]),
                  ('date_invoice', '<=', invoice_data[1]),
-                 ('type', 'in', ['out_refund', 'in_refund'])
-                 ])
+                 ('type', 'in', ['out_refund', 'in_refund']),
+                 ('state', '=', 'paid')])
             for invoice in invoice_rec:
                 data.append(invoice.date_invoice.strftime(
                     date_format))
             data = list(set(data))
-        data.sort(key = lambda date: datetime.strptime(date, '%m/%d/%Y'))
+        data.sort(key=lambda date: datetime.strptime(date, '%m/%d/%Y'))
         return data
 
     def get_detail_total_loop(self, invoice_data):
+        """Function call to get date details."""
         data = []
         if invoice_data:
             invoice_rec = self.env['account.invoice'].search(
                 [('date_invoice', '>=', invoice_data[0]),
                  ('date_invoice', '<=', invoice_data[1]),
-                 ('type', 'in', ['out_refund', 'in_refund'])
+                 ('type', 'in', ['out_refund', 'in_refund']),
+                 ('state', '=', 'paid')
                  ])
             for invoice in invoice_rec:
                 data.append(invoice.date_invoice)
@@ -78,11 +86,13 @@ class ReportDailyMonthlyReturns(models.AbstractModel):
         return data
 
     def get_total_detail(self, invoice_data):
+        """Function call to get loop dates."""
         data = []
         invoice_rec_total = self.env['account.invoice'].search(
             [('date_invoice', '>=', invoice_data[0]),
              ('date_invoice', '<=', invoice_data[1]),
-             ('type', 'in', ['out_refund', 'in_refund'])])
+             ('type', 'in', ['out_refund', 'in_refund']),
+             ('state', '=', 'paid')])
         invoice_total_amount = discount_total_amount = amount_tax_total =\
             total = 0
         for inv in invoice_rec_total:
@@ -90,13 +100,15 @@ class ReportDailyMonthlyReturns(models.AbstractModel):
                 amount_tax_total += (-1 * inv.amount_tax)
                 total += (-1 * inv.amount_total)
                 for inv_line in inv.invoice_line_ids:
-                    invoice_total_amount += (-1 * (inv_line.price_unit * inv_line.quantity))
+                    invoice_total_amount += (-1 * (
+                        inv_line.price_unit * inv_line.quantity))
                     discount_total_amount += (-1 * inv_line.discount)
             elif inv.type == 'in_refund':
                 amount_tax_total += inv.amount_tax
                 total += inv.amount_total
                 for inv_line in inv.invoice_line_ids:
-                    invoice_total_amount += inv_line.price_unit * inv_line.quantity
+                    invoice_total_amount += (
+                        inv_line.price_unit * inv_line.quantity)
                     discount_total_amount += inv_line.discount
         data.append({'invoice_total_amount': invoice_total_amount,
                      'discount_total_amount': discount_total_amount,
