@@ -273,6 +273,7 @@ class CustomerStatementReport(models.AbstractModel):
                 opening_balance + total_invoice_amount - total_credit_note_amount - total_pay)
             cust_dict = {
                 'current_amount': current_amount or 0.0,
+                'current_amount': 0.0,
                 'between_30days': between_30days or 0.0,
                 'between_60days': between_60days or 0.0,
                 'between_90days': between_90days or 0.0,
