@@ -1,14 +1,16 @@
 from datetime import datetime
-
 from odoo import api, models
 
 
 class ReportDailyMonthlyPayment(models.AbstractModel):
+    """Class added for DM Payment report."""
+
     _name = 'report.nshore_customization.report_daily_monthly_payment_1'
 
     _description = 'Report Daily Monthly Payment'
 
     def get_detail(self, payment_data, date_format):
+        """Function call to get Payment data."""
         data = []
         if payment_data:
             payment_rec = self.env['account.payment'].search(
@@ -34,6 +36,7 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
         return data
 
     def get_detail_date(self, payment_data, date_format):
+        """Function call to get total details."""
         data = []
         if payment_data:
             payment_rec = self.env['account.payment'].search(
@@ -43,10 +46,11 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
             for payment in payment_rec:
                 data.append(payment.payment_date.strftime(date_format))
             data = list(set(data))
-        data.sort(key = lambda date: datetime.strptime(date, '%m/%d/%Y'))
+        data.sort(key=lambda date: datetime.strptime(date, '%m/%d/%Y'))
         return data
 
     def get_date_loop(self, payment_data):
+        """Function call to get date details."""
         data = []
         if payment_data:
             payment_rec = self.env['account.payment'].search(
@@ -59,6 +63,7 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
         return data
 
     def get_detail_total(self, payment_data):
+        """Function call to get loop dates."""
         total = 0
         if payment_data:
             payment_rec = self.env['account.payment'].search(
