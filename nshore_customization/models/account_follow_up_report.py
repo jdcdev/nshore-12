@@ -96,17 +96,18 @@ class AccountFollowupReport(models.AbstractModel):
                 'level': 0,
                 'columns': [{'name': v} for v in [''] * (3 if self.env.context.get('print_mode') else 5) + [total >= 0 and _('Total Due') or '', total_due]],
             })
-            if total_issued > 0:
-                total_issued = formatLang(self.env, total_issued, currency_obj=currency)
-                line_num += 1
-                lines.append({
-                    'id': line_num,
-                    'name': '',
-                    'class': 'total',
-                    'unfoldable': False,
-                    'level': 0,
-                    'columns': [{'name': v} for v in [''] * (3 if self.env.context.get('print_mode') else 5) + [_('Total'), total_issued]],
-                })
+            # Hide Total Overdue from partner due report.
+            # if total_issued > 0:
+            #     total_issued = formatLang(self.env, total_issued, currency_obj=currency)
+            #     line_num += 1
+            #     lines.append({
+            #         'id': line_num,
+            #         'name': '',
+            #         'class': 'total',
+            #         'unfoldable': False,
+            #         'level': 0,
+            #         'columns': [{'name': v} for v in [''] * (3 if self.env.context.get('print_mode') else 5) + [_('Total'), total_issued]],
+            #     })
             # Add an empty line after the total to make a space between two currencies
             line_num += 1
             lines.append({
