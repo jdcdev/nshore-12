@@ -16,7 +16,8 @@ class ReportDailyMonthlyInvoices(models.AbstractModel):
             invoice_rec = self.env['account.invoice'].search(
                 [('date_invoice', '>=', invoice_data[0]),
                  ('date_invoice', '<=', invoice_data[1]),
-                 ('state', '=', 'paid')])
+                 ('type', 'in', ['out_invoice', 'out_refund']),
+                 ('state', 'in', ['paid', 'open'])])
             for invoice in invoice_rec:
                 invoice_num = ''
                 if invoice.number:
@@ -60,7 +61,7 @@ class ReportDailyMonthlyInvoices(models.AbstractModel):
         invoice_rec_total = self.env['account.invoice'].search(
             [('date_invoice', '>=', invoice_data[0]),
                 ('date_invoice', '<=', invoice_data[1]),
-                ('state', '=', 'paid')])
+                ('state', 'in', ['paid', 'open'])])
         invoice_total_amount = discount_total_amount = amount_tax_total =\
             total = 0
         for inv in invoice_rec_total:
@@ -91,7 +92,7 @@ class ReportDailyMonthlyInvoices(models.AbstractModel):
             invoice_rec = self.env['account.invoice'].search(
                 [('date_invoice', '>=', invoice_data[0]),
                  ('date_invoice', '<=', invoice_data[1]),
-                 ('state', '=', 'paid')])
+                 ('state', 'in', ['paid', 'open'])])
             for invoice in invoice_rec:
                 data.append(invoice.date_invoice.strftime(date_format))
             data = list(set(data))
@@ -105,7 +106,7 @@ class ReportDailyMonthlyInvoices(models.AbstractModel):
             invoice_rec = self.env['account.invoice'].search(
                 [('date_invoice', '>=', invoice_data[0]),
                  ('date_invoice', '<=', invoice_data[1]),
-                 ('state', '=', 'paid')])
+                 ('state', 'in', ['paid', 'open'])])
             for invoice in invoice_rec:
                 data.append(invoice.date_invoice)
             data = len(list(set(data)))
