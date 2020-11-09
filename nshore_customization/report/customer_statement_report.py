@@ -55,14 +55,14 @@ class CustomerStatementReport(models.AbstractModel):
             open_invoices = invoice_obj.search([
                 ('partner_id', '=', partner.id),
                 ('type', '=', 'out_invoice'),
-                ('state', '=', 'open'),
+                ('state', 'in', ['paid', 'open']),
                 ('date_invoice', '<', start_date),
             ])
             # Open Credit notes.
             open_credit_note = invoice_obj.search([
                 ('partner_id', '=', partner.id),
                 ('type', '=', 'out_refund'),
-                ('state', '=', 'open'),
+                ('state', 'in', ['paid', 'open']),
                 ('date_invoice', '<', start_date),
             ])
             # Payment amount
@@ -269,10 +269,11 @@ class CustomerStatementReport(models.AbstractModel):
             between_60days = invoice_60days - creditnote_60days
             between_90days = invoice_90days - creditnote_90days
             plus_90days = invoice_90plusdays - creditnote_90plusdays
-            current_amount = (
-                opening_balance + total_invoice_amount - total_credit_note_amount - total_pay)
+            open_bal = opening_balance + total_invoice_amount
+            credit_note = open_bal + total_credit_note_amount
+            final_cur_balance = credit_note - total_pay
             cust_dict = {
-                'current_amount': current_amount or 0.0,
+                'current_amount': final_cur_balance or 0.0,
                 'between_30days': between_30days or 0.0,
                 'between_60days': between_60days or 0.0,
                 'between_90days': between_90days or 0.0,
