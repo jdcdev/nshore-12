@@ -35,12 +35,6 @@
           <table class="table table-sm o_main_table">
             <thead>
               <tr>
-                <!-- TODO: remove in master -->
-                <th class="text-left">Sale Type</th>
-                <th class="text-left">Sales Order</th>
-                <th class="text-left">Purchase Order</th>
-                <th class="text-left" t-if="doc.type_partner == 'customer'">Return Option</th>
-                <th class="text-left" t-if="doc.type_partner == 'supplier'">Return Option</th>
                 <th class="text-left">Product</th>
                 <th class="text-right">Quantity</th>
                 <th class="text-right">Unit Price</th>
@@ -50,19 +44,6 @@
                 <tbody class="sale_tbody">
                     <t t-foreach="doc.line_ids" t-as="line">
                       <tr>
-                        <td><span t-field="line.sale_type"/></td>
-                        <t>
-                          <td><span t-field="line.sale_order_id"/></td>
-                        </t>
-                        <t>
-                          <td><span t-field="line.purchase_order_id"/></td>
-                        </t>
-                        <t t-if="doc.type_partner == 'customer'">
-                          <td><span t-field="line.return_option"/></td>
-                        </t>
-                        <t t-if="doc.type_partner == 'supplier'">
-                          <td><span t-field="line.return_option_po"/></td>
-                        </t>
                         <td><span t-field="line.product_id.name"/></td>
                         <td class="text-right"><span t-field="line.qty"/></td>
                         <td class="text-right"><span t-field="line.unit_price" /></td>
