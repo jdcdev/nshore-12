@@ -42,13 +42,13 @@
                                 <tree editable="bottom">
                                     <field name="return_option" attrs="{'column_invisible': [('parent.type_partner', '=', 'supplier' )],'required': [('parent.type_partner', '=', 'customer')]}" />
                                     <field name="return_option_po" attrs="{'column_invisible': [('parent.type_partner', '=', 'customer' )],'required':[(('parent.type_partner', '=', 'supplier' ))]}"/>
-                                    <field name="sale_order_id" options="{'no_create': True,'no_edit': True,'no_open': True}" domain="[('state','in', ('done','sale')),('partner_id','=',parent.partner_id)]" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
-                                    <field name="purchase_order_id"
-                                     domain="[('state','in', ('done','purchase')),('partner_id','=',parent.supplier_id)]" options="{'no_create': True,'no_edit': True}" force_save="1" attrs="{'readonly': [('sale_order_id','!=',False)],'column_invisible': [('parent.type_partner', '=', 'customer' )]}" />
                                     <field name="product_id" options="{'no_create': True,'no_edit': True,'no_open': True}" context="{'sale_order_id': sale_order_id}" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
+                                    <field name="sale_order_id" options="{'no_create': True,'no_edit': True,'no_open': True}" attrs="{'readonly': [('state', 'not in', ('draft'))], 'column_invisible': [('parent.type_partner', '=', 'supplier' )]}" />
+                                    <field name="purchase_order_id"
+                                     domain="[('state','in', ('done','purchase'))]" options="{'no_create': True,'no_edit': True}" force_save="1" attrs="{'readonly': [('sale_order_id','!=',False)],'column_invisible': [('parent.type_partner', '=', 'customer' )]}" />
                                     <field name="qty" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
                                     <field name="unit_price" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
-                                    <field name="tax_id" widget="many2many_tags" attrs="{'readonly': [('state', 'not in', ('draft'))]}" invisible="1"/>
+                                    <field name="tax_id" widget="many2many_tags" attrs="{'readonly': [('state', 'not in', ('draft'))]}" invisible="0"/>
                                     <field name="value_before_tax" invisible="1"/>
                                     <field name="value" widget="monetary" />
                                     <field name="state" invisible="1"/>
