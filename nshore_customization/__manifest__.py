@@ -19,7 +19,6 @@
         'views/inherited_sale_order.xml',
         'views/inherited_invoice_form.xml',
         'views/inherited_purchase_form.xml',
-        'views/payment.xml',
         'views/inherited_product_product_view.xml',
         'views/inherited_product_template_view.xml',
         'views/inherited_stock_product_view.xml',
@@ -42,6 +41,7 @@
         'report/customer_purchase_report_detail_views.xml',
         'report/report_sale_order_view.xml',
         'report/report_invoice_extended.xml',
+        'report/payment.xml',
         'data/email_template_partner_statement.xml',
         'views/customer_statement_unmail_views.xml',
         'views/menus.xml'

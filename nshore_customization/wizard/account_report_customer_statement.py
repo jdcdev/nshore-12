@@ -13,7 +13,7 @@ class AccountPrintStatement(models.TransientModel):
 
     start_date = fields.Date(string="Start Date")
     end_date = fields.Date(string="End Date")
-    partner_ids = fields.Many2many('res.partner', string='Customer')
+    partner_ids = fields.Many2many('res.partner', string='Customer', domain="[('is_company', '=', True)]")
     company_id = fields.Many2one(
         'res.company', String="Company",
         default=lambda self: self.env.user.company_id)
