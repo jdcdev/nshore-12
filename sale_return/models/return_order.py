@@ -319,7 +319,6 @@ class ReturnOrder(models.Model):
             'partner_id': self.partner_id.id,
             'return_order_id': self.id})
         for order_line in line:
-            print("\n\n order_line.tax_id.", order_line.tax_id.ids)
             self.env['account.invoice.line'].create({
                 'name': order_line.product_id.name or '',
                 'product_id': order_line.product_id.id or False,

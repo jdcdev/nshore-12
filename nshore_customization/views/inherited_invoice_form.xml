@@ -16,7 +16,7 @@
                        position="attributes">
                     <attribute name="domain">[('is_company', '=', True)]</attribute>
                 </xpath>
-                <!-- <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='quantity']"
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='quantity']"
                        position="attributes">
                     <attribute name="widget">integer</attribute>
                 </xpath>
@@ -31,7 +31,16 @@
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='discount']"
                         position="attributes">
                     <attribute name="invisible">1</attribute>
-                </xpath> -->
+                </xpath>
+                <xpath expr="//field[@name='date_due']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('type', '=', 'out_refund')]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='payment_term_id']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('type', '=', 'out_refund')]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="pricelist_id"/>
+                </xpath>
             </field>
         </record>
 
