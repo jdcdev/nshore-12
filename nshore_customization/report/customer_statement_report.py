@@ -139,7 +139,9 @@ class CustomerStatementReport(models.AbstractModel):
                 # partner_shipping_id = invoice.partner_shipping_id
             payment_records = []
             for pay in payment_obj.search([
+                    '|',
                     ('partner_id', '=', partner.id),
+                    ('partner_id.parent_id', '=', partner.id),
                     ('partner_type', '=', 'customer'),
                     ('state', 'in', ['posted']),
                     ('payment_date', '>=', start_date),
