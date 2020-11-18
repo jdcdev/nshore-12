@@ -20,10 +20,10 @@
                        position="attributes">
                     <attribute name="widget">integer</attribute>
                 </xpath>
-                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']"
+                <!-- <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']"
                         position="attributes">
                     <attribute name="invisible">1</attribute>
-                </xpath>
+                </xpath> -->
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='invoice_line_tax_ids']"
                         position="attributes">
                     <attribute name="invisible">1</attribute>
@@ -40,6 +40,10 @@
                 </xpath>
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="pricelist_id"/>
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_id']"
+                        position="attributes">
+                    <attribute name="invisible">1</attribute>
                 </xpath>
             </field>
         </record>
