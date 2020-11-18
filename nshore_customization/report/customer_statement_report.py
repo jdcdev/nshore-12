@@ -128,12 +128,19 @@ class CustomerStatementReport(models.AbstractModel):
                 if partner not in partner_dict.keys():
                     partner_dict.update({
                         partner: {
-                            'open_inv_amount': opening_balance,
                             'invoice_line': [vals_dict],
                         }
                     })
                 else:
                     partner_dict[partner]['invoice_line'].append(vals_dict)
+            if opening_balance:
+                if partner not in partner_dict.keys():
+                    partner_dict.update({
+                        partner: {
+                            'open_inv_amount': opening_balance,
+                        }
+                    })
+                else:
                     partner_dict[partner][
                         'open_inv_amount'] = opening_balance
                 # partner_shipping_id = invoice.partner_shipping_id
@@ -158,8 +165,8 @@ class CustomerStatementReport(models.AbstractModel):
                     'pay_amount': pay.amount,
                 }
                 if partner not in partner_dict.keys():
-                    payment_records.update({
-                        partner: {'payment_line': pay_dict}})
+                    partner_dict.update({
+                        partner: {'payment_line': [pay_dict]}})
                 else:
                     payment_records.append(pay_dict)
             if payment_records:
