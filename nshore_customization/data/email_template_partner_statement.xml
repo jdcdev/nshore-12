@@ -11,8 +11,13 @@
         <field name="lang">${ctx['email_to']|safe}</field>
         <field name="body_html">
             <![CDATA[
-                <p>Hello,</p>
-                <h2>Stetement is in the attachment.</h2>
+                <p>Dear ${object.name},</p>
+                <p>Here is your statement for the month of (previous month), please remit payment at your earliest convenience, if you have any questions please do not hesitate to call, as always we appreciate your business.</p>
+                <p>Than you,<br>
+                North Shore Sprinkler Supply Corp<br>
+                665 Union Ave Suite 1<br>
+                Holtsville NY 11742<br>
+                631-776-8160</p>
             ]]>
         </field>
         <field name="report_template" ref="custom_customer_statement"/>
