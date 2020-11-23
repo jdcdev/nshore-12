@@ -26,10 +26,11 @@ class CustomerStatementReport(models.AbstractModel):
                         ('date_invoice', '<=', end_date)])
                 payment_rec = self.env['account.payment'].search([
                     ('partner_id', '=', partner.id),
-                    ('partner_type', '=', 'customer'),
                     ('state', 'in', ['posted']),
                     ('payment_date', '>=', start_date),
                     ('payment_date', '<=', end_date)])
+                account_move = self.env['account.move'].search(
+                    [('journal_id', '=', 4), ('partner_id', '=', partner.id)])
                 for pay in payment_rec:
                     data_date.append(pay.payment_date.strftime(
                         date_format))
@@ -65,21 +66,7 @@ class CustomerStatementReport(models.AbstractModel):
                 ('state', 'in', ['paid', 'open']),
                 ('date_invoice', '<', start_date),
             ])
-            # Payment amount
-            opening_balance = total_open_inv_amount = open_credit_amount = payment = 0.0
-            # Get opening balance from journal(Miscellaneous Operations (USD))
-            account_move = self.env['account.move'].search(
-                [('journal_id', '=', 4), ('partner_id', '=', partner.id)])
-            total_open_dr_amount = total_open_cr_amount = 0.0
-            for move in account_move:
-                total_open_dr_amount = sum(
-                    [move_line.debit for move_line in move.line_ids.filtered(
-                        lambda l: l.account_id.code == '1200') if move_line.debit != 0.0])
-                total_open_cr_amount = sum(
-                    [move_line.credit for move_line in move.line_ids.filtered(
-                        lambda l: l.account_id.code == '1200') if move_line.credit != 0.0])
-            total_open_move_amount = (
-                total_open_dr_amount - total_open_cr_amount)
+            opening_balance = total_open_inv_amount = open_credit_amount = open_payment = 0.0
             if open_invoices:
                 total_open_inv_amount = sum(
                     [inv.amount_total for inv in open_invoices])
@@ -88,12 +75,9 @@ class CustomerStatementReport(models.AbstractModel):
                     [inv.amount_total for inv in open_credit_note])
             for pay in payment_obj.search([
                     ('partner_id', '=', partner.id),
-                    ('partner_type', '=', 'customer'),
                     ('state', '=', 'posted'),
                     ('payment_date', '<', start_date)]):
-                payment += pay.amount or 0.0
-            opening_balance = (
-                total_open_inv_amount + total_open_move_amount - open_credit_amount - payment)
+                open_payment += pay.amount or 0.0
             # Get all invoices and credit notes between selected dates.
             total_credit_note_amount = total_invoice_amount = total_pay = 0.0
             for invoice in invoice_obj.search([
@@ -101,7 +85,8 @@ class CustomerStatementReport(models.AbstractModel):
                     ('type', 'in', ['out_invoice', 'out_refund']),
                     ('state', 'not in', ['draft', 'cancel']),
                     ('date_invoice', '>=', start_date),
-                    ('date_invoice', '<=', end_date)], order='date_invoice asc'):
+                    ('date_invoice', '<=', end_date)],
+                    order='date_invoice,id asc'):
                 if invoice.type == 'out_invoice':
                     amount_total = invoice.amount_total
                     total_invoice_amount += invoice.amount_total
@@ -120,7 +105,6 @@ class CustomerStatementReport(models.AbstractModel):
                     'amount_total': amount_total,
                     'residual': invoice.residual,
                     'partner_shipping_id': invoice.partner_shipping_id,
-                    'payment': invoice.payment_ids,
                     'due_date': invoice.date_due.strftime(
                         date_format),
                     'type': invoice.type
@@ -133,6 +117,53 @@ class CustomerStatementReport(models.AbstractModel):
                     })
                 else:
                     partner_dict[partner]['invoice_line'].append(vals_dict)
+            # Get opening balance from journal(Miscellaneous Operations (USD))
+            account_move = self.env['account.move'].search(
+                [('journal_id', '=', 4), ('partner_id', '=', partner.id)])
+            total_open_dr_amount = total_open_cr_amount = 0.0
+            move_dict = {}
+            move_records = []
+            totalmove = 0.0
+            for move in account_move:
+                if type(start_date) and type(end_date) is str:
+                    start_date_wiz = datetime.strptime(start_date, '%Y-%m-%d').date()
+                    end_date_wiz = datetime.strptime(end_date, '%Y-%m-%d').date()
+                else:
+                    start_date_wiz = start_date
+                    end_date_wiz = end_date
+                # Got open dr amount.
+                total_open_dr_amount = sum(
+                    [move_line.debit for move_line in move.line_ids.filtered(
+                        lambda l: l.account_id.code == '1200' and l.date < start_date_wiz) if move_line.debit != 0.0])
+                # Got open cr amount.
+                total_open_cr_amount = sum(
+                    [move_line.credit for move_line in move.line_ids.filtered(
+                        lambda l: l.account_id.code == '1200' and l.date < start_date_wiz) if move_line.credit != 0.0])
+                # append Misc entries on partner dict.
+                for move_lines in move.line_ids.filtered(
+                        lambda l: l.account_id.code == '1200' and l.date >= start_date_wiz and l.date <= end_date_wiz):
+                    if move_lines.credit != 0.0:
+                        move_amount = -1 * move_lines.credit
+                    if move_lines.debit != 0.0:
+                        move_amount = move_lines.debit
+                    totalmove += move_amount
+                    move_dict = {
+                        'move_name': move.name[-4:],
+                        'move_date': move_lines.date.strftime(
+                            date_format),
+                        'move_amount': move_amount}
+                    if partner not in partner_dict.keys():
+                        partner_dict.update({
+                            partner: {'move_line': [move_dict]}})
+                    else:
+                        move_records.append(move_dict)
+            if move_records:
+                partner_dict[partner]['move_line'] = move_records
+            total_open_move_amount = (
+                total_open_dr_amount - total_open_cr_amount)
+            # Append Opening Balance in Partner Dict
+            opening_balance = (
+                total_open_inv_amount + total_open_move_amount - open_credit_amount - open_payment)
             if opening_balance:
                 if partner not in partner_dict.keys():
                     partner_dict.update({
@@ -143,32 +174,33 @@ class CustomerStatementReport(models.AbstractModel):
                 else:
                     partner_dict[partner][
                         'open_inv_amount'] = opening_balance
-                # partner_shipping_id = invoice.partner_shipping_id
+            # Get all between payments records
             payment_records = []
             for pay in payment_obj.search([
                     '|',
                     ('partner_id', '=', partner.id),
                     ('partner_id.parent_id', '=', partner.id),
-                    ('partner_type', '=', 'customer'),
                     ('state', 'in', ['posted']),
                     ('payment_date', '>=', start_date),
                     ('payment_date', '<=', end_date)],
-                    order='payment_date asc'):
-                total_pay += pay.amount
-                payment_name = ''
-                if pay.name:
-                    payment_name = pay.name[-4:]
+                    order='payment_date,id asc'):
+                if pay.payment_type == 'inbound':
+                    pay_amount = - 1 * pay.amount
+                if pay.payment_type == 'outbound':
+                    pay_amount = pay.amount
+                total_pay += pay_amount
                 pay_dict = {
-                    'pay_name': payment_name,
+                    'pay_name': pay.name[-4:],
                     'pay_date': pay.payment_date.strftime(
                         date_format),
-                    'pay_amount': pay.amount,
+                    'pay_amount': pay_amount,
                 }
                 if partner not in partner_dict.keys():
                     partner_dict.update({
                         partner: {'payment_line': [pay_dict]}})
                 else:
                     payment_records.append(pay_dict)
+            # Append Payments record on Partner dict
             if payment_records:
                 partner_dict[partner]['payment_line'] = payment_records
             if partner not in partner_dict.keys():
@@ -280,7 +312,7 @@ class CustomerStatementReport(models.AbstractModel):
             plus_90days = invoice_90plusdays - creditnote_90plusdays
             open_bal = opening_balance + total_invoice_amount
             credit_note = open_bal + total_credit_note_amount
-            final_cur_balance = credit_note - total_pay
+            final_cur_balance = credit_note + totalmove + total_pay
             cust_dict = {
                 'current_amount': final_cur_balance or 0.0,
                 'between_30days': between_30days or 0.0,
