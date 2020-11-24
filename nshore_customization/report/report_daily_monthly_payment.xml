@@ -50,7 +50,7 @@
                                             <span t-esc="b.get('user')"/>
                                         </td>
                                         <td style="padding-top:0px;padding-bottom:0px;font-size:13px">
-                                            <span t-esc="b.get('type')"/>
+                                            <span t-esc="b.get('journal')"/>
                                         </td>
                                         <td class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                             <span t-esc="b.get('amount')"
