@@ -4,7 +4,7 @@
         <field name="name">Send Customer Statement</field>
         <field name="model_id" ref="model_res_partner"/>
         <field name="state">code</field>
-        <field name="code">model._send_customer_statement()</field>
+        <field name="code">model.send_customer_statement()</field>
         <field name="interval_number">1</field>
         <field name="interval_type">months</field>
         <field name="nextcall"

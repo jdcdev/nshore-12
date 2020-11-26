@@ -2,8 +2,8 @@
 import base64
 import datetime
 from calendar import monthrange
-
 from odoo import api, fields, models
+from odoo.addons.queue_job.job import job
 
 
 class ResPartner(models.Model):
@@ -26,6 +26,11 @@ class ResPartner(models.Model):
             res.append((partner.id, name.replace('_', ' ').title()))
         return res
 
+    def send_customer_statement(self):
+        """Function call for job."""
+        self.with_delay()._send_customer_statement()
+
+    @job
     @api.model
     def _send_customer_statement(self):
         today = datetime.datetime.today()
@@ -38,13 +43,12 @@ class ResPartner(models.Model):
             final_end_date = final_start_date.replace(
                 day=monthrange(final_start_date.year,
                                final_start_date.month)[1])
-
         invoices = self.env['account.invoice'].search([
             ('type', 'in', ['out_invoice', 'out_refund']),
             ('state', 'not in', ['draft', 'cancel'])])
-        # payments = self.env['account.payment'].search([
-        #     ('partner_type', '=', 'customer'),
-        #     ('state', 'in', ['posted'])])
+        payments = self.env['account.payment'].search([
+            ('partner_type', '=', 'customer'),
+            ('state', 'in', ['posted'])])
         partner_obj = self.env['res.partner']
         log = self.env['customer.statement.unmail']
         partner_list = []
@@ -57,15 +61,15 @@ class ResPartner(models.Model):
                     str(invoices_date_format), "%d/%m/%Y")
                 if final_start_date <= final_invoices_date <= final_end_date:
                     partner_list.append(invoice.partner_id.id)
-        # for payment in payments:
-        #     if payment.payment_date:
-        #         pay_date = datetime.datetime.strptime(
-        #             str(payment.payment_date), "%Y-%m-%d")
-        #         pay_date_format = pay_date.strftime("%d/%m/%Y")
-        #         final_pay_date = datetime.datetime.strptime(
-        #             str(pay_date_format), "%d/%m/%Y")
-        #         if final_start_date <= final_pay_date <= final_end_date:
-        #             partner_list.append(payment.partner_id.id)
+        for payment in payments:
+            if payment.payment_date:
+                pay_date = datetime.datetime.strptime(
+                    str(payment.payment_date), "%Y-%m-%d")
+                pay_date_format = pay_date.strftime("%d/%m/%Y")
+                final_pay_date = datetime.datetime.strptime(
+                    str(pay_date_format), "%d/%m/%Y")
+                if final_start_date <= final_pay_date <= final_end_date:
+                    partner_list.append(payment.partner_id.id)
         if partner_list:
             partner_list = list(set(partner_list))
             template_id = self.env.ref(
