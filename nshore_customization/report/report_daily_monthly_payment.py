@@ -17,9 +17,12 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
                 [('payment_date', '>=', payment_data[0]),
                  ('payment_date', '<=', payment_data[1]),
                  ('state', '=', 'posted')])
-            final_total = 0.0
+            open_pay_amount = 0.0
             for payment in payment_rec:
-                final_total += payment.amount
+                if payment.payment_type == 'inbound':
+                    open_pay_amount = payment.amount
+                if payment.payment_type == 'outbound':
+                    open_pay_amount = - 1 * payment.amount
                 payment_data = {}
                 payment_data.update({
                     'date': payment.payment_date.strftime(date_format),
@@ -28,8 +31,7 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
                     'cust_name': payment.partner_id.parent_id.name if payment.partner_id.parent_id else payment.partner_id.name,
                     'user': payment.sudo().create_uid.name,
                     'journal': payment.journal_id.name,
-                    'amount': payment.amount,
-                    'final_total': final_total,
+                    'amount': open_pay_amount,
                 })
                 if payment_data:
                     data.append(payment_data)
@@ -64,14 +66,18 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
 
     def get_detail_total(self, payment_data):
         """Function call to get loop dates."""
-        total = 0
+        total = open_pay_amount_in = open_pay_amount_out = 0
         if payment_data:
             payment_rec = self.env['account.payment'].search(
                 [('payment_date', '>=', payment_data[0]),
                  ('payment_date', '<=', payment_data[1]),
                  ('state', '=', 'posted')])
         for payment in payment_rec:
-            total += payment.amount
+            if payment.payment_type == 'inbound':
+                open_pay_amount_in += payment.amount
+            if payment.payment_type == 'outbound':
+                open_pay_amount_out += - 1 * payment.amount
+        total = open_pay_amount_in + open_pay_amount_out
         return total
 
     @api.model
