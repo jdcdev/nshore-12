@@ -114,6 +114,7 @@
                         <table class="table table-condensed div-data"
                                 style="border-left:solid white 1px;border-right:solid white 1px;border-bottom:solid white 1px;border-top:solid white 1px;">
                             <t t-set="total_invoice" t-value="0"/>
+                            <t t-set="total_move" t-value="0"/>
                             <t t-set="total_paid" t-value="0"/>
                             <t t-set="total_balance" t-value="0"/>
                             <thead>
@@ -122,6 +123,7 @@
                                     <th style="padding-top:0px; padding-bottom:0px;">Type</th>
                                     <th style="padding-top:0px; padding-bottom:0px;">Reference</th>
                                     <th class="text-right" style="padding-top:0px; padding-bottom:0px;">Invoiced</th>
+                                    <th class="text-right" style="padding-top:0px; padding-bottom:0px;">Misc Balance</th>
                                     <th class="text-right" style="padding-top:0px; padding-bottom:0px;">Due Date</th>
                                     <th class="text-right" style="padding-top:0px; padding-bottom:0px;">Paid</th>
                                     <th class="text-right" style="padding-top:0px; padding-bottom:0px;">Balance</th>
@@ -132,13 +134,37 @@
                                     <td colspan="2" class="text-right">
                                         Opening Balance
                                     </td>
-                                    <td colspan="4"/>
+                                    <td colspan="5"/>
                                     <td class="text-right">
                                         <t t-esc="lines_data[o].get('open_inv_amount', 0)" t-options='{"widget": "float", "precision": 2}'/>
                                     </td>
                                 </tr>
                                 <t t-set="total_amount" t-value="lines_data[o].get('open_inv_amount', 0)"/>
                                 <t t-foreach="date_data" t-as="date">
+                                    <tr t-foreach="lines_data[o].get('move_line', [])" t-as="move_list">
+                                        <t t-if="move_list.get('move_date') == date">
+                                            <t t-set="line_amount" t-value="move_list.get('move_amount', 0)"/>
+                                            <t t-set="total_amount" t-value="total_amount + line_amount"/>
+                                            <td>
+                                                <span t-esc="move_list.get('move_date')"/>
+                                            </td>
+                                            <td>Misc</td>
+                                            <td>
+                                                <span t-esc="move_list.get('move_name')"/>
+                                            </td>
+                                            <td></td>
+                                            <td class="text-right">
+                                                <span t-esc="move_list.get('move_amount', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                                <t t-set="total_move" t-value="total_move+move_list.get('move_amount', 0)"/>
+                                            </td>
+                                            <td class="text-right"><span t-esc="move_list.get('due_date')"/></td>
+                                            <td></td>
+                                            <td class="text-right">
+                                                <span t-esc="total_amount" t-options='{"widget": "float", "precision": 2}'/>
+                                                <t t-set="total_balance" t-value="total_balance+total_amount"/>
+                                            </td>
+                                        </t>
+                                    </tr>
                                     <tr t-foreach="lines_data[o].get('invoice_line', [])" t-as="new_list">
                                         <t t-if="new_list.get('date_invoice') == date">
                                             <t t-set="line_amount" t-value="new_list.get('amount_total', 0)"/>
@@ -159,6 +185,7 @@
                                                 <span t-esc="new_list.get('amount_total', 0)" t-options='{"widget": "float", "precision": 2}'/>
                                                 <t t-set="total_invoice" t-value="total_invoice+new_list.get('amount_total', 0)"/>
                                             </td>
+                                            <td></td>
                                             <td class="text-right"><span t-esc="new_list.get('due_date')"/></td>
                                             <td></td>
                                             <td class="text-right">
@@ -170,7 +197,7 @@
                                     <tr t-foreach="lines_data[o].get('payment_line', [])" t-as="payment">
                                         <t t-if="payment.get('pay_date') == date">
                                             <t t-set="line_amount" t-value="payment.get('pay_amount')"/>
-                                            <t t-set="total_amount" t-value="total_amount - line_amount"/>
+                                            <t t-set="total_amount" t-value="total_amount + line_amount"/>
                                             <td>
                                                 <span t-esc="payment.get('pay_date')"/>
                                             </td>
@@ -180,6 +207,7 @@
                                             <td>
                                                 <span t-esc="payment.get('pay_name')"/>
                                             </td>
+                                            <td></td>
                                             <td></td>
                                             <td></td>
                                             <td class="text-right">
@@ -196,7 +224,7 @@
                             </tbody>
                             <tbody>
                                 <tr style="background-color:black;color:white">
-                                    <td colspan="7"></td>
+                                    <td colspan="8"></td>
                                 </tr>
                             </tbody>
                             <tbody>
@@ -207,6 +235,7 @@
                                     <td colspan="3" class="text-right">
                                         <span t-esc="total_invoice" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                     </td>
+                                    <td></td>
                                     <td></td>
                                     <td class="text-right">
                                         <span t-esc="total_paid" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
