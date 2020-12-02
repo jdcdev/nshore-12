@@ -160,14 +160,14 @@ class CustomerStatementReport(models.AbstractModel):
                 start_date_wiz = start_date
                 end_date_wiz = end_date
             for m_lines in account_move.filtered(
-                    lambda l: l.account_id.code == '1200' and l.date < start_date_wiz):
+                    lambda l: l.account_id.code in ['1200', '2000'] and l.date < start_date_wiz):
                 if m_lines.credit != 0.0:
                     open_cr_amount += -1 * m_lines.credit
                 if m_lines.debit != 0.0:
                     open_dr_amount += m_lines.debit
             # append Misc entries on partner dict.
             for move_lines in account_move.filtered(
-                    lambda l: l.account_id.code == '1200' and l.date >= start_date_wiz and l.date <= end_date_wiz):
+                    lambda l: l.account_id.code in ['1200', '2000'] and l.date >= start_date_wiz and l.date <= end_date_wiz):
                 if move_lines.credit != 0.0:
                     move_amount = -1 * move_lines.credit
                 if move_lines.debit != 0.0:
