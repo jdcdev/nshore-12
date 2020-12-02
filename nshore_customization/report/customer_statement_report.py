@@ -2,6 +2,7 @@ from odoo import api, models, fields
 from dateutil.relativedelta import relativedelta
 from datetime import date, datetime
 
+
 class CustomerStatementReport(models.AbstractModel):
     """Class call to add statement report."""
 
@@ -59,26 +60,44 @@ class CustomerStatementReport(models.AbstractModel):
             # Open Invoices
             open_invoices = invoice_obj.search([
                 ('partner_id', '=', partner.id),
-                ('type', '=', 'out_invoice'),
+                ('type', '=', ['out_invoice', 'out_refund']),
                 ('state', 'in', ['paid', 'open']),
                 ('date_invoice', '<', start_date),
             ])
-            # Open Credit notes.
-            open_credit_note = invoice_obj.search([
-                ('partner_id', '=', partner.id),
-                ('type', '=', 'out_refund'),
-                ('state', 'in', ['paid', 'open']),
-                ('date_invoice', '<', start_date),
-            ])
-            opening_balance = total_open_inv_amount = open_credit_amount = open_payment = 0.0
-            total_open_inv_amount = sum(
-                [inv.amount_total for inv in open_invoices])
-            open_credit_amount = sum(
-                [inv.amount_total for inv in open_credit_note])
+            amount_inv = amount_crnote = total_open_bal_invoice = open_payment = 0.0
+            for open_invoice in open_invoices:
+                if open_invoice.type == 'out_invoice':
+                    if open_invoice.state == 'paid':
+                        if not open_invoice.payment_ids:
+                            amount_inv += open_invoice.amount_total
+                        for payment in open_invoice.payment_ids.filtered(
+                                lambda p: p.state == 'posted'):
+                            if payment.payment_date < datetime.strptime(start_date, '%Y-%m-%d').date():
+                                amount_inv += (open_invoice.amount_total - payment.amount)
+                            else:
+                                amount_inv += open_invoice.amount_total
+                    if open_invoice.state == 'open':
+                        amount_inv += open_invoice.amount_total
+                if open_invoice.type == 'out_refund':
+                    if open_invoice.state == 'paid':
+                        if not open_invoice.payment_ids:
+                            amount_crnote += open_invoice.amount_total
+                        for payment in open_invoice.payment_ids.filtered(
+                                lambda p: p.state == 'posted'):
+                            if payment.payment_date < datetime.strptime(start_date, '%Y-%m-%d').date():
+                                amount_crnote += (open_invoice.amount_total - payment.amount)    
+                            else:
+                                amount_crnote += open_invoice.amount_total
+                    if open_invoice.state == 'open':
+                        amount_crnote += open_invoice.amount_total
+            total_open_bal_invoice = amount_inv - amount_crnote
             for pay in payment_obj.search([
+                    '|',
                     ('partner_id', '=', partner.id),
+                    ('partner_id.parent_id', '=', partner.id),
                     ('state', '=', 'posted'),
-                    ('payment_date', '<', start_date)]):
+                    ('payment_date', '<', start_date),
+                    ('invoice_ids', '=', False)]):
                 if pay.payment_type == 'inbound':
                     open_pay_amount = - 1 * pay.amount
                 if pay.payment_type == 'outbound':
@@ -171,7 +190,7 @@ class CustomerStatementReport(models.AbstractModel):
                 open_dr_amount + open_cr_amount)
             # Append Opening Balance in Partner Dict
             opening_balance = (
-                total_open_inv_amount + total_open_move_amount - open_credit_amount + open_payment)
+                total_open_bal_invoice + total_open_move_amount + open_payment)
             if opening_balance:
                 if partner not in partner_dict.keys():
                     partner_dict.update({
@@ -219,7 +238,6 @@ class CustomerStatementReport(models.AbstractModel):
                     [x for x in partner_dict[partner].get(
                         'invoice_line', []) if 'partner_shipping_id' in x.keys()]):
                 partner_dict[partner].update({'partner_shipping_id': partner})
-            open_bal = opening_balance + total_invoice_amount + total_credit_note_amount + totalmove + total_pay
             on_account_cr_note = ([
                 ('partner_id', '=', partner.id),
                 ('type', '=', 'out_refund'),
@@ -228,12 +246,14 @@ class CustomerStatementReport(models.AbstractModel):
             on_account = sum(
                 [invoice.amount_untaxed for invoice in invoice_obj.search(
                     on_account_cr_note)])
-            results, total, amls = self.env['report.account.report_agedpartnerbalance'].with_context(
-                include_nullified_amount=True)._get_partner_move_lines(['receivable'], start_date, 'posted', 30)
+            results, total, amls = self.env[
+                'report.account.report_agedpartnerbalance'].with_context(
+                include_nullified_amount=True)._get_partner_move_lines(
+                ['receivable'], start_date, 'posted', 30)
             for rec in results:
                 if rec['partner_id'] == partner.id:
                     cust_dict = {
-                        'current_amount': open_bal,
+                        'current_amount': rec['direction'],
                         'between_30days': rec['4'],
                         'between_60days': rec['3'],
                         'between_90days': rec['2'],
