@@ -88,7 +88,8 @@ class ReportDailyMonthlyPayment(models.AbstractModel):
         date_format = lang_id.date_format
 
         payment_data = []
-        if data.get('form') and data['form'].get('from_date') and data['form'].get('to_date'):
+        if data.get('form') and data['form'].get(
+                'from_date') and data['form'].get('to_date'):
             payment_data = [data['form'].get('from_date'), data['form'].get(
                 'to_date')]
         lines_data = self.get_detail(payment_data, date_format)

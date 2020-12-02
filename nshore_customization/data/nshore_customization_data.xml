@@ -7,8 +7,7 @@
         <field name="code">model._send_customer_statement()</field>
         <field name="interval_number">1</field>
         <field name="interval_type">months</field>
-        <field name="nextcall"
-               eval="(DateTime.today().replace(day=1, month=DateTime.today().month+1)).strftime('%Y-%m-%d 00:00:00')"/>
+        <field name="nextcall" eval="(DateTime.today().replace(day=1, month=DateTime.today().month+1)).strftime('%Y-%m-%d 00:00:00')"/>
         <field name="numbercall">-1</field>
         <field name="doall" eval="False"/>
     </record>
