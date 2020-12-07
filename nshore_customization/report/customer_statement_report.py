@@ -60,20 +60,27 @@ class CustomerStatementReport(models.AbstractModel):
             # Open Invoices
             open_invoices = invoice_obj.search([
                 ('partner_id', '=', partner.id),
-                ('type', '=', ['out_invoice', 'out_refund']),
+                ('type', 'in', ['out_invoice', 'out_refund']),
                 ('state', 'in', ['paid', 'open']),
                 ('date_invoice', '<', start_date),
             ])
             amount_inv = amount_crnote = total_open_bal_invoice = open_payment = 0.0
             for open_invoice in open_invoices:
+                if type(start_date) and type(end_date) is str:
+                    start_date_wiz = datetime.strptime(start_date, '%Y-%m-%d').date()
+                if isinstance(start_date, datetime):
+                    start_date_wiz = start_date.date()
+                if not isinstance(start_date, datetime) and not type(start_date) is str:
+                    start_date_wiz = start_date
                 if open_invoice.type == 'out_invoice':
                     if open_invoice.state == 'paid':
                         if not open_invoice.payment_ids:
                             amount_inv += open_invoice.amount_total
                         for payment in open_invoice.payment_ids.filtered(
                                 lambda p: p.state == 'posted'):
-                            if payment.payment_date < datetime.strptime(start_date, '%Y-%m-%d').date():
-                                amount_inv += (open_invoice.amount_total - payment.amount)
+                            if payment.payment_date < start_date_wiz:
+                                amount_inv += (
+                                    open_invoice.amount_total - payment.amount)
                             else:
                                 amount_inv += open_invoice.amount_total
                     if open_invoice.state == 'open':
@@ -84,8 +91,9 @@ class CustomerStatementReport(models.AbstractModel):
                             amount_crnote += open_invoice.amount_total
                         for payment in open_invoice.payment_ids.filtered(
                                 lambda p: p.state == 'posted'):
-                            if payment.payment_date < datetime.strptime(start_date, '%Y-%m-%d').date():
-                                amount_crnote += (open_invoice.amount_total - payment.amount)    
+                            if payment.payment_date < start_date_wiz:
+                                amount_crnote += (
+                                    open_invoice.amount_total - payment.amount)
                             else:
                                 amount_crnote += open_invoice.amount_total
                     if open_invoice.state == 'open':
