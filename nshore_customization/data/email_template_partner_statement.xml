@@ -2,12 +2,11 @@
 <odoo>
 
     <record id="email_template_partner_statement" model="mail.template">
-        <field name="name">Customer Statement</field>
+        <field name="name">Customer statement</field>
         <field name="email_from">${ctx['email_from']|safe}</field>
         <field name="subject">Statement</field>
         <field name="email_to">${ctx['email_to']|safe}</field>
         <field name="model_id" ref="base.model_res_partner"/>
-        <field name="author_id">${ctx['author_id']}</field>
         <field name="auto_delete" eval="False"/>
         <field name="lang">${ctx['email_to']|safe}</field>
         <field name="body_html">
