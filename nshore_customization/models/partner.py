@@ -85,9 +85,13 @@ class ResPartner(models.Model):
                     'invoice_end_date': final_end_date
                 })
                 if partner.email:
-                    template_id.write({'email_to': partner.email})
-                    template_id.with_context(ctx).send_mail(partner.id,
-                                                            force_send=False)
+                    email_from = self.env.user.company_id.email
+                    template_id.write({
+                        'email_to': partner.email,
+                        'email_from': email_from})
+                    template_id.with_context(ctx).send_mail(
+                        partner.id,
+                        force_send=False)
             cst_stmt_pdf = self.env.ref(
                 'nshore_customization.custom_customer_statement'
             ).with_context(ctx).render_qweb_pdf(partners.ids)[0]
