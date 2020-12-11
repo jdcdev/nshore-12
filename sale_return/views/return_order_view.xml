@@ -46,11 +46,11 @@
                                     <field name="sale_order_id" options="{'no_create': True,'no_edit': True,'no_open': True}" attrs="{'readonly': [('state', 'not in', ('draft'))], 'column_invisible': [('parent.type_partner', '=', 'supplier')]}" />
                                     <field name="purchase_order_id"
                                      domain="[('state','in', ('done','purchase'))]" options="{'no_create': True,'no_edit': True}" force_save="1" attrs="{'readonly': [('sale_order_id','!=',False)],'column_invisible': [('parent.type_partner', '=', 'customer')]}" />
-                                    <field name="qty" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
+                                    <field name="qty" attrs="{'readonly': [('state', 'not in', ('draft'))]}" widget="integer"/>
                                     <field name="unit_price" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
                                     <field name="tax_id" widget="many2many_tags" attrs="{'readonly': [('state', 'not in', ('draft'))]}" invisible="1"/>
                                     <field name="value_before_tax" invisible="0"/>
-                                    <field name="value" widget="monetary" />
+                                    <field name="value" widget="monetary" invisible="1"/>
                                     <field name="state" invisible="1"/>
                                 </tree>
                             </field>
