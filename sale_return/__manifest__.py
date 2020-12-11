@@ -14,18 +14,17 @@
     # any module necessary for this one to work correctly
     'depends': [
         'sale_management',
-        'stock','purchase','nshore_customization'
+        'stock', 'purchase', 'nshore_customization'
     ],
     # always loaded
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
         'data/return_sequence.xml',
+        'views/invoice_view.xml',
         'views/return_order_view.xml',
-        # 'views/return_reason_views.xml',
         'views/sale_order_view.xml',
-        'report/report_return_order.xml'
-	],
+        'report/report_return_order.xml'],
     'demo': [],
     'installable': True,
     'application': True,

@@ -1,6 +1,9 @@
 from odoo import fields, models, api
 
+
 class SaleOrder(models.Model):
+    """Class inherit to add return order functionality."""
+
     _inherit = 'sale.order'
     _description = 'Sale Order'
 
@@ -8,6 +11,7 @@ class SaleOrder(models.Model):
 
     @api.multi
     def show_return(self):
+        """Function call to show return orders."""
         return {
             'name': ('Return Order'),
             'view_type': 'form',
@@ -16,6 +20,7 @@ class SaleOrder(models.Model):
             'type': 'ir.actions.act_window'}
 
     def action_return_order(self):
+        """Action call for return order."""
         return {
             'view_mode': 'form',
             'view_type': 'form',
