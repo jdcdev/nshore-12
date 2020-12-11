@@ -550,11 +550,14 @@ class ReturnOrderLine(models.Model):
                 order_line = record.sale_order_id.mapped(
                     'order_line').filtered(
                     lambda p: p.product_id == record.product_id)
+                record.qty = 0.0
+                total_qty = 0.00
                 if order_line:
                     for rec in order_line:
-                        record.qty = rec.product_uom_qty
+                        total_qty += rec.product_uom_qty
                         record.unit_price = rec.price_unit
                         record.tax_id = rec.tax_id
+                    record.qty = total_qty
 
     @api.onchange('sale_order_id')
     def _onchange_sale_order_id(self):
@@ -562,11 +565,13 @@ class ReturnOrderLine(models.Model):
         for record in self:
             order_line = record.sale_order_id.mapped('order_line').filtered(
                 lambda p: p.product_id == record.product_id)
+            total_qty = 0.00
             if order_line:
                 for rec in order_line:
-                    record.qty = rec.product_uom_qty
+                    total_qty += rec.product_uom_qty
                     record.unit_price = rec.price_unit
                     record.tax_id = rec.tax_id
+                record.qty = total_qty
         self.invoice_id = [
             (6, 0, [record.id for record in self.env['account.invoice'].search(
                 [('origin', 'ilike', self.sale_order_id.name)],
@@ -578,8 +583,9 @@ class ReturnOrderLine(models.Model):
                     limit=1) if record])]
         if self._context.get('active_model') == 'sale.order' and \
                 self._context.get('active_id'):
-            product_ids = self.sale_order_id.order_line.mapped(
-                'product_id').ids
+            order_line_rec = self.sale_order_id.order_line.filtered(
+                lambda s: not s.return_order_id)
+            product_ids = order_line_rec.mapped('product_id').ids
             return {'domain': {'product_id': [('id', 'in', product_ids)]}}
 
     @api.onchange('purchase_order_id')
@@ -590,11 +596,13 @@ class ReturnOrderLine(models.Model):
                 order_line = record.purchase_order_id.mapped(
                     'order_line').filtered(
                     lambda p: p.product_id == record.product_id)
+                total_qty = 0.00
                 if order_line:
                     for rec in order_line:
-                        record.qty = rec.product_uom_qty
+                        total_qty += rec.product_uom_qty
                         record.unit_price = rec.price_unit
                         record.tax_id = rec.taxes_id
+                    record.qty = total_qty
 
     @api.multi
     def _get_display_price(self, product):
@@ -648,6 +656,7 @@ class SalesOrderLine(models.Model):
 
     return_order_id = fields.Many2one(
         'return.order', string="Return Reference", copy=False)
+    # return_qty = fields.Float(string="Return Qty", readonly=0)
 
 
 class PurchaseOrderLine(models.Model):
@@ -657,3 +666,4 @@ class PurchaseOrderLine(models.Model):
 
     return_order_id = fields.Many2one(
         'return.order', string="Return Reference", copy=False)
+    # return_qty = fields.Float(string="Return Qty", readonly=0)
