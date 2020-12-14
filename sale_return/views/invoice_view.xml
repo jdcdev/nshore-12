@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="invoice_form_cancel_inherit" model="ir.ui.view">
+            <field name="name">invoice.form.cancel.inherit</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_id']" position="after">
+                   <field name="return_order_id" attrs="{'invisible': [('type', '!=', 'out_refund')]}" readonly="1"/>
+                </xpath>
+            </field>
+        </record>
+</odoo>
