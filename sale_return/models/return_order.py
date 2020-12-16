@@ -550,7 +550,6 @@ class ReturnOrderLine(models.Model):
                 order_line = record.sale_order_id.mapped(
                     'order_line').filtered(
                     lambda p: p.product_id == record.product_id)
-                record.qty = 0.0
                 total_qty = 0.00
                 if order_line:
                     for rec in order_line:

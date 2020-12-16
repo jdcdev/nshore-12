@@ -5,3 +5,4 @@ from . import product_template
 from . import sale
 from . import company
 from . import account_follow_up_report
+from . import payment_terms
