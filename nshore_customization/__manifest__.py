@@ -44,7 +44,8 @@
         'report/payment.xml',
         'data/email_template_partner_statement.xml',
         'views/customer_statement_unmail_views.xml',
-        'views/menus.xml'
+        'views/menus.xml',
+        'views/payment_terms.xml',
     ],
     'qweb': [
         'static/src/xml/pos.xml'

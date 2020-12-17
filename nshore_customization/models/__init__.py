@@ -7,3 +7,4 @@ from . import sale
 # from . import account_aged_receivable
 from . import company
 from . import account_follow_up_report
+from . import payment_terms
