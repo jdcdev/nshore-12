@@ -36,6 +36,7 @@
                             <field name="partner_id" domain="[('customer', '=', True),('is_company', '=', True)]" options="{'no_create': True,'no_edit': True}" attrs="{'invisible': [('type_partner', '=', ('supplier'))]}" />
                             <field name="supplier_id" options="{'no_create': True,'no_edit': True}" attrs="{'invisible': [('type_partner', '=', ('customer'))]}" />
                             <field name="pricelist_id" options="{'no_create': True,'no_edit': True}" attrs="{'invisible': [('type_partner', '=', ('supplier'))]}"/>
+                            <field name="sale_ids" widget="many2many_tags" invisible="1"/>
                         </group>
                     </group>
                     <notebook>
