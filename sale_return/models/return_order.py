@@ -55,6 +55,7 @@ class ReturnOrder(models.Model):
     supplier_id = fields.Many2one(
         'res.partner', string="Vendor",
         domain=[('supplier', '=', True)])
+    sale_ids = fields.Many2many('sale.order', string="Sales Order")
 
     @api.onchange('partner_id')
     def onchange_partner(self):
@@ -211,10 +212,16 @@ class ReturnOrder(models.Model):
                         'picking_type_id': picking_type_id_po.id,
                         'quantity_done': return_line.qty})
                     return_line.sudo().write({'state': 'done'})
+                qty_returned = 0.0
                 # Update purchase order line with return reference.
                 for line in return_line.purchase_order_id.order_line.filtered(
                         lambda l: l.product_id.id == return_line.product_id.id):
-                    line.write({'return_order_id': self.id})
+                    # line.write({'return_order_id': self.id})
+                    qty_returned = line.return_qty + return_line.qty
+                    line.write({'return_qty': qty_returned})
+                    if line.product_uom_qty == line.return_qty:
+                        # return_line.purchase_order_id.write({'state': 'return'})
+                        line.write({'return_order_id': self.id})
             # Append stock move and invoice line in created return and credit
             # note without PO
             if not return_line.purchase_order_id:
@@ -330,9 +337,15 @@ class ReturnOrder(models.Model):
                         'picking_type_id': picking_type_id_so.id,
                         'quantity_done': return_line.qty})
                 # Update sales order line with return reference.
+                qty_returned = 0.0
                 for line in return_line.sale_order_id.order_line.filtered(
                         lambda l: l.product_id.id == return_line.product_id.id):
-                    line.write({'return_order_id': self.id})
+                    qty_returned = line.return_qty + return_line.qty
+                    line.write({'return_qty': qty_returned})
+                    self.sale_ids = return_line.sale_order_id.ids
+                    if line.product_uom_qty == line.return_qty:
+                        return_line.sale_order_id.write({'state': 'return'})
+                        line.write({'return_order_id': self.id})
             # When no sales order in return line.
             if not return_line.sale_order_id:
                 # Credit Note
@@ -492,7 +505,8 @@ class ReturnOrderLine(models.Model):
                     record.sale_order_id = False
                 sales_order_line = self.env['sale.order.line'].search(
                     [('product_id', '=', record.product_id.id),
-                        ('return_order_id', '=', False)])
+                        ('return_order_id', '=', False),
+                        ('order_id.state', '=', 'sale')])
                 order_line_rec = sales_order_line.filtered(
                     lambda x: x.order_id and
                     x.order_id.partner_id == record.return_id.partner_id)
@@ -521,7 +535,8 @@ class ReturnOrderLine(models.Model):
                     record.purchase_order_id = False
                 purchase_order_line = self.env['purchase.order.line'].search(
                     [('product_id', '=', record.product_id.id),
-                        ('return_order_id', '=', False)])
+                        ('return_order_id', '=', False),
+                        ('order_id.state', '=', 'purchase')])
                 purchase_order_line_rec = purchase_order_line.filtered(
                     lambda p: p.order_id and
                     p.order_id.partner_id == record.return_id.supplier_id)
@@ -553,7 +568,7 @@ class ReturnOrderLine(models.Model):
                 total_qty = 0.00
                 if order_line:
                     for rec in order_line:
-                        total_qty += rec.product_uom_qty
+                        total_qty += (rec.product_uom_qty - rec.return_qty)
                         record.unit_price = rec.price_unit
                         record.tax_id = rec.tax_id
                     record.qty = total_qty
@@ -567,7 +582,7 @@ class ReturnOrderLine(models.Model):
             total_qty = 0.00
             if order_line:
                 for rec in order_line:
-                    total_qty += rec.product_uom_qty
+                    total_qty += (rec.product_uom_qty - rec.return_qty)
                     record.unit_price = rec.price_unit
                     record.tax_id = rec.tax_id
                 record.qty = total_qty
@@ -598,7 +613,7 @@ class ReturnOrderLine(models.Model):
                 total_qty = 0.00
                 if order_line:
                     for rec in order_line:
-                        total_qty += rec.product_uom_qty
+                        total_qty += (rec.product_uom_qty - rec.return_qty)
                         record.unit_price = rec.price_unit
                         record.tax_id = rec.taxes_id
                     record.qty = total_qty
@@ -655,7 +670,7 @@ class SalesOrderLine(models.Model):
 
     return_order_id = fields.Many2one(
         'return.order', string="Return Reference", copy=False)
-    # return_qty = fields.Float(string="Return Qty", readonly=0)
+    return_qty = fields.Float(string="Return Qty", readonly=1, copy=False)
 
 
 class PurchaseOrderLine(models.Model):
@@ -665,4 +680,4 @@ class PurchaseOrderLine(models.Model):
 
     return_order_id = fields.Many2one(
         'return.order', string="Return Reference", copy=False)
-    # return_qty = fields.Float(string="Return Qty", readonly=0)
+    return_qty = fields.Float(string="Return Qty", readonly=1, copy=False)
