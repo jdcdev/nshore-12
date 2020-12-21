@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<template id="report_delivery_document_inherit" inherit_id="stock.report_delivery_document">
+		<xpath expr="//table[3]/thead/tr/th[3]" position="after">
+			<th class="text-center"><strong>Received Qty</strong></th>  
+		</xpath>
+		<xpath expr="//table[3]/tbody/tr/td[3]" position="after">
+			<td class="text-center">
+                <span t-field="move_line.qty_done"/>
+            </td>  
+		</xpath>
+	</template>
+</odoo>

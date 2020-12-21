@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<template id="report_picking_inherit" inherit_id="stock.report_picking">
+		<xpath expr="//table[2]/thead/tr/th[2]" position="after">
+			<th align="left"><strong>Received Qty</strong></th>  
+		</xpath>
+		<xpath expr="//table[2]/tbody/t/t/tr/td[2]" position="after">
+			<td align="left">
+                <span t-field="ml.qty_done"/>
+            </td>  
+		</xpath>
+	</template>
+</odoo>
