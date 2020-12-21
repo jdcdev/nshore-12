@@ -221,8 +221,10 @@ class ReturnOrder(models.Model):
                     qty_returned = line.return_qty + return_line.qty
                     line.write({'return_qty': qty_returned})
                     if line.product_uom_qty == line.return_qty:
-                        return_line.purchase_order_id.write({'state': 'return'})
-                        line.write({'return_order_id': self.id})
+                        line.write({'return_order_id': self.id, 'all_return': True})
+                if all(po_lines.all_return for po_lines in return_line.mapped(
+                        'purchase_order_id').order_line):
+                    return_line.purchase_order_id.write({'state': 'return'})
             # Append stock move and invoice line in created return and credit
             # note without PO
             if not return_line.purchase_order_id:
@@ -345,8 +347,10 @@ class ReturnOrder(models.Model):
                     line.write({'return_qty': qty_returned})
                     self.sale_ids = return_line.sale_order_id.ids
                     if line.product_uom_qty == line.return_qty:
-                        return_line.sale_order_id.write({'state': 'return'})
-                        line.write({'return_order_id': self.id})
+                        line.write({'return_order_id': self.id, 'all_return': True})
+                if all(so_lines.all_return for so_lines in return_line.mapped(
+                        'sale_order_id').order_line):
+                    return_line.sale_order_id.write({'state': 'return'})
             # When no sales order in return line.
             if not return_line.sale_order_id:
                 # Credit Note
@@ -672,6 +676,7 @@ class SalesOrderLine(models.Model):
     return_order_id = fields.Many2one(
         'return.order', string="Return Reference", copy=False)
     return_qty = fields.Float(string="Return Qty", readonly=1, copy=False)
+    all_return = fields.Boolean(string="All Return", default=False, copy=False)
 
 
 class PurchaseOrderLine(models.Model):
@@ -682,3 +687,4 @@ class PurchaseOrderLine(models.Model):
     return_order_id = fields.Many2one(
         'return.order', string="Return Reference", copy=False)
     return_qty = fields.Float(string="Return Qty", readonly=1, copy=False)
+    all_return = fields.Boolean(string="All Return", default=False, copy=False)
