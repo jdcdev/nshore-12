@@ -56,6 +56,7 @@ class ReturnOrder(models.Model):
         'res.partner', string="Vendor",
         domain=[('supplier', '=', True)])
     sale_ids = fields.Many2many('sale.order', string="Sales Order")
+    purchase_ids = fields.Many2many('purchase.order', string="Purchase Order")
 
     @api.onchange('partner_id')
     def onchange_partner(self):
@@ -216,11 +217,11 @@ class ReturnOrder(models.Model):
                 # Update purchase order line with return reference.
                 for line in return_line.purchase_order_id.order_line.filtered(
                         lambda l: l.product_id.id == return_line.product_id.id):
-                    # line.write({'return_order_id': self.id})
+                    self.purchase_ids = return_line.purchase_order_id.ids
                     qty_returned = line.return_qty + return_line.qty
                     line.write({'return_qty': qty_returned})
                     if line.product_uom_qty == line.return_qty:
-                        # return_line.purchase_order_id.write({'state': 'return'})
+                        return_line.purchase_order_id.write({'state': 'return'})
                         line.write({'return_order_id': self.id})
             # Append stock move and invoice line in created return and credit
             # note without PO
