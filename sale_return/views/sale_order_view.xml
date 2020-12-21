@@ -14,6 +14,7 @@
             </div>
             <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_uom_qty']" position="after">
                 <field name="return_qty" invisible="1"/>
+                <field name="all_return" invisible="1"/>
             </xpath>
         </field>
     </record>

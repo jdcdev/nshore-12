@@ -18,4 +18,7 @@ class PurchaseOrder(models.Model):
             'domain': [('purchase_ids', '=', self.ids)],
             'view_mode': 'tree,form',
             'res_model': 'return.order',
-            'type': 'ir.actions.act_window'}
+            'type': 'ir.actions.act_window',
+            'context': {
+                'default_supplier_id': self.partner_id.id or False,
+                'default_type_partner': 'supplier' or False}}
