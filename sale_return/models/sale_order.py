@@ -8,7 +8,6 @@ class SaleOrder(models.Model):
     _description = 'Sale Order'
 
     state = fields.Selection(selection_add=[('return', 'Returned')])
-    # return_order_ids = fields.One2many('return.order', 'sale_id')
 
     @api.multi
     def show_return(self):
@@ -17,7 +16,7 @@ class SaleOrder(models.Model):
             'name': ('Return Order'),
             'view_type': 'form',
             'domain': [('sale_ids', '=', self.ids)],
-            'view_mode': 'tree',
+            'view_mode': 'tree,form',
             'res_model': 'return.order',
             'type': 'ir.actions.act_window'}
 

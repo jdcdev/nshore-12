@@ -13,7 +13,7 @@
                 <button class="oe_stat_button" name="show_return" string="Returns" type="object" icon="fa-undo" attrs="{'invisible': [('state', 'not in', ['return', 'sale'])]}" />
             </div>
             <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_uom_qty']" position="after">
-                <field name="return_qty" invisible="0"/>
+                <field name="return_qty" invisible="1"/>
             </xpath>
         </field>
     </record>
