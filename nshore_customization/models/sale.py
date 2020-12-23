@@ -20,6 +20,29 @@ class SaleOrder(models.Model):
             'domain': [('id', 'in', self.order_line.ids)],
         }
 
+    @api.model
+    def create(self, vals):
+        """Function override to pass sales person on readonly field."""
+        res = super(SaleOrder, self).create(vals)
+        if res.partner_id.user_id:
+            res.user_id = res.partner_id.user_id.id
+        else:
+            res.user_id = self.env.user
+        return res
+
+    @api.multi
+    def write(self, values):
+        """Function call to pass sales person value."""
+        if 'partner_id' in values:
+            partner_id = self.env['res.partner'].browse(
+                values.get('partner_id'))
+            if partner_id.user_id:
+                self.user_id = partner_id.user_id.id
+            if not partner_id.user_id:
+                self.user_id = self.env.user
+
+        return super(SaleOrder, self).write(values)
+
     @api.multi
     def _prepare_invoice(self):
         """
