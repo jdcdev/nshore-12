@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<template id="report_purchasequotation_document_inherit" inherit_id="purchase.report_purchasequotation_document">
+		<xpath expr="//table/thead/tr/th[3]" position="after">
+            <th class="text-right"><strong>Received Qty</strong></th>
+        </xpath>
+        <xpath expr="//table/tbody/tr/td[3]" position="after">
+            <td class="text-right">
+                <span t-field="order_line.qty_received"/>
+            </td>
+		</xpath>
+	</template>
+</odoo>

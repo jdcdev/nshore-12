@@ -24,6 +24,7 @@
         'views/invoice_view.xml',
         'views/return_order_view.xml',
         'views/sale_order_view.xml',
+        'views/purchase_order_view.xml',
         'report/report_return_order.xml'],
     'demo': [],
     'installable': True,
