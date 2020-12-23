@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<function name="write" model="ir.model.data">
+		<function name="search" model="ir.model.data">
+			<value eval="[('module', '=', 'product'), ('name', '=', 'decimal_product_uom')]"/>
+		</function>
+		<value eval="{'noupdate': False}" />
+	</function>
+
+	<record forcecreate="True" id="product.decimal_product_uom" model="decimal.precision">
+		<field name="name">Product Unit of Measure</field>
+		<field name="digits" eval="0"/>
+	</record>
+
+	<function name="write" model="ir.model.data">
+		<function name="search" model="ir.model.data">
+			<value eval="[('module', '=', 'product'), ('name', '=', 'decimal_product_uom')]"/>
+		</function>
+		<value eval="{'noupdate': True}" />
+	</function>
+</odoo>

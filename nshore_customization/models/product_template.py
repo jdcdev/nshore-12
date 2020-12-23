@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
+from odoo.addons import decimal_precision as dp
 
 
 class ProductTemplate(models.Model):
@@ -16,6 +17,9 @@ class ProductProduct(models.Model):
     """Class inherit for modify some functions."""
 
     _inherit = 'product.product'
+
+    qty_at_date = fields.Float(
+        'Quantity', digits=dp.get_precision('Product Unit of Measure'), compute='_compute_stock_value')
 
     @api.multi
     def name_get(self):
