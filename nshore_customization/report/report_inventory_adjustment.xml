@@ -67,7 +67,7 @@
                                         <t t-esc="l.product_id.default_code"/>
                                     </td>
                                     <td style="text-align:right;">
-                                        <t t-esc="l.product_qty"/>
+                                        <t t-esc="'{0:,.0f}'.format(l.product_qty)"/>
                                     </td>
                                     <td style="text-align:left;">
                                         &#160;&#160;&#160;&#160;<span t-field="l.product_id"/>

@@ -104,12 +104,12 @@
                                 </td>
                                 <td width="10%" class="text-right">
                                     <span>
-                                        <t t-esc="'{0:,.2f}'.format(product.get('reorder'))"/>
+                                        <t t-esc="'{0:,.0f}'.format(product.get('reorder'))"/>
                                     </span>
                                 </td>
                                 <td width="5%" class="text-right">
                                     <span>
-                                        <t t-esc="'{0:,.2f}'.format(product.get('max'))"/>
+                                        <t t-esc="'{0:,.0f}'.format(product.get('max'))"/>
                                     </span>
                                 </td>
                                 <td width="5%" class="text-right">
@@ -152,19 +152,19 @@
                                         <td width="5%" class="text-right"
                                             style="border-bottom:0px; !important">
                                             <span>
-                                                <t t-esc="'{0:,.2f}'.format(location.get('location_max'))"/>
+                                                <t t-esc="'{0:,.0f}'.format(location.get('location_max'))"/>
                                             </span>
                                         </td>
                                         <td width="5%" class="text-right"
                                             style="border-bottom:0px; !important">
                                             <span>
-                                                <t t-esc="'{0:,.2f}'.format(location.get('location_reorder'))"/>
+                                                <t t-esc="'{0:,.0f}'.format(location.get('location_reorder'))"/>
                                             </span>
                                         </td>
                                         <td width="10%" class="text-right"
                                             style="border-bottom:0px; !important">
                                             <span>
-                                                <t t-esc="'{0:,.2f}'.format(location.get('location_onhand'))"/>
+                                                <t t-esc="'{0:,.0f}'.format(location.get('location_onhand'))"/>
                                             </span>
                                         </td>
                                         <td width="10%" class="text-right"
@@ -182,7 +182,7 @@
                                             style="border-top: 2px solid #cacace;">
                                             <b>
                                                 <span>
-                                                    <t t-esc="'{0:,.2f}'.format(total_onhand)"/>
+                                                    <t t-esc="'{0:,.0f}'.format(total_onhand)"/>
                                                 </span>
                                             </b>
                                         </td>
