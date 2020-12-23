@@ -15,7 +15,8 @@ class SaleOrder(models.Model):
         return {
             'name': ('Return Order'),
             'view_type': 'form',
-            'view_mode': 'tree',
+            'domain': [('sale_ids', '=', self.ids)],
+            'view_mode': 'tree,form',
             'res_model': 'return.order',
             'type': 'ir.actions.act_window'}
 
