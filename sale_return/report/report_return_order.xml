@@ -45,7 +45,7 @@
                     <t t-foreach="doc.line_ids" t-as="line">
                       <tr>
                         <td><span t-field="line.product_id.name"/></td>
-                        <td class="text-right"><span t-field="line.qty"/></td>
+                        <td class="text-right"><span t-esc="'{0:,.0f}'.format(line.qty)"/></td>
                         <td class="text-right"><span t-field="line.unit_price" /></td>
                         <td class="text-right"><span t-field="line.value" t-options='{"widget": "float", "precision": 2}'/></td>
                       </tr>
