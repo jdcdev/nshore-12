@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 	<template id="report_delivery_document_inherit" inherit_id="stock.report_delivery_document">
+		<xpath expr="//table[2]/thead/tr/th[2]" position="after">
+			<th class="text-center"><strong>Received Qty</strong></th>
+		</xpath>
+		<xpath expr="//table[2]/tbody/tr/td[2]" position="after">
+			<td class="text-center">
+                <span t-field="move.quantity_done"/>
+            </td>
+		</xpath>
 		<xpath expr="//table[3]/thead/tr/th[3]" position="after">
 			<th class="text-center"><strong>Received Qty</strong></th>  
 		</xpath>
