@@ -29,6 +29,20 @@
                 </xpath>
             </field>
         </record>
+
+        <record id="purchase_order_tree_inherit_nshore" model="ir.ui.view">
+            <field name="name">purchase.order.tree.nshore</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_id']"
+                       position="after">
+                    <field name="create_uid"/>
+                    <field name="note"/>
+                </xpath>
+            </field>
+        </record>
+
         <record id="purchase.product_normal_action_puchased" model="ir.actions.act_window">
             <field name="view_mode">tree,kanban,form,activity</field>
         </record>
