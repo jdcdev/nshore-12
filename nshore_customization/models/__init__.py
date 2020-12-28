@@ -8,3 +8,4 @@ from . import account_follow_up_report
 from . import payment_terms
 from . import stock_quant
 from . import pos_order
+from . import purchase_order
