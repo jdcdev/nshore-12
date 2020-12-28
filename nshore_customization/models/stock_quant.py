@@ -19,3 +19,13 @@ class StockQuant(models.Model):
         digits=dp.get_precision('Product Unit of Measure'),
         help='Quantity of products in this quant, in the default unit of measure of the product',
         readonly=True, required=True, oldname='qty')
+
+
+class StockQuantityHistory(models.TransientModel):
+    _inherit = 'stock.quantity.history'
+
+    def open_table(self):
+        record = super(StockQuantityHistory, self).open_table()
+        if self.env.context.get('from_nshore'):
+            record['limit'] = 5000
+        return record
