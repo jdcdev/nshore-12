@@ -25,17 +25,31 @@
         </field>
     </record>
 
-    <record id="action_inventory_listing" model="ir.actions.server">
+<!--     <record id="action_inventory_listing" model="ir.actions.server">
         <field name="name">Inventory Listing</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_product_category"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = model.print_report_master()
+        </field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+    </record> -->
+
+    <menuitem id="menu_inventory_listing" name="Master Inventory Listing" parent="stock.menu_warehouse_report" sequence="110" action="action_inventory_listing"/>
+
+    <record id="action_inventory_valuation" model="ir.actions.server">
+        <field name="name">Inventory Valuation</field>
         <field name="type">ir.actions.server</field>
         <field name="model_id" ref="model_product_category"/>
         <field name="state">code</field>
         <field name="code">
             action = model.print_report()
         </field>
-        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <!-- <field name="binding_model_id" ref="sale.model_sale_order"/> -->
     </record>
 
-    <menuitem id="menu_inventory_listing" name="Master Inventory Listing" parent="stock.menu_warehouse_report" sequence="110" action="action_inventory_listing"/>
+    <menuitem id="menu_inventory_valuation" name="Master Inventory Valuation" parent="stock.menu_warehouse_report" sequence="110" action="action_inventory_valuation"/>
+
 
 </odoo>

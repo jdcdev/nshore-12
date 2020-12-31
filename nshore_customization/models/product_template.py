@@ -184,5 +184,20 @@ class ProductCategory(models.Model):
             'form': data,
         }
         return self.env.ref(
-            'nshore_customization.action_report_inventory_listing').report_action(
+            'nshore_customization.action_report_inventory_valuation').report_action(
             categories, data=datas)
+
+    # @api.multi
+    # def print_report_master(self):
+    #     """Function call to print report."""
+    #     data = {}
+    #     categories = self.search([])
+    #     data['categories'] = categories
+    #     datas = {
+    #         'ids': categories.ids,
+    #         'model': 'product.category',
+    #         'form': data,
+    #     }
+    #     return self.env.ref(
+    #         'nshore_customization.report_inventory_listing').report_action(
+    #         categories, data=datas)
