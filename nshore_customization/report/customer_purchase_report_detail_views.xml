@@ -147,7 +147,7 @@
                                                 <span t-esc="rec_data['last_purchased_date']"/>
                                             </td>
                                             <td class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px;">
-                                                <span t-esc="rec_data['qty']"/>
+                                                <span t-esc="'{0:,.0f}'.format(rec_data['qty'])"/>
                                             </td>
                                             <td class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px;">
                                                 <span t-esc="rec_data['total_amount_purchased']"

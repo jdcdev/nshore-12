@@ -11,7 +11,7 @@
                     <attribute name="domain">[('is_company', '=', True)]
                     </attribute>
                 </xpath>
-               <xpath expr="//field[@name='user_id']" position="attributes">
+                <xpath expr="//field[@name='user_id']" position="attributes">
                     <attribute name="readonly">1</attribute>
                 </xpath>
                 <xpath expr="//field[@name='partner_shipping_id']"
@@ -74,8 +74,34 @@
                 </xpath>
                 <xpath expr="//button[@name='action_confirm']" position="after">
                     <button name="express_checkout" id="express_checkout"
-                        string="Express Checkout" class="btn-primary" type="object" attrs="{'invisible': [('state', 'in', ['sale','cancel', 'done'])]}"
+                        string="Express Checkout" class="btn-primary" type="object" attrs="{'invisible': [('state', 'in', ['sale','cancel', 'done', 'return'])]}"
                         />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_order_tree_inherit_nshore" model="ir.ui.view">
+            <field name="name">sale.order.tree.sale.nshore</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_id']"
+                       position="after">
+                    <field name="create_uid"/>
+                    <field name="notes"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_quotation_tree_with_onboarding_inherit_nshore" model="ir.ui.view">
+            <field name="name">sale.order.tree.sale.nshore</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_id']"
+                       position="after">
+                    <field name="create_uid"/>
+                    <field name="notes"/>
                 </xpath>
             </field>
         </record>
@@ -119,13 +145,5 @@
             <field name="view_mode">tree,kanban,form,activity</field>
             <field name="view_id" ref="product.product_template_tree_view"/>
         </record>
-
-       <!--  <menuitem action="account.action_invoice_tree1"
-                  id="menu_action_customer_invoice"
-                  parent="sale.sale_order_menu"
-                  sequence="1"/> -->
-
-
-
     </data>
 </odoo>

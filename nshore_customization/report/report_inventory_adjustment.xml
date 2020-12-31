@@ -1,93 +1,215 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="report_layout_inventory_adjustment">
+
+    <template id="custom_layout_report">
+        <div class="header">
+            <span style="font-family:Liberation Serif;float:left;font-weight:bold;font-size: 28px;padding-top:5px; padding-bottom:2px;width:40%;!important;">
+                Master Inventory Listing
+            </span>
+            <span style="font-family:Liberation Serif;float:right;font-size:18px;padding-top:5px;!important;">
+                <t t-esc="date"/>
+            </span>
+            <style type="text/css">
+                table {
+                width: 100%;
+                }
+                th, td {
+                padding-top: 8px;
+                padding-right:10px;
+                border-bottom: 1px solid black;
+                font-family:Liberation Serif;
+                font-size: 16px;
+                }
+            </style>
+            <table width="100%"
+                   style="font-weight:bold;border-bottom: 2px solid black;border-top: 4px solid black;!important">
+                <tr style="padding-top:10px!important">
+                    <th width="5%" class="text-right">ID</th>
+                    <th width="5%" class="text-left">Reference</th>
+                    <th width="10%" class="text-left">Description</th>
+                    <th width="10%" class="text-right">Reorder</th>
+                    <th width="5%" class="text-right">Max</th>
+                    <th width="5%" class="text-right">Cost</th>
+                    <th width="10%" class="text-right">Net Cost</th>
+                    <th width="5%" class="text-right">List</th>
+                    <th width="5%" class="text-right">Retail</th>
+                    <th width="10%" class="text-left">Location</th>
+                    <th width="5%" class="text-right">Max</th>
+                    <th width="5%" class="text-right">Reorder</th>
+                    <th width="10%" class="text-right">On Hand</th>
+                    <th width="10%" class="text-right">Value</th>
+                </tr>
+            </table>
+        </div>
+
+        <div class="article">
+            <t t-raw="0"/>
+        </div>
+
+        <div class="footer"
+             style="font-size:16px;border-style:solid;border-width:4px;border-color:black transparent transparent;!important">
+            <center style="font-family:Liberation Serif;padding-top:10px;!important">
+                Page
+                <span class="page"/>
+                of
+                <span class="topage"/>
+            </center>
+        </div>
+    </template>
+
+    <template id="report_inventory_listing">
         <t t-call="web.html_container">
-            <div class="header" style="padding-top:7px !important;">
-                <div class="row mt32 mb32">
-                    <div class="col-8 bm-2">
-                        <h3>
-                            <t t-esc="docs[0].company_id.name" />
-                        </h3>
-                    </div>
-                    <div class="col-8 bm-4">
-                        <span t-if="docs[0].company_id.street" t-field="docs[0].company_id.street" />
-                        <span t-field="docs[0].company_id.street2"/>
-                        <span t-field="docs[0].company_id.city"/>,<br/>
-                        <span t-field="docs[0].company_id.state_id"/>,
-                        <span t-field="docs[0].company_id.country_id"/>-<span t-field="docs[0].company_id.zip"/><br/>
-                        Phone: <span t-field="docs[0].company_id.phone"/><br/>
-                        Email: <span t-field="docs[0].company_id.email"/><br/>
-                        <span t-field="docs[0].company_id.website"/><br/>
-                    </div>
-                </div>
-            </div>
-            <t t-foreach="docs" t-as="o">
-                <div style="page-break-before: always;"/>
-                <div class="page">
-                    <div style="float:right;padding-right:6%">
-                        <table>
+            <t t-call="nshore_customization.custom_layout_report">
+                <div class="page"
+                     style="font-family:Liberation Serif;font-size: 15px;!important;">
+                    <style type="text/css">
+                        table {
+                        width: 100%;
+                        }
+                        tr{
+                        padding-top: 1px;
+                        padding-right:10px;
+                        }
+                        th, td {
+                        padding-top: 1px;
+                        padding-right:10px;
+                        border-bottom: 1px solid #cacace;
+                        font-family:Liberation Serif;
+                        font-size: 18px;
+                        }
+                        span {
+                        font-family:Liberation Serif;
+                        }
+                    </style>
+                    <t t-set="all_value" t-value="0"/>
+                    <t t-foreach="docs" t-as="o">
+                        <table t-if="product_data(o)">
                             <tr>
-                                <td colspan="2" style="font-size:22px !important;">
-                                    <b>Inventory Adjustment</b>
+                                <td colspan="14">
+                                    <span style="font-weight:bold;font-size: 25px;!important;"
+                                          class="text-uppercase">
+                                          <t t-esc='o.name'/>
+                                    </span>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>
-                                    <h3>Number</h3>
+                            <tr t-foreach="product_data(o)" t-as="product">
+                                <td width="5%" class="text-right">
+                                    <span t-esc="product.get('id')"/>
                                 </td>
-                                <td>
-                                    <h3><span t-field="o.id"/></h3>
+                                <td width="5%" class="text-left">
+                                    <span t-esc="product.get('ref')"/>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <h3>Date</h3>
+                                <td width="10%" class="text-left">
+                                    <span t-esc="product.get('description')"/>
                                 </td>
-                                <td>
-                                    <h3><span t-esc="context_timestamp(o.date).strftime('%m  /  %d  /  %Y')"/></h3>
+                                <td width="10%" class="text-right">
+                                    <span>
+                                        <t t-esc="'{0:,.0f}'.format(product.get('reorder'))"/>
+                                    </span>
                                 </td>
-                            </tr>
+                                <td width="5%" class="text-right">
+                                    <span>
+                                        <t t-esc="'{0:,.0f}'.format(product.get('max'))"/>
+                                    </span>
+                                </td>
+                                <td width="5%" class="text-right">
+                                    <span>
+                                        <t t-esc="'{0:,.2f}'.format(product.get('cost'))"/>
+                                    </span>
+                                </td>
+                                <td width="10%" class="text-right">
+                                    <span>
+                                        <t t-esc="'{0:,.2f}'.format(product.get('net_cost'))"/>
+                                    </span>
+                                </td>
+                                <td width="5%" class="text-right">
+                                    <span>
+                                        <t t-esc="'{0:,.2f}'.format(product.get('list'))"/>
+                                    </span>
+                                </td>
+                                <td width="5%" class="text-right">
+                                    <span>
+                                        <t t-esc="'{0:,.2f}'.format(product.get('list'))"/>
+                                    </span>
+                                </td>
+                                <td style="border-bottom:0px; !important">
+                                    <t t-set="total_value" t-value="0"/>
+                                    <t t-set="total_onhand" t-value="0"/>
+                                    <tr t-foreach="product.get('location')"
+                                        t-as="location">
+                                        <t t-set="value"
+                                           t-value="product.get('net_cost') * location.get('location_onhand')"/>
+                                        <t t-set="total_value"
+                                           t-value="total_value + value"/>
+                                        <t t-set="total_onhand"
+                                           t-value="total_onhand + location.get('location_onhand')"/>
+                                        <td colspan="9"
+                                            style="border-bottom:0px; !important"></td>
+                                        <td width="10%" class="text-left"
+                                            style="border-bottom:0px; !important">
+                                            <span t-esc="location.get('location_name')"/>
+                                        </td>
+                                        <td width="5%" class="text-right"
+                                            style="border-bottom:0px; !important">
+                                            <span>
+                                                <t t-esc="'{0:,.0f}'.format(location.get('location_max'))"/>
+                                            </span>
+                                        </td>
+                                        <td width="5%" class="text-right"
+                                            style="border-bottom:0px; !important">
+                                            <span>
+                                                <t t-esc="'{0:,.0f}'.format(location.get('location_reorder'))"/>
+                                            </span>
+                                        </td>
+                                        <td width="10%" class="text-right"
+                                            style="border-bottom:0px; !important">
+                                            <span>
+                                                <t t-esc="'{0:,.0f}'.format(location.get('location_onhand'))"/>
+                                            </span>
+                                        </td>
+                                        <td width="10%" class="text-right"
+                                            style="border-bottom:0px; !important">
+                                            <span>
+                                                <t t-esc="'{0:,.2f}'.format(value)"/>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="9"></td>
+                                        <td colspan="3"
+                                            style="border-top: 2px solid #cacace;"></td>
+                                        <td width="10%" class="text-right"
+                                            style="border-top: 2px solid #cacace;">
+                                            <b>
+                                                <span>
+                                                    <t t-esc="'{0:,.0f}'.format(total_onhand)"/>
+                                                </span>
+                                            </b>
+                                        </td>
+                                        <td width="10%" class="text-right"
+                                            style="border-top: 2px solid #cacace;">
+                                            <b>
+                                                <span>
+                                                    <t t-esc="'{0:,.2f}'.format(total_value)"/>
+                                                </span>
+                                            </b>
+                                        </td>
+                                        <t t-set="all_value"
+                                           t-value="all_value + total_value"/>
+                                    </tr>
+                                </td>
+                            </tr><br/><br/>
                         </table>
-                    </div>
-                    <div>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <table width="100%">
-                            <thead>
-                                <tr style="background-color:black;color:white;">
-                                    <th style="text-align:left;" width="13.33%">Product</th>
-                                    <th style="text-align:right;" width="13.33%">Quantity</th>
-                                    <th style="text-align:left;">&#160;&#160;&#160;&#160;Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr t-foreach="o.line_ids" t-as="l">
-                                    <td style="text-align:left;">
-                                        <t t-esc="l.product_id.default_code"/>
-                                    </td>
-                                    <td style="text-align:right;">
-                                        <t t-esc="l.product_qty"/>
-                                    </td>
-                                    <td style="text-align:left;">
-                                        &#160;&#160;&#160;&#160;<span t-field="l.product_id"/>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    </t>
+                    <span style="float:left;font-weight:bold;font-size: 24px;padding-top:25px;width:50%;!important;">
+                        Inventory Value
+                    </span>
+                    <span style="float:right;font-weight:bold;font-size: 24px;padding-top:25px;!important;">
+                        <t t-esc="'{0:,.2f}'.format(all_value)"/>
+                    </span>
                 </div>
             </t>
-            <div class="footer">
-                <center>Page <span class="page"/> of <span class="topage"/></center>
-            </div>
         </t>
     </template>
-    <template id="report_inventory_adjustment">
-        <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="doc">
-                <t t-call="nshore_customization.report_layout_inventory_adjustment" />
-            </t>
-        </t>
-    </template>
+
 </odoo>
