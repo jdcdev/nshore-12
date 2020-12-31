@@ -4,7 +4,7 @@
     <template id="custom_layout_report">
         <div class="header">
             <span style="font-family:Liberation Serif;float:left;font-weight:bold;font-size: 28px;padding-top:5px; padding-bottom:2px;width:40%;!important;">
-                Master Inventory Listing
+                Inventory Valuation
             </span>
             <span style="font-family:Liberation Serif;float:right;font-size:18px;padding-top:5px;!important;">
                 <t t-esc="date"/>
@@ -24,18 +24,10 @@
             <table width="100%"
                    style="font-weight:bold;border-bottom: 2px solid black;border-top: 4px solid black;!important">
                 <tr style="padding-top:10px!important">
-                    <th width="5%" class="text-right">ID</th>
+                    <th width="5%" class="text-left">ID</th>
                     <th width="5%" class="text-left">Reference</th>
                     <th width="10%" class="text-left">Description</th>
-                    <th width="10%" class="text-right">Reorder</th>
-                    <th width="5%" class="text-right">Max</th>
-                    <th width="5%" class="text-right">Cost</th>
                     <th width="10%" class="text-right">Net Cost</th>
-                    <th width="5%" class="text-right">List</th>
-                    <th width="5%" class="text-right">Retail</th>
-                    <th width="10%" class="text-left">Location</th>
-                    <th width="5%" class="text-right">Max</th>
-                    <th width="5%" class="text-right">Reorder</th>
                     <th width="10%" class="text-right">On Hand</th>
                     <th width="10%" class="text-right">Value</th>
                 </tr>
@@ -57,7 +49,7 @@
         </div>
     </template>
 
-    <template id="report_inventory_listing">
+    <template id="report_inventory_valuation">
         <t t-call="web.html_container">
             <t t-call="nshore_customization.custom_layout_report">
                 <div class="page"
@@ -83,6 +75,8 @@
                     </style>
                     <t t-set="all_value" t-value="0"/>
                     <t t-foreach="docs" t-as="o">
+                        <t t-set="all_value_categ_onhand" t-value="0"/>
+                        <t t-set="all_value_categ_amount" t-value="0"/>
                         <table t-if="product_data(o)">
                             <tr>
                                 <td colspan="14">
@@ -93,7 +87,11 @@
                                 </td>
                             </tr>
                             <tr t-foreach="product_data(o)" t-as="product">
-                                <td width="5%" class="text-right">
+                                <t t-set="total_value" t-value="0"/>
+                                <t t-set="total_onhand" t-value="0"/>
+                                <t t-set="value"
+                                    t-value="product.get('net_cost') * product.get('location_onhand')"/>
+                                <td width="5%" class="text-left">
                                     <span t-esc="product.get('id')"/>
                                 </td>
                                 <td width="5%" class="text-left">
@@ -103,8 +101,39 @@
                                     <span t-esc="product.get('description')"/>
                                 </td>
                                 <td width="10%" class="text-right">
+                                    <span t-esc="product.get('net_cost')"/>
+                                </td>
+                                <td width="10%" class="text-right">
+                                    <span>
+                                        <t t-esc="'{0:,.0f}'.format(product.get('location_onhand'))"/>
+                                    </span>
+                                </td>
+                                <td width="10%" class="text-right">
+                                    <span>
+                                        <t t-esc="'{0:,.2f}'.format(value)"/>
+                                    </span>
+                                </td>
+                                <t t-set="all_value"
+                                    t-value="all_value + value"/>
+                                <t t-set="all_value_categ_onhand"
+                                    t-value="all_value_categ_onhand + product.get('location_onhand')"/>
+                                <t t-set="all_value_categ_amount"
+                                    t-value="all_value_categ_amount + value"/>
+                            </tr>
+                            <tr>
+                                <td width="5%" ></td>
+                                <td width="5%" ></td>
+                                <td width="10%" ></td>
+                                <td width="10%" ></td>
+                                <td style="font-weight:bold;!important;" class="text-right" width="10%">
+                                    <t t-esc="'{0:,.2f}'.format(all_value_categ_onhand)"/>
+                                </td>
+                                <td style="font-weight:bold;!important;" class="text-right" width="10%">
+                                    <t t-esc="'{0:,.2f}'.format(all_value_categ_amount)"/>
+                                </td>
+                            </tr>
+                                <!-- <td width="10%" class="text-right">
                                     <t t-if="product.get('reorder')">
-                                        <!-- <span>**********</span> -->
                                         <span><t t-esc="'{0:,.0f}'.format(product.get('reorder'))"/></span>
                                     </t>
                                 </td>
@@ -132,15 +161,15 @@
                                     <span>
                                         <t t-esc="'{0:,.2f}'.format(product.get('list'))"/>
                                     </span>
-                                </td>
-                                <td style="border-bottom:0px; !important">
+                                </td> -->
+                                <!-- <td style="border-bottom:0px; !important">
                                     <t t-set="total_value" t-value="0"/>
                                     <t t-set="total_onhand" t-value="0"/>
                                     <tr t-foreach="product.get('location')"
                                         t-as="location">
                                         <t t-set="value"
-                                           t-value="product.get('net_cost') * location.get('location_onhand')"/>
-                                        <t t-set="total_value"
+                                           t-value="product.get('net_cost') * location.get('location_onhand')"/> -->
+                                        <!-- <t t-set="total_value"
                                            t-value="total_value + value"/>
                                         <t t-set="total_onhand"
                                            t-value="total_onhand + location.get('location_onhand')"/>
@@ -161,8 +190,8 @@
                                             <span>
                                                 <t t-esc="'{0:,.0f}'.format(location.get('location_reorder'))"/>
                                             </span>
-                                        </td>
-                                        <td width="10%" class="text-right"
+                                        </td> -->
+                                        <!-- <td width="10%" class="text-right"
                                             style="border-bottom:0px; !important">
                                             <span>
                                                 <t t-esc="'{0:,.0f}'.format(location.get('location_onhand'))"/>
@@ -173,9 +202,9 @@
                                             <span>
                                                 <t t-esc="'{0:,.2f}'.format(value)"/>
                                             </span>
-                                        </td>
-                                    </tr>
-                                    <tr>
+                                        </td> -->
+                                    <!-- </tr> -->
+                                    <!-- <tr>
                                         <td colspan="9"></td>
                                         <td colspan="3"
                                             style="border-top: 2px solid #cacace;"></td>
@@ -197,9 +226,9 @@
                                         </td>
                                         <t t-set="all_value"
                                            t-value="all_value + total_value"/>
-                                    </tr>
-                                </td>
-                            </tr><br/><br/>
+                                    </tr> -->
+                                <!-- </td> -->
+                            <!-- </tr><br/><br/> -->
                         </table>
                     </t>
                     <span style="float:left;font-weight:bold;font-size: 24px;padding-top:25px;width:50%;!important;">

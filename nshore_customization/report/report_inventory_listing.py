@@ -13,7 +13,13 @@ class payroll_advice_report(models.AbstractModel):
         product_data = []
         products = self.env['product.product']
         reorder = self.env['stock.warehouse.orderpoint']
-        for product in products.search([('categ_id', '=', categories.id)]):
+        products_list = [prod for prod in products.search([
+            ('categ_id', '=', categories.id),
+            ('qty_available', '!=', 0.0)])]
+        print("\n\n products_list &&&&&& products_list", products_list)
+        for product in products.search([
+            ('categ_id', '=', categories.id),
+                ('qty_available', '!=', 0.0)]):
             dict = {
                 'id': product.default_code,
                 'ref': product.product_ref,
@@ -52,7 +58,9 @@ class payroll_advice_report(models.AbstractModel):
     @api.model
     def _get_report_values(self, docids, data=None):
         docids = self.env['product.category'].search([]).ids
+        print("\n\n docids LLLLLL docids", docids)
         docs = self.env['product.category'].browse(docids)
+        print("\n\n docs **** docs", docs)
         return {
             'doc_ids': docids,
             'doc_model': 'product.category',
