@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <odoo>
-	<record id="stock.product_template_action_product" model="ir.actions.act_window">
+    <record id="stock.product_template_action_product" model="ir.actions.act_window">
         <field name="view_mode">tree,kanban,form</field>
     </record>
     <!-- Stock Form view inherit for Detailed Operations-->
@@ -11,7 +11,6 @@
         <field name="arch" type="xml">
             <xpath expr="//notebook/page[1]" position="replace">
                 <page string="Detailed Operations">
-                	<!--Removed readonly-->
                     <field name="move_line_ids_without_package" attrs="{'readonly': ['|', ('state', '=', 'cancel'), '&amp;', ('state', '=', 'done'), ('is_locked', '=', True)]}" context="{'default_picking_id': id, 'default_location_id': location_id, 'default_location_dest_id': location_dest_id}">
                         <tree editable="bottom" decoration-muted="(state == 'done' and is_locked == True)" decoration-danger="qty_done&gt;product_uom_qty and state!='done'" decoration-success="qty_done==product_uom_qty and state!='done' and not result_package_id">
                             <field name="product_id" required="1" attrs="{'readonly': ['|', ('state', '=', 'done'), ('move_id', '!=', False)]}"/>
@@ -35,6 +34,18 @@
                     <field name="package_level_ids_details" context="{'default_location_id': location_id, 'default_location_dest_id': location_dest_id}" attrs="{'readonly': [('state', '=', 'done')], 'invisible': ['|', ('picking_type_entire_packs', '=', False), ('show_operations', '=', False)]}" />
                     <button class="oe_highlight" name="put_in_pack" type="object" string="Put in Pack" attrs="{'invisible': [('state', 'in', ('draft', 'done', 'cancel'))]}" groups="stock.group_tracking_lot"/>
                 </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_stock_quantity_history_inherit_nshore" model="ir.ui.view">
+        <field name="name">Valuation Report</field>
+        <field name="model">stock.quantity.history</field>
+        <field name="inherit_id" ref="stock_account.view_stock_quantity_history"/>
+        <field name="arch" type="xml">
+            <xpath expr="//footer/button[@name='open_table']"
+                   position="attributes">
+                <attribute name="context">{'from_nshore':'1'}</attribute>
             </xpath>
         </field>
     </record>
