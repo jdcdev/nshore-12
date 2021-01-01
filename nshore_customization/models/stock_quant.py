@@ -27,5 +27,6 @@ class StockQuantityHistory(models.TransientModel):
     def open_table(self):
         record = super(StockQuantityHistory, self).open_table()
         if self.env.context.get('from_nshore'):
-            record['limit'] = 5000
+            product_count = self.env['product.product'].search_count([])
+            record['limit'] = product_count + 1
         return record
