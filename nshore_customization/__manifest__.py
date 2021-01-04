@@ -37,7 +37,7 @@
         'report/report_daily_monthly_returns.xml',
         'report/report_inventory_adjustment.xml',
         'report/report_open_purchase_order.xml',
-        'report/report_inventory_listing.xml',
+        'report/report_inventory_valuation.xml',
         'report/customer_purchase_report_views.xml',
         'report/customer_purchase_report_detail_views.xml',
         'report/report_sale_order_view.xml',
