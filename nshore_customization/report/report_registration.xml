@@ -162,8 +162,8 @@
             paperformat="nshore_customization.paperformat_open_purchase_order"
         />
 
-        <record id="paperformat_inventory_listing" model="report.paperformat">
-            <field name="name">Inventory Listing</field>
+        <record id="paperformat_inventory_valuation" model="report.paperformat">
+            <field name="name">Inventory Valuation Report</field>
             <field name="default" eval="True"/>
             <field name="format">Letter</field>
             <field name="orientation">Landscape</field>
@@ -177,13 +177,13 @@
         </record>
 
         <report
-            id="action_report_inventory_listing"
-            string="Master Inventory Listing"
+            id="action_report_inventory_valuation"
+            string="Inventory Valuation Report"
             model="product.category"
             report_type="qweb-pdf"
-            name="nshore_customization.report_inventory_listing"
-            file="nshore_customization.report_inventory_listing"
-            paperformat="nshore_customization.paperformat_inventory_listing"
+            name="nshore_customization.report_inventory_valuation"
+            file="nshore_customization.report_inventory_valuation"
+            paperformat="nshore_customization.paperformat_inventory_valuation"
             menu="False"/>
 
     </data>

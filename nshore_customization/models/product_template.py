@@ -184,5 +184,5 @@ class ProductCategory(models.Model):
             'form': data,
         }
         return self.env.ref(
-            'nshore_customization.action_report_inventory_listing').report_action(
+            'nshore_customization.action_report_inventory_valuation').report_action(
             categories, data=datas)
