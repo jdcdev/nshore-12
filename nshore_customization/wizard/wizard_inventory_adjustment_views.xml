@@ -1,0 +1,106 @@
+<odoo>
+
+    <record model="ir.ui.view" id="view_inventory_adjustment_wizard">
+        <field name="name">inventory.adjustment.products.wizard</field>
+        <field name="model">inventory.adjustment.products</field>
+        <field name="arch" type="xml">
+            <form string="Inventory Adjustment">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                    <group colspan="4" col="4">
+                        <field name="from_location"/>
+                        <field name="to_location"/>
+                    </group>
+                    <notebook>
+                        <page name="products_to_import" string="Products to Import">
+                            <field name="line_ids">
+                                <tree editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="qty_sub" widget="integer"/>
+                                    <field name="product_uom_id" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                    <footer>
+                        <button name="update_qty_adjustment" type="object" string="Import Products" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="inventory_adjustment_wizard">
+        <field name="name">Inventory Adjustment - Import</field>
+        <field name="res_model">inventory.adjustment.products</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_inventory_adjustment_wizard"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_inventory_adjustment_wizard" name="Inventory Adjustment - Import"
+              parent="stock.menu_warehouse_report" action="inventory_adjustment_wizard"/>
+
+    <record id="view_rinventory_adjustment_form_import" model="ir.ui.view">
+        <field name="name">inventory.adjustment.products.form</field>
+        <field name="model">inventory.adjustment.products</field>
+        <field name="arch" type="xml">
+            <form string="Inventory Adjustment Details" create="false" edit="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="from_location"/>
+                        </group>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="to_location"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="imported_products" string="Imported Products">
+                            <field name="line_ids">
+                                <tree>
+                                    <field name="product_id"/>
+                                    <field name="qty_sub"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_rinventory_adjustment_tree_view_import" model="ir.ui.view">
+        <field name="name">inventory.adjustment.products.tree</field>
+        <field name="model">inventory.adjustment.products</field>
+        <field name="arch" type="xml">
+            <tree string="Inventory Adjustment Products" create="false" edit="false">
+                <field name="name"/>
+                <field name="from_location"/>
+                <field name="to_location"/>
+                <field name="user_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_open_inventory_adjustment_import" model="ir.actions.act_window">
+        <field name="name">Inventory Adjustment Details</field>
+        <field name="res_model">inventory.adjustment.products</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_rinventory_adjustment_tree_view_import"/>
+    </record>
+
+    <menuitem id="menu_inventory_adj_import" name="Inventory Adjustment Details" action="action_open_inventory_adjustment_import" parent="stock.menu_stock_warehouse_mgmt"/>
+
+</odoo>
