@@ -25,11 +25,17 @@ class InventoryAdjustment(models.Model):
         'inventory.adj.product.line', 'adjustment_id',
         string="Products to Import")
 
+    @api.model
+    def create(self, vals):
+        """Function call to prevent record creation where no line."""
+        res = super(InventoryAdjustment, self).create(vals)
+        if not res.line_ids:
+            raise ValidationError(_('Please Select Product to Import.'))
+        return res
+
     @api.multi
     def update_qty_adjustment(self):
         """Function call to create moves."""
-        if not self.line_ids:
-            raise ValidationError(_('Please Select Product to Import.'))
         for line in self.line_ids:
             moves = {
                 'name': self.name + line.product_id.product_ref,
@@ -55,7 +61,7 @@ class InventoryAdjustmentProducts(models.Model):
     def _default_product_uom_id(self):
         return self.env['uom.uom'].search([], limit=1, order='id')
 
-    product_id = fields.Many2one('product.product')
+    product_id = fields.Many2one('product.product', required=True)
     qty_sub = fields.Float(string="Quantity", default=1.0)
     adjustment_id = fields.Many2one('inventory.adjustment.products')
     product_uom_id = fields.Many2one(
@@ -65,6 +71,8 @@ class InventoryAdjustmentProducts(models.Model):
     @api.onchange('product_id', 'qty_sub')
     def _onchange_product_id_check_qty(self):
         if self.product_id.type == 'product':
+            if self.qty_sub <= 0:
+                raise ValidationError(_('Product Quantity must be greater than 0.'))
             precision = self.env['decimal.precision'].precision_get(
                 'Product Unit of Measure')
             product = self.product_id
