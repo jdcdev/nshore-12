@@ -11,11 +11,17 @@ class ResPartner(models.Model):
 
     _inherit = 'res.partner'
 
+    @api.model
+    def _default_user_id(self):
+        return self.env['res.users'].search([('id', '=', 7)])
+
     over_credit = fields.Boolean('Allow Over Credit?', default=True)
     allow_supervisor = fields.Boolean('Allow Supervisor', default=False)
     fax = fields.Char(string="Fax")
     invoice_start_date = fields.Date('Invoice Start Date')
     invoice_end_date = fields.Date('Invoice Start Date')
+    user_id = fields.Many2one('res.users', string='Salesperson',
+      help='The internal user in charge of this contact.', default=_default_user_id)
 
     @api.multi
     def name_get(self):
@@ -25,10 +31,6 @@ class ResPartner(models.Model):
             name = partner._get_name()
             res.append((partner.id, name.replace('_', ' ').title()))
         return res
-
-    # def send_customer_statement(self):
-    #     """Function call for job."""
-    #     self.with_delay()._send_customer_statement()
 
     # @job
     @api.model
