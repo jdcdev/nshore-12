@@ -24,8 +24,30 @@
             <t t-foreach="docs" t-as="o">
                 <div style="page-break-before: always;"/>
                 <div class="page">
-                    <div style="float:right;padding-right:6%">
-                        <table>
+                    <table style="float:left;padding-left;">
+                            <tr>
+                                <td colspan="2" style="font-size:22px !important;">
+                                    <b><span t-field="o.name"/></b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h3>Inventory Of</h3>
+                                </td>
+                                <td>
+                                    <h3><span t-field="o.filter"/></h3>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td t-if="o.filter == 'category'">
+                                    <h3>Product Category</h3>
+                                </td>
+                                <td t-if="o.filter == 'category'">
+                                    <h3><span t-field="o.category_id"/></h3>
+                                </td>
+                            </tr>
+                        </table>
+                        <table style="float:right;padding-right:6%">
                             <tr>
                                 <td colspan="2" style="font-size:22px !important;">
                                     <b>Inventory Adjustment</b>
@@ -48,7 +70,6 @@
                                 </td>
                             </tr>
                         </table>
-                    </div>
                     <div>
                         <br/>
                         <br/>
