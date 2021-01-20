@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Inherit partners invoice related fields -->
     <record id="partner_form_cutomization" model="ir.ui.view">
         <field name="name">res.partner.form.customization</field>
         <field name="model">res.partner</field>
