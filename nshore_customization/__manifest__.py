@@ -45,6 +45,7 @@
         'views/customer_statement_unmail_views.xml',
         'views/menus.xml',
         'views/payment_terms.xml',
+        'views/stock_move_line_view.xml',
     ],
     'qweb': [
         'static/src/xml/pos.xml'
