@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Inherit partners invoice related fields -->
     <record id="partner_form_cutomization" model="ir.ui.view">
         <field name="name">res.partner.form.customization</field>
         <field name="model">res.partner</field>
@@ -17,6 +18,20 @@
         </field>
     </record>
 
+    <!-- Make Users field readonly -->
+    <record id="view_partner_form_inherit_user_readonly" model="ir.ui.view">
+        <field name="name">res.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="groups_id" eval="[(4, ref('nshore_customization.group_is_salesperson_not_allowed'))]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='sales_purchases']/group/group/field[@name='user_id']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Added property fields on res partner form -->
     <record id="view_category_property_form" model="ir.ui.view">
         <field name="name">partner.over.credit.limit.form.inherit</field>
         <field name="model">res.partner</field>
