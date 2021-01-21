@@ -6,4 +6,4 @@ class StockQuant(models.Model):
     _inherit = 'stock.move.line'
     
     partner_id = fields.Many2one(
-        'res.partner', 'Customer/Vendor', related="move_id.partner_id")
+        'res.partner', 'Customer/Vendor', related="picking_id.partner_id")
