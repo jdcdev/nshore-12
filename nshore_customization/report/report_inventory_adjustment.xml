@@ -31,7 +31,7 @@
                     <div class="row">
                         <div>
                             <h3>Inventory Reference :- <span t-field="o.name"/></h3>
-                            <h3>Inventory Of :- <span t-field="o.filter"/></h3>
+                            <!-- <h3>Inventory Of :- <span t-field="o.filter"/></h3> -->
                         </div>
                         <div t-if="o.filter == 'category'">
                             <h3>Product Category :- <span t-field="o.category_id"/></h3>
@@ -39,9 +39,9 @@
                         <div>
                             <h3>Date :- <span t-esc="context_timestamp(o.date).strftime('%m  /  %d  /  %Y')"/></h3>
                         </div>
-                        <div t-if="o.exhausted">
+                        <!-- <div t-if="o.exhausted">
                             <h3>Include Exhausted Products :- True</h3>
-                        </div>
+                        </div> -->
                     </div>
                     <div>
                         <br/>
