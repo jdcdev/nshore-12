@@ -65,6 +65,7 @@ class ProductProduct(models.Model):
     @api.multi
     @api.depends('stock_move_ids.product_qty', 'stock_move_ids.state', 'stock_move_ids.remaining_value', 'product_tmpl_id.cost_method', 'product_tmpl_id.standard_price', 'product_tmpl_id.property_valuation', 'product_tmpl_id.categ_id.property_valuation')
     def _compute_stock_value(self):
+        """Function override to update products price with net cost"""
         StockMove = self.env['stock.move']
         to_date = self.env.context.get('to_date')
 
