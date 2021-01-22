@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Report template for inventory adjustment-->
     <template id="report_layout_inventory_adjustment">
         <t t-call="web.html_container">
             <div class="header" style="padding-top:7px !important;">
@@ -24,54 +25,35 @@
             <t t-foreach="docs" t-as="o">
                 <div style="page-break-before: always;"/>
                 <div class="page">
-                    <div style="float:right;padding-right:6%">
-                        <table>
-                            <tr>
-                                <td colspan="2" style="font-size:22px !important;">
-                                    <b>Inventory Adjustment</b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <h3>Number</h3>
-                                </td>
-                                <td>
-                                    <h3><span t-field="o.id"/></h3>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <h3>Date</h3>
-                                </td>
-                                <td>
-                                    <h3><span t-esc="context_timestamp(o.date).strftime('%m  /  %d  /  %Y')"/></h3>
-                                </td>
-                            </tr>
-                        </table>
+                    <div class="row" style="text-align:center;">
+                        <h3>Inventory Adjustment</h3>
+                    </div>
+                    <div class="row">
+                        <div>
+                            <h3>Inventory Reference :- <span t-field="o.name"/></h3>
+                        </div>
+                        <div t-if="o.filter == 'category'">
+                            <h3>Product Category :- <span t-field="o.category_id"/></h3>
+                        </div>
+                        <div>
+                            <h3>Date :- <span t-esc="context_timestamp(o.date).strftime('%m  /  %d  /  %Y')"/></h3>
+                        </div>
                     </div>
                     <div>
-                        <br/>
-                        <br/>
                         <br/>
                         <table width="100%">
                             <thead>
                                 <tr style="background-color:black;color:white;">
-                                    <th style="text-align:left;" width="13.33%">Product</th>
-                                    <th style="text-align:right;" width="13.33%">Quantity</th>
-                                    <th style="text-align:left;">&#160;&#160;&#160;&#160;Description</th>
+                                    <th style="text-align:left;">Product</th>
+                                    <th style="text-align:right;" width="13.33%">Theoretical Quantity</th>
+                                    <th style="text-align:right;" width="13.33%">Real Quantity</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr t-foreach="o.line_ids" t-as="l">
-                                    <td style="text-align:left;">
-                                        <t t-esc="l.product_id.default_code"/>
-                                    </td>
-                                    <td style="text-align:right;">
-                                        <t t-esc="'{0:,.0f}'.format(l.product_qty)"/>
-                                    </td>
-                                    <td style="text-align:left;">
-                                        &#160;&#160;&#160;&#160;<span t-field="l.product_id"/>
-                                    </td>
+                                    <td><span t-field="l.product_id"/></td>
+                                    <td style="text-align:right;"><t t-esc="'{0:,.0f}'.format(l.product_qty)"/></td>
+                                    <td style="text-align:right;"><t t-esc="'{0:,.0f}'.format(l.theoretical_qty)"/></td>
                                 </tr>
                             </tbody>
                         </table>
