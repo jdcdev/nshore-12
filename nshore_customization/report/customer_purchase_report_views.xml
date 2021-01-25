@@ -62,7 +62,7 @@
                                     <th class="text-right">
                                         <u style="text-decoration-color: grey;">Gross Profit</u>
                                     </th>
-                                    <th class="text-right">
+                                    <th class="text-right" t-if="docs['with_margin'] == True">
                                         <u style="text-decoration-color: grey;">Margin</u>
                                     </th>
                                     <th class="text-right" t-if="docs['comparsion'] == True">
@@ -71,7 +71,7 @@
                                     <th class="text-right" t-if="docs['comparsion'] == True">
                                         <u style="text-decoration-color: grey;">Gross Profit</u>
                                     </th>
-                                    <th class="text-right" t-if="docs['comparsion'] == True">
+                                    <th class="text-right" t-if="docs['comparsion'] == True and docs['with_margin'] == True">
                                         <u style="text-decoration-color: grey;">Margin</u>
                                     </th>
                                     <th class="text-right" t-if="docs['comparsion'] == True">
@@ -104,7 +104,7 @@
                                             <span t-esc="rec_data['total_gross_profit']"
                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                         </td>
-                                        <td class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
+                                        <td t-if="docs['with_margin'] == True" class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                             <span t-esc="rec_data['total_margin']"/>%
                                         </td>
                                         <td t-if="docs['comparsion'] == True" class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
@@ -115,7 +115,7 @@
                                             <span t-esc="rec_data['past_total_gross_profit']"
                                                   t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                         </td>
-                                        <td t-if="docs['comparsion'] == True" class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
+                                        <td t-if="docs['comparsion'] == True and docs['with_margin'] == True" class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                             <span t-esc="rec_data['past_total_margin']"/>%
                                         </td>
                                         <td t-if="docs['comparsion'] == True" class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
@@ -159,7 +159,7 @@
                                             <div style="border:1px; border-style: groove;"></div>
                                             <div style="border:1px; border-style: groove;margin-top:1px;"></div>
                                         </td>
-                                        <td class="text-right">
+                                        <td class="text-right" t-if="docs['with_margin'] == True">
                                             <b><span t-esc="grand_total_margin"
                                                      t-options='{"widget": "float", "precision": 2}'/>%
                                             </b>
@@ -182,7 +182,7 @@
                                             <div style="border:1px; border-style: groove;"></div>
                                             <div style="border:1px; border-style: groove;margin-top:1px;"></div>
                                         </td>
-                                        <td t-if="docs['comparsion'] == True" class="text-right">
+                                        <td t-if="docs['comparsion'] == True and docs['with_margin'] == True" class="text-right">
                                             <b><span t-esc="grand_past_total_margin"
                                                      t-options='{"widget": "float", "precision": 2}'/>%
                                             </b>
