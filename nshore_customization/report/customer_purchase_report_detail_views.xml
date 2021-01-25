@@ -202,7 +202,7 @@
                                             </td>
                                             <t t-if=" not grand_total_gross_profit == 00">
                                                 <t t-if= " not grand_total_amount_purchased == 00">
-                                                <td class="text-right">
+                                                <td class="text-right" t-if="docs['with_margin'] == True">
                                                     <div style="border:1px; border-style: groove;"></div>
                                                     <b><span t-esc="((grand_total_gross_profit/grand_total_amount_purchased) * 100)"
                                                              t-options='{"widget": "float", "precision": 2}'/>%
