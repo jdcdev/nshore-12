@@ -40,6 +40,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
         invoice_types = 'out_invoice'
         user_id = data['user_id'][0] if data['user_id'] else None
         is_all_salesperson = data['is_all_salesperson']
+        with_margin = data['with_margin']
 
         sqlstr = """
             select
@@ -284,5 +285,6 @@ class CustomerPurchasesReportView(models.AbstractModel):
             'end_date': end_date,
             'currency_id': self.env.user.company_id.currency_id,
             'docs': docs,
+            'with_margin': with_margin,
         }
         return data

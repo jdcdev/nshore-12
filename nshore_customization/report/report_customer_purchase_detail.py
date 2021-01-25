@@ -31,6 +31,7 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
         invoice_types = 'out_invoice'
         user_id = data['user_id'][0] if data['user_id'] else None
         is_all_salesperson = data['is_all_salesperson']
+        with_margin = data['with_margin']
         final_amount_purchase = 0.0
         grand_total_purchased_amount = 0.0
         grand_total_gross_profit_details = 0.0
@@ -142,5 +143,6 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
             'currency_id': self.env.user.company_id.currency_id,
             'docs': docs,
             'html_report': True if result else False,
+            'with_margin': with_margin,
         }
         return data
