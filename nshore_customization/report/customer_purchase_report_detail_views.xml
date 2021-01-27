@@ -190,8 +190,8 @@
                                                 </b>
                                                 <div style="border:1px; border-style: groove;"></div>
                                             </td>
-                                            <td/>
-                                            <td/>
+                                            <td t-if="docs['gross_profit'] == True"/>
+                                            <td t-if="docs['gross_profit'] == True"/>
                                             <td class="text-right" t-if="docs['gross_profit'] == True">
                                                 <div style="border:1px; border-style: groove;"></div>
                                                 <b>
