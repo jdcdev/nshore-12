@@ -116,14 +116,14 @@
                                                 </strong>
                                                 <div style="border:1px; border-style: groove;"></div>
                                             </td>
-                                            <td/>
-                                            <td/>
-                                            <td/>
-                                            <td/>
-                                            <td/>
-                                            <td/>
-                                            <td/>
-                                            <td/>
+                                            <td style="border:hidden"/>
+                                            <td style="border:hidden"/>
+                                            <td style="border:hidden"/>
+                                            <td style="border:hidden"/>
+                                            <td style="border:hidden"/>
+                                            <td style="border:hidden"/>
+                                            <td style="border:hidden"/>
+                                            <td style="border:hidden"/>
                                         </tr>
 
                                         <t t-set="grand_total_amount_purchased" t-value="0.00"/>
