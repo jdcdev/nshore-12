@@ -74,35 +74,35 @@
                                     <td/>
                                 </tr>
 
-                                <tr style="font-size:12px;">
-                                    <th style="border-bottom:hidden">
+                                <tr style="font-size:12px;border-bottom:hidden">
+                                    <th>
                                         <u style="text-decoration-color: grey;">Product</u>
                                     </th>
-                                    <th style="border-bottom:hidden">
+                                    <th>
                                         <u style="text-decoration-color: grey;">Description</u>
                                     </th>
-                                    <th style="border-bottom:hidden">
+                                    <th>
                                         <u style="text-decoration-color: grey;">Last Purchased</u>
                                     </th>
-                                    <th class="text-right" style="border-bottom:hidden">
+                                    <th class="text-right">
                                         <u style="text-decoration-color: grey;">Qty</u>
                                     </th>
-                                    <th class="text-right" style="border-bottom:hidden">
+                                    <th class="text-right">
                                         <u style="text-decoration-color: grey;">Amount</u>
                                     </th>
-                                    <th class="text-right" style="border-bottom:hidden">
+                                    <th class="text-right">
                                         <u style="text-decoration-color: grey;">Price</u>
                                     </th>
-                                    <th class="text-right" t-if="docs['gross_profit'] == True" style="border-bottom:hidden">
+                                    <th class="text-right" t-if="docs['gross_profit'] == True">
                                         <u style="text-decoration-color: grey;">Disc%</u>
                                     </th>
-                                    <th class="text-right" t-if="docs['gross_profit'] == True" style="border-bottom:hidden">
+                                    <th class="text-right" t-if="docs['gross_profit'] == True">
                                         <u style="text-decoration-color: grey;">Amount</u>
                                     </th>
-                                    <th class="text-right" t-if="docs['with_margin'] == True and docs['gross_profit'] == True" style="border-bottom:hidden">
+                                    <th class="text-right" t-if="docs['with_margin'] == True and docs['gross_profit'] == True">
                                         <u style="text-decoration-color: grey;">Margin</u>
                                     </th>
-                                    <th class="text-right" t-if="docs['gross_profit'] == True" style="border-bottom:hidden">
+                                    <th class="text-right" t-if="docs['gross_profit'] == True">
                                         <u style="text-decoration-color: grey;">List Price</u>
                                     </th>
                                 </tr>
