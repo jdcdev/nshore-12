@@ -10,3 +10,4 @@ from . import stock_quant
 from . import pos_order
 from . import purchase_order
 from . import stock_move_line
+from . import base_import_count

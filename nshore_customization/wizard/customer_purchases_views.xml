@@ -34,6 +34,7 @@
                 <group string="Date Range">
                     <group>
                         <field name="start_date" attrs="{'required': [('dates', '=', False)]}"/>
+                        <field name="gross_profit"/>
                     </group>
                     <group>
                         <field name="end_date" attrs="{'required': [('dates', '=', False)]}"/>
