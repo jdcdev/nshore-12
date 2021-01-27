@@ -74,35 +74,35 @@
                                     <td/>
                                 </tr>
 
-                                <tr style="font-size:12px;border-bottom:hidden">
-                                    <th>
+                                <tr style="font-size:12px;">
+                                    <th style="border-bottom:hidden">
                                         <u style="text-decoration-color: grey;">Product</u>
                                     </th>
-                                    <th>
+                                    <th style="border-bottom:hidden">
                                         <u style="text-decoration-color: grey;">Description</u>
                                     </th>
-                                    <th>
+                                    <th style="border-bottom:hidden">
                                         <u style="text-decoration-color: grey;">Last Purchased</u>
                                     </th>
-                                    <th class="text-right">
+                                    <th class="text-right" style="border-bottom:hidden">
                                         <u style="text-decoration-color: grey;">Qty</u>
                                     </th>
-                                    <th class="text-right">
+                                    <th class="text-right" style="border-bottom:hidden">
                                         <u style="text-decoration-color: grey;">Amount</u>
                                     </th>
-                                    <th class="text-right">
+                                    <th class="text-right" style="border-bottom:hidden">
                                         <u style="text-decoration-color: grey;">Price</u>
                                     </th>
-                                    <th class="text-right" t-if="docs['gross_profit'] == True">
+                                    <th class="text-right" t-if="docs['gross_profit'] == True" style="border-bottom:hidden">
                                         <u style="text-decoration-color: grey;">Disc%</u>
                                     </th>
-                                    <th class="text-right" t-if="docs['gross_profit'] == True">
+                                    <th class="text-right" t-if="docs['gross_profit'] == True" style="border-bottom:hidden">
                                         <u style="text-decoration-color: grey;">Amount</u>
                                     </th>
-                                    <th class="text-right" t-if="docs['with_margin'] == True and docs['gross_profit'] == True">
+                                    <th class="text-right" t-if="docs['with_margin'] == True and docs['gross_profit'] == True" style="border-bottom:hidden">
                                         <u style="text-decoration-color: grey;">Margin</u>
                                     </th>
-                                    <th class="text-right" t-if="docs['gross_profit'] == True">
+                                    <th class="text-right" t-if="docs['gross_profit'] == True" style="border-bottom:hidden">
                                         <u style="text-decoration-color: grey;">List Price</u>
                                     </th>
                                 </tr>
@@ -190,8 +190,8 @@
                                                 </b>
                                                 <div style="border:1px; border-style: groove;"></div>
                                             </td>
-                                            <td t-if="docs['gross_profit'] == True"/>
-                                            <td t-if="docs['gross_profit'] == True"/>
+                                            <td />
+                                            <td/>
                                             <td class="text-right" t-if="docs['gross_profit'] == True">
                                                 <div style="border:1px; border-style: groove;"></div>
                                                 <b>
