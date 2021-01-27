@@ -165,7 +165,7 @@
                                                 <span t-esc="rec_data['total_gross_profit']"
                                                       t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                             </td>
-                                            <td t-if="docs['with_margin'] == True and docs['gross_profit'] == True " class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
+                                            <td t-if="docs['with_margin'] == True and docs['gross_profit'] == True   " class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                                 <span t-esc="rec_data['total_profit_margin']"/>%
                                             </td>
                                             <td t-if="docs['gross_profit'] == True" class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
@@ -236,7 +236,14 @@
                                 <div style="border:1px; border-style: groove;margin-top:1px;"></div>
                             </td>
                             <td width='145px'></td>
-                            <td class="text-right" width="100px;">
+                            <td class="text-right" width="300px;" t-if="docs['gross_profit'] == False">
+                                <b>
+                                    <span t-esc="grand_total_purchased_amount" t-options="{'widget': 'monetary','display_currency': currency_id}"/>
+                                </b>
+                                <div style="border:1px; border-style: groove;" width="100px;"></div>
+                                <div style="border:1px; border-style: groove;margin-top:1px;" width="100px;"></div>
+                            </td>
+                            <td class="text-right" width="100px;" t-if="docs['gross_profit'] == True">
                                 <b>
                                     <span t-esc="grand_total_purchased_amount" t-options="{'widget': 'monetary','display_currency': currency_id}"/>
                                 </b>
