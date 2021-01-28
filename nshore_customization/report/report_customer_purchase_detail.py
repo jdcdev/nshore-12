@@ -31,6 +31,8 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
         invoice_types = 'out_invoice'
         user_id = data['user_id'][0] if data['user_id'] else None
         is_all_salesperson = data['is_all_salesperson']
+        with_margin = data['with_margin']
+        gross_profit = data['gross_profit']
         final_amount_purchase = 0.0
         grand_total_purchased_amount = 0.0
         grand_total_gross_profit_details = 0.0
@@ -53,7 +55,8 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
                 c.id,
                 c.name,
                 c.phone,
-                c.parent_id
+                c.parent_id,
+                pt.product_ref as product_ref
             FROM account_invoice_line l
                 LEFT JOIN account_invoice i ON (l.invoice_id = i.id)
                 LEFT JOIN res_partner c ON (i.partner_id = c.id)
@@ -82,8 +85,10 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
             if user_id:
                 query_where += " AND (i.user_id = %s)" % user_id
 
-        groupby = "group by pc.id, pc.name,pt.default_code,pt.name,pt.list_price,c.id,c.name"
+        groupby = "group by pc.id, pc.name,pt.default_code,pt.name,pt.list_price,c.id,c.name,pt.product_ref"
+        # sort_by = "ORDER BY pt.categ_id"
         final_sql_qry = sqlstr + ' ' + query_where + ' ' + groupby
+        final_sql_qry += ' ORDER BY category, product_ref'
 
         self.env.cr.execute(final_sql_qry, query_param)
         result = self.env.cr.fetchall()
@@ -92,7 +97,7 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
 
         if result:
             for res in result:
-                parent_id = self.env['res.partner'].browse(res[15]).name
+                # parent_id = self.env['res.partner'].browse(res[15]).name
                 grand_total_purchased_amount += res[6] or 0.0
                 grand_total_gross_profit_details += res[9] or 0.0
                 if not grand_total_gross_profit_details == 0:
@@ -139,5 +144,7 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
             'currency_id': self.env.user.company_id.currency_id,
             'docs': docs,
             'html_report': True if result else False,
+            'with_margin': with_margin,
+            'gross_profit': gross_profit
         }
         return data
