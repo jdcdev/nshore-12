@@ -40,7 +40,8 @@ class CustomerPurchasesReportView(models.AbstractModel):
         invoice_types = 'out_invoice'
         user_id = data['user_id'][0] if data['user_id'] else None
         is_all_salesperson = data['is_all_salesperson']
-
+        with_margin = data['with_margin']
+        gross_profit = data['gross_profit']
         sqlstr = """
             select
                 c.ref as cust_ref,
@@ -284,5 +285,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
             'end_date': end_date,
             'currency_id': self.env.user.company_id.currency_id,
             'docs': docs,
+            'with_margin': with_margin,
+            'gross_profit': gross_profit
         }
         return data

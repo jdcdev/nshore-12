@@ -22,18 +22,19 @@
                 <group string="Product Selection">
                     <group>
                         <field name="product_id"
-                               attrs="{'readonly': [('product', '=', True)], 'required': [('product', '=', False)]}"/>
+                               attrs="{'readonly': [('product', '=', True)]}"/>
                         <field name="product_category_id"
                                attrs="{'readonly': [('product', '=', True)]}"/>
                     </group>
                     <group>
-                        <!-- <field name="partner_vendor_id" attrs="{'readonly': [('product', '=', True)]}"/> -->
                         <field name="product"/>
+                        <field name="with_margin"/>
                     </group>
                 </group>
                 <group string="Date Range">
                     <group>
                         <field name="start_date" attrs="{'required': [('dates', '=', False)]}"/>
+                        <field name="gross_profit"/>
                     </group>
                     <group>
                         <field name="end_date" attrs="{'required': [('dates', '=', False)]}"/>

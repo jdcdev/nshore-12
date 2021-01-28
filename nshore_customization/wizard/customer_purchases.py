@@ -22,6 +22,8 @@ class CustomerPurchases(models.TransientModel):
     screen_view = fields.Boolean(string="Screen View", default=True)
     user_id = fields.Many2one("res.users", string="Salesperson")
     is_all_salesperson = fields.Boolean(string="All Salesperson", default=True)
+    with_margin = fields.Boolean(string="With Margin", default=True)
+    gross_profit = fields.Boolean(string="Gross Profit?", default=False)
 
     @api.onchange('pho_no', 'area_code')
     def _onchange_pho_no_area_code(self):
@@ -64,7 +66,9 @@ class CustomerPurchases(models.TransientModel):
             'comparsion',
             'screen_view',
             'user_id',
-            'is_all_salesperson'
+            'is_all_salesperson',
+            'with_margin',
+            'gross_profit'
         ])[0]
         if self.product:
             self.partner_vendor_id = False
