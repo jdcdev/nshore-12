@@ -76,6 +76,7 @@ class AccountInvoice(models.Model):
     pricelist_id = fields.Many2one(
         'product.pricelist', string='Pricelist',
         readonly=True, states={'draft': [('readonly', False)]})
+    user_id = fields.Many2one('res.users', readonly=False)
 
     @api.multi
     def action_invoice_open(self):
