@@ -80,6 +80,19 @@
             </field>
         </record>
 
+        <!-- Make Users field readonly -->
+        <record id="nss_view_order_form_inherit" model="ir.ui.view">
+            <field name="name">sale.order.form.nshore</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="groups_id" eval="[(4, ref('nshore_customization.group_is_salesperson_not_allowed'))]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
         <record id="view_order_tree_inherit_nshore" model="ir.ui.view">
             <field name="name">sale.order.tree.sale.nshore</field>
             <field name="model">sale.order</field>

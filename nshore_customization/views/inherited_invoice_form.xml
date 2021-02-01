@@ -20,10 +20,6 @@
                        position="attributes">
                     <attribute name="widget">integer</attribute>
                 </xpath>
-                <!-- <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']"
-                        position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath> -->
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='invoice_line_tax_ids']"
                         position="attributes">
                     <attribute name="invisible">1</attribute>
@@ -44,6 +40,19 @@
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_id']"
                         position="attributes">
                     <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Make Users field readonly -->
+        <record id="nss_view_account_invoice_form_inherit" model="ir.ui.view">
+            <field name="name">account.invoice.form.nss</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="groups_id" eval="[(4, ref('nshore_customization.group_is_salesperson_not_allowed'))]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
                 </xpath>
             </field>
         </record>
