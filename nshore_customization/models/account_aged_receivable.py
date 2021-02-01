@@ -22,6 +22,7 @@ class report_account_aged_receivable(models.AbstractModel):
     @api.model
     def _get_lines(self, options, line_id=None):
         # Function call to add last payment date and amount in aged rece report.
+        print("\n\n\n self.env.context", self.env.context)
         # if self.env.context.get('model') == 'account.aged.receivable':
         sign = -1.0 if self.env.context.get('aged_balance') else 1.0
         lines = []
@@ -36,9 +37,9 @@ class report_account_aged_receivable(models.AbstractModel):
             partners_amount[(values['partner_id'])] = 0.0
             for move_lines in amls[values['partner_id']]:
                 m_line = move_lines.get('line')
-                payment_line = payment_lines.search([('debit_move_id', '=', m_line.id)], order="id desc", limit=1, )
-                partners_amount[(values['partner_id'])] += payment_line.amount if m_line.journal_id.code == 'INV' else 0.0
-                total_payment_amount += payment_line.amount if m_line.journal_id.code == 'INV' else 0.0
+                payment_line = payment_lines.search(['|', ('debit_move_id', '=', m_line.id), ('credit_move_id', '=', m_line.id)], order="id desc", limit=1)
+                partners_amount[(values['partner_id'])] += payment_line.amount if m_line.journal_id.code in ['INV', 'BILL'] else 0.0
+                total_payment_amount += payment_line.amount if m_line.journal_id.code in ['INV', 'BILL'] else 0.0
                 total_payment_amount_final = ("{0:.2f}".format(total_payment_amount))
             if line_id and 'partner_%s' % (values['partner_id'],) != line_id:
                 continue
@@ -59,10 +60,10 @@ class report_account_aged_receivable(models.AbstractModel):
                 for line in amls[values['partner_id']]:
                     aml = line['line']
                     # Get last payment amount and date for invoice by partner
-                    payment_line = payment_lines.search([('debit_move_id', '=', aml.id)], order="id desc", limit=1)
+                    payment_line = payment_lines.search(['|', ('debit_move_id', '=', aml.id), ('credit_move_id', '=', aml.id)], order="id desc", limit=1)
                     payment_date = payment_line.max_date if payment_line.max_date else ' '
-                    payment_date = payment_date if aml.journal_id.code == 'INV' else ' '
-                    payment_amount = payment_line.amount if aml.journal_id.code == 'INV' else 0.0
+                    payment_date = payment_date if aml.journal_id.code in ['INV', 'BILL'] else ' '
+                    payment_amount = payment_line.amount if aml.journal_id.code in ['INV', 'BILL'] else 0.0
                     caret_type = 'account.move'
                     if aml.invoice_id:
                         caret_type = 'account.invoice.in' if aml.invoice_id.type in ('in_refund', 'in_invoice') else 'account.invoice.out'
@@ -95,6 +96,3 @@ class report_account_aged_receivable(models.AbstractModel):
             }
             lines.append(total_line)
         return lines
-        # If not aged rece report it will call base report.
-        # if not self.env.context.get('model') == 'account.aged.receivable':
-        #     return super(report_account_aged_receivable, self)._get_lines(options, line_id=None)
