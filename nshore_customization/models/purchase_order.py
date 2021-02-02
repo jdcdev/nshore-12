@@ -19,6 +19,7 @@ class PurchaseOrderLine(models.Model):
 
     @api.onchange('product_qty', 'product_uom')
     def _onchange_quantity(self):
+        # Function override to get unit price while qty is in minus.
         if not self.product_id:
             return
         params = {'order_id': self.order_id}
