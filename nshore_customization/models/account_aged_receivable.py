@@ -21,8 +21,7 @@ class report_account_aged_receivable(models.AbstractModel):
     @api.model
     def _get_lines(self, options, line_id=None):
         # Function call to add last payment date and amount in aged rece report.
-        print("\n\n\n self.env.context", self.env.context)
-        sign = -1.0 if self.env.context.get('aged_balance') else 1.0
+        sign = -1.0 if self.nv.context.get('aged_balance') else 1.0
         lines = []
         account_types = [self.env.context.get('account_type')]
         results, total, amls = self.env['report.account.report_agedpartnerbalance'].with_context(include_nullified_amount=True)._get_partner_move_lines(account_types, self._context['date_to'], 'posted', 30)
