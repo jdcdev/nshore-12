@@ -8,6 +8,7 @@ class ProductTemplate(models.Model):
     """Class inherit to add some net cost fields."""
 
     _inherit = 'product.template'
+    _order = 'name'
 
     net_cost = fields.Float(string='Net Cost')
     product_ref = fields.Char(string='Product Reference')
@@ -17,6 +18,7 @@ class ProductProduct(models.Model):
     """Class inherit for modify some functions."""
 
     _inherit = 'product.product'
+    _order = 'name'
 
     qty_at_date = fields.Float(
         'Quantity', digits=dp.get_precision('Product Unit of Measure'), compute='_compute_stock_value')
