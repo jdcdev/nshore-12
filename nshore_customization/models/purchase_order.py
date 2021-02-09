@@ -3,6 +3,8 @@
 from odoo import fields, models, api
 from odoo.addons import decimal_precision as dp
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
+from odoo.tools.float_utils import float_compare
+
 
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
