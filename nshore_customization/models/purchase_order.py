@@ -34,9 +34,9 @@ class PurchaseOrderLine(models.Model):
             self.date_planned = self._get_date_planned(seller).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
 
         if not seller:
-            # When products qty is in minus, passing net cost ot unit price.
+            # When products qty is in minus, passing cost to unit price.
             if self.product_qty < 0:
-                self.price_unit = self.product_id.net_cost
+                self.price_unit = self.product_id.standard_price
             # Closed based condition to achive above one.a
             # if self.product_id.seller_ids.filtered(lambda s: s.name.id == self.partner_id.id):
             #     self.price_unit = 0.0
