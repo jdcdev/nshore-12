@@ -25,9 +25,8 @@ class ReturnOrder(models.Model):
         string="Date", required=True,
         default=lambda self: date.today(), track_visibility='always')
     state = fields.Selection([
-        ('draft', 'Draft'),
-        ('cancel', 'Cancelled'),
-        ('done', 'Done')], default='draft',
+        ('draft', 'Draft'), ('confirm', 'Confirm'),
+        ('cancel', 'Cancelled'), ('done', 'Returned')], default='draft',
         required=True, track_visibility='always')
     credit_invoice_id = fields.Many2one(
         "account.invoice", string="Credit Invoice", track_visibility='always')
@@ -118,13 +117,22 @@ class ReturnOrder(models.Model):
     @api.multi
     def action_cancel(self):
         """Method to cancel return order."""
-        self.write({'state': 'cancel'})
+        if self.state == 'confirm':
+            self.write({'state': 'cancel'})
+
+    @api.multi
+    def action_set_draft(self):
+        self.write({'state': 'draft'})
+
+    @api.multi
+    def action_confirm(self):
+        self.write({'state': 'confirm'})
 
     @api.multi
     def process_return(self):
         """Main method to process return according the return option."""
+
         self.check_orderline()
-        # self.check_delivery_status()
         if self.type_partner == 'customer':
             line_ids = self.env['return.order.line'].sudo().search(
                 [('return_id', '=', self.id)])
@@ -135,8 +143,6 @@ class ReturnOrder(models.Model):
                 [('return_id', '=', self.id)])
             if line_ids:
                 self.process_refund_return_vendor(lines=line_ids)
-        if not any(line.state not in ['done'] for line in line_ids):
-            self.sudo().write({'state': 'done'})
 
     def process_refund_return_vendor(self, lines):
         """Function call refund from vendor."""
