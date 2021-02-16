@@ -35,6 +35,7 @@ class report_account_aged_receivable(models.AbstractModel):
             for move_lines in amls[values['partner_id']]:
                 m_line = move_lines.get('line')
                 payment_line = payment_lines.search(['|', ('debit_move_id', '=', m_line.id), ('credit_move_id', '=', m_line.id)], order="id desc", limit=1)
+                # Added condition on Journal for moves
                 partners_amount[(values['partner_id'])] += payment_line.amount if m_line.journal_id.code in ['INV', 'BILL', 'CSH1', 'CC', 'CHK', 'BNK1'] else 0.0
                 total_payment_amount += payment_line.amount if m_line.journal_id.code in ['INV', 'BILL', 'CSH1', 'CC', 'CHK', 'BNK1'] else 0.0
                 total_payment_amount_final = ("{0:.2f}".format(total_payment_amount))
@@ -59,6 +60,7 @@ class report_account_aged_receivable(models.AbstractModel):
                     # Get last payment amount and date for invoice by partner
                     payment_line = payment_lines.search(['|', ('debit_move_id', '=', aml.id), ('credit_move_id', '=', aml.id)], order="id desc", limit=1)
                     payment_date = payment_line.max_date if payment_line.max_date else ' '
+                    # Added condition on Journal for moves
                     payment_date = payment_date if aml.journal_id.code in ['INV', 'BILL', 'CSH1', 'CC', 'CHK', 'BNK1'] else ' '
                     payment_amount = payment_line.amount if aml.journal_id.code in ['INV', 'BILL', 'CSH1', 'CC', 'CHK', 'BNK1'] else 0.0
                     caret_type = 'account.move'
