@@ -47,6 +47,7 @@
         'views/payment_terms.xml',
         'views/stock_move_line_view.xml',
         'views/stock_inventory_line_view.xml',
+        'views/product_pricelist_view.xml'
     ],
     'qweb': [
         'static/src/xml/pos.xml'
