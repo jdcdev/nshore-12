@@ -162,14 +162,6 @@ class ProductProduct(models.Model):
                             'account.move.line'].browse(aml_ids)
 
 
-class PricelistItem(models.Model):
-    """Class inherit to add field."""
-
-    _inherit = "product.pricelist.item"
-
-    base = fields.Selection(selection_add=[('net_cost', 'Net Cost')])
-
-
 class ProductCategory(models.Model):
     """Class Inherit to add report option."""
 

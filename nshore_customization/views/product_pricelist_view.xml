@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--   Product Price List -->
+        <record id="view_product_price_list_inherit" model="ir.ui.view">
+              <field name="name">Price per unit</field>
+              <field name="model">product.price_list</field>
+              <field name="inherit_id" ref="product.view_product_price_list"/>
+              <field name="arch" type="xml">
+                <xpath expr="//field[@name='price_list']" position="replace">
+                    <field name="price_list" options="{'no_create': True}"/>
+                </xpath>
+               <!--  <form string="Price List">
+                    <group string="Calculate Product Price per Unit Based on Pricelist Version.">
+                        <field name="price_list" options="{'no_create': True}"/>
+                        <field name="qty1"/>
+                        <field name="qty2"/>
+                        <field name="qty3"/>
+                        <field name="qty4"/>
+                        <field name="qty5"/>
+                    </group>
+                    <footer>
+                        <button name="print_report" string="Print"  type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form> -->
+              </field>
+        </record>
+</odoo>

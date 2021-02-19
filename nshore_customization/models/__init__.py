@@ -13,3 +13,4 @@ from . import stock_move_line
 from . import base_import_count
 from . import account_aged_receivable
 from . import stock_inventory_line
+from . import product_pricelist

@@ -40,12 +40,14 @@ class report_account_aged_receivable(models.AbstractModel):
                 m_line = move_lines.get('line')
                 if m_line.journal_id.code in ['INV', 'BILL', 'CSH1', 'CC', 'CHK', 'BNK1']:
                     payment_line = payment_lines.search(['|', ('debit_move_id', '=', m_line.id), ('credit_move_id', '=', m_line.id)], order="id desc", limit=1)
-                # Added condition on Journal for moves
+                    # Added condition on Journal for moves
                     total_payment_amount += payment_line.amount if m_line.journal_id.code in ['INV', 'BILL', 'CSH1', 'CC', 'CHK', 'BNK1'] else 0.0
                     total_payment_amount_final = ("{0:.2f}".format(total_payment_amount))
+                    # Get all payment id by partner
                     all_payment_list.append(int(payment_line))
                     all_payment_by_partner[(values['partner_id'])] = all_payment_list
                     res = {}
+                    # Get Latest payment amount and date from moves(most recent)
                     for key in all_payment_by_partner:
                         res[key] = sorted(all_payment_by_partner[key], reverse=True)[0]
                         payment_line_sorted = payment_lines.browse(res[key])
