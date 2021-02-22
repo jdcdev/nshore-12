@@ -6,8 +6,8 @@
     'author': 'JDC system',
     'summary': 'Nshore Customization',
     'depends': [
-        'sale', 'sale_management', 'account_reports', 'sale_margin'
-        , 'mail', 'contacts', 'web',
+        'sale', 'sale_management', 'account_reports', 'sale_margin', 'mail',
+        'contacts', 'web',
         'stock', 'purchase', 'point_of_sale', 'account'
     ],
     'data': [
@@ -51,6 +51,7 @@
         'views/payment_terms.xml',
         'views/stock_move_line_view.xml',
         'views/stock_inventory_line_view.xml',
+        'views/product_pricelist_view.xml',
     ],
     'qweb': [
         'static/src/xml/pos.xml'
