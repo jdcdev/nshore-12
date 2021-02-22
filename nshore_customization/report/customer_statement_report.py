@@ -67,7 +67,8 @@ class CustomerStatementReport(models.AbstractModel):
             amount_inv = amount_crnote = total_open_bal_invoice = open_payment = 0.0
             for open_invoice in open_invoices:
                 if type(start_date) and type(end_date) is str:
-                    start_date_wiz = datetime.strptime(start_date, '%Y-%m-%d').date()
+                    start_date_wiz = datetime.strptime(
+                        start_date, '%Y-%m-%d').date()
                 if isinstance(start_date, datetime):
                     start_date_wiz = start_date.date()
                 if not isinstance(start_date, datetime) and not type(start_date) is str:
@@ -254,10 +255,15 @@ class CustomerStatementReport(models.AbstractModel):
             on_account = sum(
                 [invoice.amount_untaxed for invoice in invoice_obj.search(
                     on_account_cr_note)])
+            # results, total, amls = self.env[
+            #     'report.account.report_agedpartnerbalance'].with_context(
+            #     include_nullified_amount=True)._get_partner_move_lines(
+            #     ['receivable'], start_date, 'posted', 30)
+            date_now = fields.Datetime.now()
             results, total, amls = self.env[
                 'report.account.report_agedpartnerbalance'].with_context(
                 include_nullified_amount=True)._get_partner_move_lines(
-                ['receivable'], start_date, 'posted', 30)
+                ['receivable'], date_now, 'posted', 30)
             for rec in results:
                 if rec['partner_id'] == partner.id:
                     cust_dict = {
