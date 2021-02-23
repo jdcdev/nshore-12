@@ -17,9 +17,11 @@
             <link rel="stylesheet" href="/nshore_customization/static/src/css/pos.css"/>
             <script type="text/javascript" src="/nshore_customization/static/src/js/models.js"></script>
         </xpath>
-        <!--<xpath expr="." position="inside">-->
-            <!--<script type="text/javascript" src="/nshore_customization/static/src/js/send_print.js"></script>-->
-        <!--</xpath>-->
     </template>
-
+    <template id="assets_backend" name="account assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+          <!-- <script type="text/javascript" src="/nshore_customization/static/src/js/data_export_inherit.js"></script> -->
+          <script type="text/javascript" src="/nshore_customization/static/src/js/favorites_menu_inherit.js"></script>
+        </xpath>
+    </template>
 </odoo>
