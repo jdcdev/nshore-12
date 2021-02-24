@@ -51,7 +51,8 @@
         'views/res_company_view.xml',
     ],
     'qweb': [
-        'static/src/xml/pos.xml'
+        'static/src/xml/pos.xml',
+        'static/src/xml/web_base.xml'
     ],
     'installable': True,
     'auto_install': False,
