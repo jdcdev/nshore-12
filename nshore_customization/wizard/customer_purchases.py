@@ -4,6 +4,7 @@ from datetime import date
 
 class CustomerPurchases(models.TransientModel):
     _name = 'customer.purchases'
+    _description = 'Customer Purchase Report'
 
     partner_id = fields.Many2one('res.partner', string='Customer')
     product_id = fields.Many2one('product.product', string='Product')

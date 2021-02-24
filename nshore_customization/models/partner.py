@@ -19,7 +19,7 @@ class ResPartner(models.Model):
     allow_supervisor = fields.Boolean('Allow Supervisor', default=False)
     fax = fields.Char(string="Fax")
     invoice_start_date = fields.Date('Invoice Start Date')
-    invoice_end_date = fields.Date('Invoice Start Date')
+    invoice_end_date = fields.Date('Invoice End Date')
     user_id = fields.Many2one('res.users', string='Salesperson',
       help='The internal user in charge of this contact.', default=_default_user_id)
 
