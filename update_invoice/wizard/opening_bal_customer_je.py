@@ -11,6 +11,7 @@ class InvoiceList(models.TransientModel):
     """Model create for create Journal Entries."""
 
     _name = 'opening.bal.script'
+    _description = 'Opening Balance Script'
 
     file_slect = fields.Binary(string="Select Excel File")
 

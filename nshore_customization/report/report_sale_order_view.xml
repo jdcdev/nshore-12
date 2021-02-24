@@ -8,7 +8,7 @@
         <xpath expr="//p[@id='fiscal_position_remark']" position="replace"></xpath>
         <xpath expr="//table/thead/tr/th[5]" position="replace"></xpath>
         <xpath expr="//table/tbody/t/tr/t/td[5]" position="replace"></xpath>
-        <xpath expr="//div[@class='page']" position="before">
+        <xpath expr="//div[hasclass='page']" position="before">
             <div class="row ml-auto">
                 <div class="col-4">
                     <strong>Invoice address:</strong>

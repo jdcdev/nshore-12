@@ -7,6 +7,7 @@ class InvoiceList(models.TransientModel):
     """Model create for create Journal Entries."""
 
     _name = 'update.invoice.move'
+    _description = 'Update Invoice Moves'
 
     def update_invoice_move_partner(self):
         """Function call to update invoice,move partner."""
