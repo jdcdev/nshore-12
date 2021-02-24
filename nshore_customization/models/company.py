@@ -18,3 +18,12 @@ Thank you'''
     overdue_msg = fields.Text(
         string='Overdue Payments Message', translate=True,
         default=_default_overdue_msg)
+    default_share_with_user = fields.Boolean("Default/Share with All")
+
+    @api.model
+    def get_company_default_boolean(self):
+        """Function call to get boolean value."""
+        if self.env.user.company_id.default_share_with_user:
+            return True
+        else:
+            return False
