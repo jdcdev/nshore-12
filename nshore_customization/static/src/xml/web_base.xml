@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Export Dialog inherit to add search functionality-->
+<templates id="template" xml:space="preserve">
+	<div t-extend="ExportDialog">
+		<t t-jquery=".row" t-operation="append">
+			<div class="input-group col-lg-6">
+	            <input type="search" class="form-control o_export_search_input" id="o-export-search-filter" placeholder="Search" />
+	        </div>
+		</t>	
+	</div>	
+</templates>	

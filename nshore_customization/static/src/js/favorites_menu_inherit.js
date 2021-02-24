@@ -18,6 +18,7 @@ fav_menu.include({
         var $shared_filter = this.$inputs.eq(1),
             $default_filter = this.$inputs.eq(2);
         var default_boolean = true
+        /*Get Company information to update checkbox condition*/
         this._rpc({
                 model: 'res.company',
                 method: 'get_company_default_boolean',
@@ -32,22 +33,6 @@ fav_menu.include({
                     $default_filter.click(function () {$shared_filter.prop('checked', true);});
                 }
             });
-
-        this.query
-            .on('remove', function (facet) {
-                if (facet.get('is_custom_filter')) {
-                    self.clear_selection();
-                }
-            })
-            .on('reset', this.proxy('clear_selection'));
-
-        _.each(this.filters, this.append_filter.bind(this));
-
-        this.$dropdownReference = this.$('.o_dropdown_toggler_btn');
-        this.$menu = this.$('.o_favorites_menu');
-        if (_t.database.parameters.direction === 'rtl') {
-            this.$menu.addClass('dropdown-menu-right');
-        }
 
         return this._super();
     }, 
