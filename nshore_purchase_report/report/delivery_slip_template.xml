@@ -32,7 +32,7 @@
                     <strong>Delivery Number :  </strong><span t-field="o.name"/>
                     <br/>
                     <t t-if="o.origin">
-                        <strong>Sales Order :  </strong><span t-field="o.origin"/>
+                        <strong>Reference :  </strong><span t-field="o.origin"/>
                     </t>
                     <br/>
                     <strong>Date :  </strong>
@@ -42,6 +42,9 @@
                     <t t-if="o.state != 'done'">
                         <span t-field="o.scheduled_date"/>
                     </t>
+                    <br/>
+                    <strong>Customer Reference:</strong>
+                    <p t-field="o.sudo().sale_id.client_order_ref"/>
                 </div>
             </div>
             <br/>
@@ -60,7 +63,16 @@
             </td>  
         </xpath>
         <xpath expr="//table[2]" position="after">
-            <strong>Note :  </strong><span t-field="o.sale_id.note"/>
+            <t t-if="o.sale_id.note">
+                <strong>Note :  </strong><span t-field="o.sale_id.note"/>
+            </t>
+            <t t-if="o.purchase_id.note">
+                <strong>Note :  </strong><span t-field="o.purchase_id.note"/>
+            </t>
+        </xpath>
+    </template>
+    <template id="report_delivery_document_inherit_nss" inherit_id="sale_stock.report_delivery_document_inherit_sale_stock">
+        <xpath expr="//div[hasclass('col-4')]" position="replace">
         </xpath>
     </template>
 </odoo>
