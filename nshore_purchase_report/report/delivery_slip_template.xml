@@ -1,21 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-	<template id="report_delivery_document_inherit" inherit_id="stock.report_delivery_document">
-		<xpath expr="//table[2]/thead/tr/th[2]" position="after">
-			<th class="text-center"><strong>Received Qty</strong></th>
-		</xpath>
-		<xpath expr="//table[2]/tbody/tr/td[2]" position="after">
-			<td class="text-center">
+    <template id="report_delivery_document_inherit" inherit_id="stock.report_delivery_document">
+        <xpath expr="//table[2]/thead/tr/th[2]" position="after">
+            <th class="text-center"><strong>Received Qty</strong></th>
+        </xpath>
+        <xpath expr="//t[@t-set='partner']" position="replace"/>
+        <xpath expr="//t[@name='partner_header']" position="replace"/>
+        <xpath expr="//table[1]" position="replace"/>
+        <xpath expr="//div[hasclass('page')]/h2" position="replace"/>
+        <xpath expr="//div[hasclass('page')]" position="before">
+            <div class="row ml-auto">
+                <div class="col-6">
+                    <br/>
+                    <span><strong>Delivery address:</strong></span>
+                    <br/>
+                    <span t-field="o.partner_id"/>
+                    <br/>
+                    <t t-if="o.partner_id.street">
+                        <span t-field="o.partner_id.street"/>
+                    </t>
+                    <br/>
+                    <t t-if="o.partner_id.street2">
+                        <span t-field="o.partner_id.street2"/>
+                    </t>
+                    <span t-field="o.partner_id.city"/>
+                    <span t-field="o.partner_id.state_id"/>
+                    <span t-field="o.partner_id.zip"/>
+                </div>
+                <div class="col-6">
+                    <br/>
+                    <strong>Delivery Number :  </strong><span t-field="o.name"/>
+                    <br/>
+                    <t t-if="o.origin">
+                        <strong>Sales Order :  </strong><span t-field="o.origin"/>
+                    </t>
+                    <br/>
+                    <strong>Date :  </strong>
+                    <t t-if="o.state == 'done'">
+                        <span t-field="o.date_done"/>
+                    </t>
+                    <t t-if="o.state != 'done'">
+                        <span t-field="o.scheduled_date"/>
+                    </t>
+                </div>
+            </div>
+            <br/>
+        </xpath>
+        <xpath expr="//table[1]/tbody/tr/td[2]" position="after">
+            <td class="text-center">
                 <span t-field="move.quantity_done"/>
             </td>
-		</xpath>
-		<xpath expr="//table[3]/thead/tr/th[3]" position="after">
-			<th class="text-center"><strong>Received Qty</strong></th>  
-		</xpath>
-		<xpath expr="//table[3]/tbody/tr/td[3]" position="after">
-			<td class="text-center">
+        </xpath>
+        <xpath expr="//table[2]/thead/tr/th[3]" position="after">
+            <th class="text-center"><strong>Received Qty</strong></th>  
+        </xpath>
+        <xpath expr="//table[2]/tbody/tr/td[3]" position="after">
+            <td class="text-center">
                 <span t-field="move_line.qty_done"/>
             </td>  
-		</xpath>
-	</template>
+        </xpath>
+        <xpath expr="//table[2]" position="after">
+            <strong>Note :  </strong><span t-field="o.sale_id.note"/>
+        </xpath>
+    </template>
 </odoo>
