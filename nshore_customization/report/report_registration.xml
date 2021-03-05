@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
+        <!-- Customer statement report Paper format-->
         <record id="paperformat_customer_stmt" model="report.paperformat">
             <field name="name">Customer Statement Paperformat</field>
             <field name="default" eval="False"/>
@@ -16,6 +16,7 @@
             <field name="dpi">90</field>
         </record>
 
+        <!-- Customer statement report action-->
         <report 
             id="custom_customer_statement"
             model="res.partner"
@@ -27,6 +28,7 @@
             menu="False"
         />
 
+        <!-- DM Invoice report action-->
         <report 
             id="daily_monthly_invoices"
             model="account.invoice"
@@ -37,6 +39,7 @@
             menu="False"
         />
 
+        <!-- DM Payment report action-->
         <report 
             id="daily_monthly_payment"
             model="account.payment"
@@ -47,6 +50,7 @@
             menu="False"
         />
 
+        <!-- DM Return report action-->
         <report 
             id="daily_monthly_returns"
             model="account.invoice"
@@ -57,6 +61,7 @@
             menu="False"
         />
 
+        <!-- Inventory Adjustment report action-->
         <report
             string="Inventory"
             id="stock.action_report_inventory"
@@ -66,6 +71,7 @@
             file="nshore_customization.report_inventory_adjustment"
         />
 
+        <!-- Customer Purchase Report Paper Format-->
         <record id="paperformat_customer_purchase" model="report.paperformat">
             <field name="name">Customer Purchases Report</field>
             <field name="default" eval="True"/>
@@ -98,6 +104,7 @@
             <field name="dpi">80</field>
         </record>
 
+        <!-- Customer Purchase Summary report action-->
         <report
         id="action_customer_purchase"
         string="Customer Purchases Summary"
@@ -108,6 +115,7 @@
         file="nshore_customization.report_customer_purchase"
         menu="False"/>
 
+        <!-- Customer Purchase Detail report action-->
         <report
         id="action_customer_purchase_detail"
         string="Customer Purchases Detail"
@@ -118,6 +126,7 @@
         file="nshore_customization.report_customer_purchase_detail"
         menu="False"/>
 
+        <!-- Customer Purchase Summary HTML report action-->
         <report
         id="action_customer_purchase_html"
         string="Customer Purchases Summary HTML"
@@ -128,6 +137,7 @@
         file="nshore_customization.report_customer_purchase"
         menu="False"/>
 
+        <!-- Customer Purchase Detail HTML report action-->
         <report
         id="action_customer_purchase_detail_html"
         string="Customer Purchases Detail HTML"
@@ -138,6 +148,7 @@
         file="nshore_customization.report_customer_purchase_detail"
         menu="False"/>
 
+        <!-- Purchase Order report Paper Format-->
         <record id="paperformat_open_purchase_order" model="report.paperformat">
             <field name="name">Purchase Order Paperformat</field>
             <field name="default" eval="False"/>
@@ -152,6 +163,7 @@
             <field name="dpi">90</field>
         </record>
 
+        <!-- Purchase Order report action-->
         <report
             string="Open Purchase Order"
             id="open_purchase_order"
@@ -162,6 +174,7 @@
             paperformat="nshore_customization.paperformat_open_purchase_order"
         />
 
+        <!-- Inventory Valuation Report Paper Format-->
         <record id="paperformat_inventory_valuation" model="report.paperformat">
             <field name="name">Inventory Valuation Report</field>
             <field name="default" eval="True"/>
@@ -176,6 +189,7 @@
             <field name="dpi">90</field>
         </record>
 
+        <!-- Inventory Valuation Report action-->
         <report
             id="action_report_inventory_valuation"
             string="Inventory Valuation Report"
@@ -185,6 +199,15 @@
             file="nshore_customization.report_inventory_valuation"
             paperformat="nshore_customization.paperformat_inventory_valuation"
             menu="False"/>
+
+        <!--Product Pricelist Report action-->
+        <report
+            id="action_report_product_pricelist"
+            string="Product Price List"
+            model="product.pricelist"
+            report_type="qweb-pdf"
+            name="nshore_customization.report_layout_product_pricelist"
+            file="nshore_customization.report_layout_product_pricelist"/>
 
     </data>
 </odoo>
