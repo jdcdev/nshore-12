@@ -13,6 +13,18 @@
         </field>
     </record>
 
+    <!-- Product Product Tree View -->
+    <record id="product_product_tree_view_inherit_nss" model="ir.ui.view">
+        <field name="name">product.product.product.tree</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lst_price']" position="after">
+                <field name="net_cost"/>
+            </xpath>
+        </field>
+    </record>
+
     <!-- Inherited view of Product Pricelist view -->
     <record id="inherited_product_pricelist_item_form_view" model="ir.ui.view">
         <field name="name">product.pricelist.item.form.inherited</field>
@@ -24,7 +36,6 @@
             </xpath>
         </field>
     </record>
-
 
     <record id="view_stock_product_template_tree_inherit" model="ir.ui.view">
         <field name="name">product.template.stock.tree.inherit</field>
@@ -39,6 +50,7 @@
             </field>
         </field>
     </record>
+
     <record id="product_form_view_procurement_button_inherit" model="ir.ui.view">
         <field name="name">product.template.procurement.form.inherit</field>
         <field name="model">product.template</field>

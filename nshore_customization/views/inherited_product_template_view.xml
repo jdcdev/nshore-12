@@ -12,6 +12,17 @@
             </xpath>
         </field>
     </record>
+    <!-- Product Template Tree View-->
+    <record id="product_template_tree_view_inherit_nss" model="ir.ui.view">
+        <field name="name">product.template.product.tree</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='list_price']" position="after">
+                <field name="net_cost"/>
+            </xpath>
+        </field>
+    </record>
 
     <record id="view_product_template_search_inherit_nshore" model="ir.ui.view">
         <field name="name">product.template.search.nshore</field>
@@ -25,17 +36,16 @@
         </field>
     </record>
 
-    <record id="action_inventory_listing" model="ir.actions.server">
-        <field name="name">Inventory Listing</field>
+    <record id="action_inventory_valuation" model="ir.actions.server">
+        <field name="name">Inventory Valuation</field>
         <field name="type">ir.actions.server</field>
         <field name="model_id" ref="model_product_category"/>
         <field name="state">code</field>
         <field name="code">
             action = model.print_report()
         </field>
-        <field name="binding_model_id" ref="sale.model_sale_order"/>
     </record>
 
-    <menuitem id="menu_inventory_listing" name="Master Inventory Listing" parent="stock.menu_warehouse_report" sequence="110" action="action_inventory_listing"/>
+    <menuitem id="menu_inventory_valuation" name="Master Inventory Valuation" parent="stock.menu_warehouse_report" sequence="110" action="action_inventory_valuation"/>
 
 </odoo>
