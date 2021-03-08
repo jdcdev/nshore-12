@@ -5,6 +5,7 @@ from odoo import fields, models, api, _
 
 class StockInv(models.Model):
     """Inherit Stock Inventory to add mail thread."""
+
     _name = 'stock.inventory'
     _inherit = ['stock.inventory', 'mail.thread', 'mail.activity.mixin']
 
