@@ -23,7 +23,7 @@
         <xpath expr="//div[@class='page']" position="before">
             <div class="row ml-auto">
                 <t t-if="o.partner_shipping_id">
-                    <div class="col-3">
+                    <div class="col-4">
                         <strong>Shipping address:</strong>
                         <div>
                             <span t-field="o.partner_shipping_id"/>
@@ -32,16 +32,13 @@
                                 <span t-field="o.partner_shipping_id.street"/>
                             </t>
                             <br/>
-                            <t t-if="o.partner_shipping_id.street2">
-                                <span t-field="o.partner_shipping_id.street2"/>
-                            </t>
                             <span t-field="o.partner_shipping_id.city"/>
                             <span t-field="o.partner_shipping_id.state_id"/>
                             <span t-field="o.partner_shipping_id.zip"/>
                         </div>
                     </div>
                 </t>
-                <div class="col-3">
+                <div class="col-4">
                     <div>
                         <span t-field="o.partner_id"/>
                         <br/>
@@ -49,26 +46,36 @@
                             <span t-field="o.partner_id.street"/>
                         </t>
                         <br/>
-                        <t t-if="o.partner_id.street2">
-                            <span t-field="o.partner_id.street2"/>
-                        </t>
-                        <br/>
                         <span t-field="o.partner_id.city"/>
                         <span t-field="o.partner_id.state_id"/>
                         <span t-field="o.partner_id.zip"/>
                     </div>
                 </div>
-                <div class="col-3">
-                    <div>
-                        <span t-if="o.type == 'out_invoice' and o.state in ('open', 'in_payment', 'paid')">Invoice</span>
-                        <span t-if="o.type == 'out_invoice' and o.state == 'draft'">Draft Invoice</span>
-                        <span t-if="o.type == 'out_invoice' and o.state == 'cancel'">Cancelled Invoice</span>
-                        <span t-if="o.type == 'out_refund'">Credit Note</span>
-                        <span t-if="o.type == 'in_refund'">Vendor Credit Note</span>
-                        <span t-if="o.type == 'in_invoice'">Vendor Bill</span>
-                        <span t-field="o.number"/>
-                    </div>
-                    <div class="col-auto mw-100 mb-2" t-if="o.date_invoice" name="invoice_date">
+                <div class="col-4">
+                    <strong><span t-if="o.type == 'out_invoice' and o.state in ('open', 'in_payment', 'paid')">Invoice # </span></strong>
+                    <strong><span t-if="o.type == 'out_invoice' and o.state == 'draft'">Draft Invoice # </span></strong>
+                    <strong><span t-if="o.type == 'out_invoice' and o.state == 'cancel'">Cancelled Invoice # </span></strong>
+                    <strong><span t-if="o.type == 'out_refund'">Credit Note # </span></strong>
+                    <strong><span t-if="o.type == 'in_refund'">Vendor Credit Note # </span></strong>
+                    <strong><span t-if="o.type == 'in_invoice'">Vendor Bill # </span></strong>
+                    <span t-field="o.number"/>
+                    <br/>
+                    <t t-if="o.date_invoice">
+                        <strong>Invoice Date : </strong><span t-field="o.date_invoice"/>
+                    </t>
+                    <br/>
+                    <t t-if="o.origin">
+                        <strong>Source : </strong><span t-field="o.origin"/>
+                    </t>
+                    <br/>
+                    <t t-if="o.date_due">
+                        <strong>Due Date : </strong><span t-field="o.date_due"/>
+                    </t>
+                    <br/>
+                    <t t-if="o.reference">
+                        <strong>Reference : </strong><span t-field="o.reference"/>
+                    </t>
+                    <!-- <div class="col-auto mw-100 mb-2" t-if="o.date_invoice" name="invoice_date">
                         <strong>Invoice Date:</strong>
                         <p class="m-0" t-field="o.date_invoice"/>
                         <t t-esc="o.create_date.strftime('%H:%M:%S')"/>
@@ -76,9 +83,9 @@
                     <div class="col-auto mw-100 mb-2" t-if="o.origin" name="origin">
                         <strong>Source:</strong>
                         <p class="m-0" t-field="o.origin"/>
-                    </div>
+                    </div> -->
                 </div>
-                <div class="col-3">
+                <!-- <div class="col-3">
                     <div class="col-auto mw-100 mb-2" t-if="o.date_due" name="due_date">
                         <strong>Due Date:</strong>
                         <p class="m-0" t-field="o.date_due"/>
@@ -88,7 +95,7 @@
                         <p class="m-0" t-field="o.reference"/>
                     </div>
                     
-                </div>
+                </div> -->
             </div>
         </xpath>
     </template>
