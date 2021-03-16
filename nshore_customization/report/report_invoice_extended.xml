@@ -75,27 +75,7 @@
                     <t t-if="o.reference">
                         <strong>Reference : </strong><span t-field="o.reference"/>
                     </t>
-                    <!-- <div class="col-auto mw-100 mb-2" t-if="o.date_invoice" name="invoice_date">
-                        <strong>Invoice Date:</strong>
-                        <p class="m-0" t-field="o.date_invoice"/>
-                        <t t-esc="o.create_date.strftime('%H:%M:%S')"/>
-                    </div>
-                    <div class="col-auto mw-100 mb-2" t-if="o.origin" name="origin">
-                        <strong>Source:</strong>
-                        <p class="m-0" t-field="o.origin"/>
-                    </div> -->
                 </div>
-                <!-- <div class="col-3">
-                    <div class="col-auto mw-100 mb-2" t-if="o.date_due" name="due_date">
-                        <strong>Due Date:</strong>
-                        <p class="m-0" t-field="o.date_due"/>
-                    </div>
-                    <div name="reference" class="col-auto mw-100 mb-2" t-if="o.reference">
-                        <strong>Reference:</strong>
-                        <p class="m-0" t-field="o.reference"/>
-                    </div>
-                    
-                </div> -->
             </div>
         </xpath>
     </template>

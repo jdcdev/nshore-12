@@ -12,17 +12,17 @@
                         <thead>
                             <tr>
                                 <th>Apply On</th>
-                                <th>Product/Category</th>
-                                <th>Price</th>
+                                <th>Product/Product Category</th>
                                 <th>Compute Price</th>
+                                <th>Price</th>
                             </tr>
                         </thead>
                         <tbody class="pricelist_tbody">
                             <tr t-foreach="o.item_ids" t-as="line">
-                               <td><span t-field="line.applied_on"/></td>
-                               <td><span t-field="line.name"/></td>
-                                <td><span t-field="line.price"/></td>
+                                <td><span t-field="line.applied_on"/></td>
+                                <td><span t-field="line.name"/></td>
                                 <td><span t-field="line.compute_price"/></td>
+                                <td><span t-field="line.price"/></td>
                             </tr>
                         </tbody>
                     </table>
