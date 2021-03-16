@@ -47,10 +47,6 @@
                     </t>
                     <span t-field="doc.name"/>
                     <br/>
-                    <t t-if="doc.client_order_ref">
-                        <strong>Your Reference : </strong><span t-field="doc.client_order_ref"/>
-                    </t>
-                    <br/>
                     <t t-if="doc.confirmation_date and doc.state not in ['draft','sent']">
                         <strong>Date Ordered : </strong><span t-field="doc.confirmation_date"/>
                     </t>

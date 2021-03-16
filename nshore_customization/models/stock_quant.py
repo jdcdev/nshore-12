@@ -21,12 +21,12 @@ class StockQuant(models.Model):
         readonly=True, required=True, oldname='qty')
 
 
-class StockQuantityHistory(models.TransientModel):
-    _inherit = 'stock.quantity.history'
+# class StockQuantityHistory(models.TransientModel):
+#     _inherit = 'stock.quantity.history'
 
-    def open_table(self):
-        record = super(StockQuantityHistory, self).open_table()
-        if self.env.context.get('from_nshore'):
-            product_count = self.env['product.product'].search_count([])
-            record['limit'] = product_count + 1
-        return record
+#     def open_table(self):
+#         record = super(StockQuantityHistory, self).open_table()
+#         if self.env.context.get('from_nshore'):
+#             product_count = self.env['product.product'].search_count([])
+#             record['limit'] = product_count + 1
+#         return record

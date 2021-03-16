@@ -37,16 +37,4 @@
             </xpath>
         </field>
     </record>
-
-    <record id="view_stock_quantity_history_inherit_nshore" model="ir.ui.view">
-        <field name="name">Valuation Report</field>
-        <field name="model">stock.quantity.history</field>
-        <field name="inherit_id" ref="stock_account.view_stock_quantity_history"/>
-        <field name="arch" type="xml">
-            <xpath expr="//footer/button[@name='open_table']"
-                   position="attributes">
-                <attribute name="context">{'from_nshore':'1'}</attribute>
-            </xpath>
-        </field>
-    </record>
 </odoo>
