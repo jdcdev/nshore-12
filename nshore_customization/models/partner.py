@@ -37,7 +37,7 @@ class ResPartner(models.Model):
     @api.multi
     def get_all_products(self):
         """Get all Products."""
-        products_obj = self.env['product.product'].search([])
+        products_obj = self.env['product.product'].search([], order='name')
         products = []
         vals = {}
         for product in products_obj:
@@ -68,8 +68,9 @@ class ResPartner(models.Model):
                         product.list_price, 2))
                 }
                 products.append(vals)
-        print("\n\n products && products", products)
-        return products
+        final_list = sorted(
+            products, key=lambda i: i['price_list'], reverse=True)
+        return final_list
 
     @api.model
     def _send_customer_statement(self):
