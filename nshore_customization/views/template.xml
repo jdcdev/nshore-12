@@ -20,9 +20,9 @@
     </template>
     <template id="assets_backend" name="account assets" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
-          <script type="text/javascript" src="/nshore_customization/static/src/js/data_export_inherit.js"></script>
-          <script type="text/javascript" src="/nshore_customization/static/src/js/favorites_menu_inherit.js"></script>
-          <script type="text/javascript" src="/nshore_customization/static/src/js/relation_field.js"></script>
+            <script type="text/javascript" src="/nshore_customization/static/src/js/data_export_inherit.js"></script>
+            <script type="text/javascript" src="/nshore_customization/static/src/js/favorites_menu_inherit.js"></script>
+            <!-- <script type="text/javascript" src="/nshore_customization/static/src/js/relation_field.js"></script> -->
         </xpath>
     </template>
 </odoo>
