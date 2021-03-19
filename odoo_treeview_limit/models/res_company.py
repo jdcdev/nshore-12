@@ -8,4 +8,4 @@ class ResCompany(models.Model):
 
     _inherit = "res.company"
 
-    tree_limit = fields.Integer("Tree Limit", defualt=200000)
+    tree_limit = fields.Integer("Tree Limit", defualt=20000)

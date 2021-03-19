@@ -56,6 +56,7 @@ class ReturnOrder(models.Model):
         domain=[('supplier', '=', True)])
     sale_ids = fields.Many2many('sale.order', string="Sales Order")
     purchase_ids = fields.Many2many('purchase.order', string="Purchase Order")
+    note = fields.Text()
 
     @api.onchange('partner_id')
     def onchange_partner(self):

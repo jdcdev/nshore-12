@@ -29,7 +29,17 @@ relational_fields.FieldOne2Many.include({
                 return isList ? self.renderer.unselectRow() : $.when();
             },
         });
+        self.trigger_up('load', {
+            id: self.value.id,
+            limit: 200,
+            offset: this.value.offset,
+            on_success: function (value) {
+                self.value = value;
+                self._render();
+            },
+        });
         this.pager.on('pager_changed', this, function (new_state) {
+            console.log("new_state.limit", new_state.limit)
             self.trigger_up('load', {
                 id: self.value.id,
                 limit: new_state.limit,

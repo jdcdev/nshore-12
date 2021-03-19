@@ -37,8 +37,13 @@ class InventoryAdjustment(models.Model):
     def update_qty_adjustment(self):
         """Function call to create moves."""
         for line in self.line_ids:
+            name = ''
+            if line.product_id.product_ref:
+                name = self.name + line.product_id.product_ref
+            else:
+                name = self.name
             moves = {
-                'name': self.name + line.product_id.product_ref,
+                'name': name,
                 'product_id': line.product_id.id,
                 'product_uom_qty': line.qty_sub,
                 'product_uom': line.product_uom_id.id,
