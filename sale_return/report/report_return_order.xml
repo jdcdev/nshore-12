@@ -52,6 +52,7 @@
                     </t>
                 </tbody>
             </table>
+            <strong>Note : </strong><span t-field="doc.note" />
             <div class="clearfix">
               <div id="total" class="row" name="total">
                     <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">

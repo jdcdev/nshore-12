@@ -17,7 +17,8 @@
     ],
     # always loaded
     'data': [
-        'views/res_company_view.xml'
+        'views/res_company_view.xml',
+        'views/template.xml',
     ],
     'demo': [],
     'installable': True,
