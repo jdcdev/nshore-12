@@ -61,6 +61,7 @@
                                     <field name="state" invisible="1"/>
                                 </tree>
                             </field>
+                            <field name="note"/>
                         </page>
                         <page string="Stock Moves">
                             <field name="stock_move_ids" readonly="1"/>
