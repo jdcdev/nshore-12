@@ -71,6 +71,9 @@
             <t t-if="o.purchase_id.note">
                 <strong>Note :  </strong><span t-field="o.purchase_id.note"/>
             </t>
+            <t t-if="o.return_order_id.note">
+                <strong>Note :  </strong><span t-field="o.return_order_id.note"/>
+            </t>
         </xpath>
     </template>
     <template id="report_delivery_document_inherit_nss" inherit_id="sale_stock.report_delivery_document_inherit_sale_stock">
