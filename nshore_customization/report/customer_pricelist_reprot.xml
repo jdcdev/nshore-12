@@ -20,7 +20,7 @@
                             <tr t-foreach="o.get_all_products()" t-as="line">
                                 <td t-esc="line.get('product')"></td>
                                 <td class="text-center" t-esc="line.get('price_list')"></td>
-                                <td class="text-right" t-esc="line.get('price_product')"></td>
+                                <td t-esc="line.get('price_product')"></td>
                             </tr>
                         </tbody>
 

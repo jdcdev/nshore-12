@@ -46,18 +46,23 @@ class ResPartner(models.Model):
                 lambda p: p.product_id == product or \
                     p.product_tmpl_id == product.product_tmpl_id):
                 temp = 1
+                price_product = ''
+                if items.base == 'pricelist':
+                    price_product = items.base_pricelist_id.name
+                else:
+                    price_product = items.price
                 if items.product_id:
                     vals = {
                         'product': items.product_id.name,
                         'price_list': 'Yes',
-                        'price_product': items.price
+                        'price_product': price_product
                     }
                     products.append(vals)
                 elif items.product_tmpl_id:
                     vals = {
                         'product': items.product_tmpl_id.name,
                         'price_list': 'Yes',
-                        'price_product': items.price
+                        'price_product': price_product
                     }
                     products.append(vals)
             if temp != 1:
