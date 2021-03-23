@@ -22,7 +22,12 @@
                                 <td><span t-field="line.applied_on"/></td>
                                 <td><span t-field="line.name"/></td>
                                 <td><span t-field="line.compute_price"/></td>
-                                <td><span t-field="line.price"/></td>
+                                <t t-if="line.base == 'pricelist'">
+                                    <td><span t-field="line.base_pricelist_id.name"/></td>
+                                </t>
+                                <t t-if="line.base != 'pricelist'">
+                                    <td><span t-field="line.price"/></td>
+                                </t>
                             </tr>
                         </tbody>
                     </table>

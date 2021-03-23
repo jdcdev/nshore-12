@@ -6,7 +6,7 @@
     'author': 'JDC system',
     'summary': 'Nshore Purchase Report',
     'depends': [
-        'nshore_customization'
+        'nshore_customization', 'sale_return'
     ],
     'data': [
         'report/purchase_order_template.xml',
