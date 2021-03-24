@@ -14,6 +14,7 @@ class UpdatePricelistItems(models.TransientModel):
         active_ids = self.env.context.get('active_ids')
         price_list = self.env['product.pricelist'].browse(active_ids)
         for pricelist in price_list:
+            # filtered only fixed and products, products template items.
             for items in pricelist.item_ids.filtered(
                     lambda l: l.compute_price == 'fixed' and l.applied_on != '3_global'):
                 cost_price = 0.0
