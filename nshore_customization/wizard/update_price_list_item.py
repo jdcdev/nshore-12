@@ -17,26 +17,28 @@ class UpdatePricelistItems(models.TransientModel):
             # filtered only fixed and products, products template items.
             for items in pricelist.item_ids.filtered(
                     lambda l:
-                    l.compute_price == 'fixed' and l.applied_on != '3_global'):
+                    l.compute_price == 'fixed' and l.applied_on != '3_global' and\
+                    l.product_id.standard_price != 0.0 or l.product_tmpl_id.standard_price or l.fixed_price != 0.0):
+                print("\n\n\n items::::::; items", items, items.pricelist_id)
                 cost_price = 0.0
-                if items.fixed_price != 0.0:
-                    # Get Product or Template cost price
-                    if items.product_id:
-                        cost_price = items.product_id.standard_price
-                    elif items.product_tmpl_id:
-                        cost_price = items.product_tmpl_id.standard_price
-                    # Get formula value
-                    formula = final_formula = 0.0
-                    formula = items.fixed_price - cost_price
-                    formula = formula / cost_price
-                    formula = formula * 100
-                    if formula < 0:
-                        final_formula = formula
-                    else:
-                        final_formula = - formula
-                    # Update pricelist item from fixed to formula.
-                    items.update({
-                        'compute_price': 'formula',
-                        'base': 'standard_price',
-                        'price_discount': final_formula
-                    })
+                # if items.fixed_price != 0.0:
+                # Get Product or Template cost price
+                if items.product_id:
+                    cost_price = items.product_id.standard_price
+                elif items.product_tmpl_id:
+                    cost_price = items.product_tmpl_id.standard_price
+                # Get formula value
+                formula = final_formula = 0.0
+                formula = items.fixed_price - cost_price
+                formula = formula / cost_price
+                formula = formula * 100
+                if formula < 0:
+                    final_formula = formula
+                else:
+                    final_formula = - formula
+                # Update pricelist item from fixed to formula.
+                items.update({
+                    'compute_price': 'formula',
+                    'base': 'standard_price',
+                    'price_discount': final_formula
+                })
