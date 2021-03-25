@@ -18,8 +18,7 @@ class UpdatePricelistItems(models.TransientModel):
             for items in pricelist.item_ids.filtered(
                     lambda l:
                     l.compute_price == 'fixed' and l.applied_on != '3_global' and\
-                    l.product_id.standard_price != 0.0 or l.product_tmpl_id.standard_price or l.fixed_price != 0.0):
-                print("\n\n\n items::::::; items", items, items.pricelist_id)
+                    l.product_id.standard_price != 0.0):
                 cost_price = 0.0
                 # if items.fixed_price != 0.0:
                 # Get Product or Template cost price
