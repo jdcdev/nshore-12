@@ -12,6 +12,7 @@ class PricelistItem(models.Model):
     name = fields.Char(
         'Name', compute='_get_pricelist_item_name_price',
         help="Explicit rule name for this pricelist line.", store=True)
+    old_fixed_price = fields.Float(string="Old Fixed")
 
 
 class Pricelist(models.Model):

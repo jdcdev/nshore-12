@@ -3,13 +3,23 @@
 
     <!-- Product Price List -->
     <record id="view_product_price_list_inherit" model="ir.ui.view">
-            <field name="name">Price per unit</field>
-            <field name="model">product.price_list</field>
-            <field name="inherit_id" ref="product.view_product_price_list"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='price_list']" position="replace">
-                    <field name="price_list" options="{'no_create': True}"/>
-                </xpath>
-            </field>
+        <field name="name">Price per unit</field>
+        <field name="model">product.price_list</field>
+        <field name="inherit_id" ref="product.view_product_price_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='price_list']" position="replace">
+                <field name="price_list" options="{'no_create': True}"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="product_pricelist_view" model="ir.ui.view">
+        <field name="name">product.pricelist.form</field>
+        <field name="model">product.pricelist</field>
+        <field name="inherit_id" ref="product.product_pricelist_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='item_ids']/tree/field[@name='price']" position="after">
+                <field name="old_fixed_price"/>
+            </xpath>
+        </field>
     </record>
 </odoo>
