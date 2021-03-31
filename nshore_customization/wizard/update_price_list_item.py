@@ -17,7 +17,8 @@ class UpdatePricelistItems(models.TransientModel):
             # filtered only fixed and products, products template items.
             for items in pricelist.item_ids.filtered(
                     lambda l:
-                    l.compute_price == 'fixed' and l.applied_on != '3_global' and\
+                    l.compute_price == 'fixed' and
+                    l.applied_on != '3_global' and
                     l.product_id.standard_price != 0.0):
                 cost_price = 0.0
                 # if items.fixed_price != 0.0:
@@ -32,11 +33,12 @@ class UpdatePricelistItems(models.TransientModel):
                 formula = formula / cost_price
                 formula = formula * 100
                 if formula < 0:
-                    final_formula = formula
+                    final_formula = abs(formula)
                 else:
                     final_formula = - formula
-                # Update pricelist item from fixed to formula.
+                # Update pricelist item from fixed to formula
                 items.update({
+                    'old_fixed_price': items.fixed_price,
                     'compute_price': 'formula',
                     'base': 'standard_price',
                     'price_discount': final_formula
