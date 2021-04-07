@@ -4,12 +4,20 @@ from odoo import api, fields, models
 
 class PricelistItem(models.Model):
     """Class inherit to add field."""
+
     _inherit = "product.pricelist.item"
+    _order = 'name asc'
 
     base = fields.Selection(selection_add=[('net_cost', 'Net Cost')])
+    # name = fields.Char(
+    #     'Name', compute='_get_pricelist_item_name_price',
+    #     help="Explicit rule name for this pricelist line.", store=True)
+    old_fixed_price = fields.Float(string="Old Fixed")
 
 
 class Pricelist(models.Model):
+    """Class Inherit to added name serach for limit."""
+
     _inherit = "product.pricelist"
 
     @api.model
