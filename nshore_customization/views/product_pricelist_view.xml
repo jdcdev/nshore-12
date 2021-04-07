@@ -18,7 +18,7 @@
         <field name="inherit_id" ref="product.product_pricelist_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='item_ids']/tree/field[@name='price']" position="after">
-                <field name="old_fixed_price"/>
+                <field name="old_fixed_price" invisible="1"/>
             </xpath>
         </field>
     </record>
