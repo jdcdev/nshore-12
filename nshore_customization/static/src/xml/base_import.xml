@@ -5,7 +5,7 @@
         <tr class="oe_import_fields">
             <!-- Iterate on first row to ensure we have all columns -->
             <td t-foreach="preview[0]" t-as="column" style="position: sticky;top: 0;">
-                <input class="oe_import_match_field" style="width:295px;margin: -3px;height:27;"/>
+                <input class="oe_import_match_field" style="width:100%;margin: -3px;height:27;"/>
             </td>
         </tr>
     </t>
