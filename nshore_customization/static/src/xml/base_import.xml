@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+<t t-extend="ImportView.preview">
+    <t t-jquery="tr.oe_import_fields" t-operation="replace">
+        <tr class="oe_import_fields">
+            <!-- Iterate on first row to ensure we have all columns -->
+            <td t-foreach="preview[0]" t-as="column" style="position: sticky;top: 0;">
+                <input class="oe_import_match_field" style="width:295px;margin: -3px;height:27;"/>
+            </td>
+        </tr>
+    </t>
+</t>
+<t t-extend="ImportView">
+    <t t-jquery="div.table-responsive" t-operation="replace">
+        <div class="table-responsive" style="overflow-y: auto; height: 550px;">
+            <table class="table-striped table-bordered oe_import_grid bg-white" style="border-collapse: collapse;width: 100%;"/>
+        </div>
+    </t>
+</t>
+</templates>
