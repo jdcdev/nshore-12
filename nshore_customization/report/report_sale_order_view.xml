@@ -28,13 +28,13 @@
                     <div>
                         <span t-field="doc.partner_shipping_id"/>
                         <br/>
-                        <t t-if="doc.partner_id.street">
-                            <span t-field="doc.partner_id.street"/>
+                        <t t-if="doc.partner_shipping_id.street">
+                            <span t-field="doc.partner_shipping_id.street"/>
                         </t>
                         <br/>
-                        <span t-field="doc.partner_id.city"/>
-                        <span t-field="doc.partner_id.state_id"/>
-                        <span t-field="doc.partner_id.zip"/>
+                        <span t-field="doc.partner_shipping_id.city"/>
+                        <span t-field="doc.partner_shipping_id.state_id"/>
+                        <span t-field="doc.partner_shipping_id.zip"/>
                     </div>
                 </div>
                 <div class="col-4">
