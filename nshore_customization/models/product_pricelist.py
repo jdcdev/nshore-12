@@ -13,6 +13,7 @@ class PricelistItem(models.Model):
         'Name', compute='_get_pricelist_item_name_price',
         help="Explicit rule name for this pricelist line.", store=True)
     old_fixed_price = fields.Float(string="Old Fixed")
+    price_discount = fields.Float('Price Discount', default=0, digits=(16, 6))
 
 
 class Pricelist(models.Model):
