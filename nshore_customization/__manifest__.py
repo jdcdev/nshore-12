@@ -55,7 +55,8 @@
     ],
     'qweb': [
         'static/src/xml/pos.xml',
-        'static/src/xml/web_base.xml'
+        'static/src/xml/web_base.xml',
+        'static/src/xml/base_import.xml'
     ],
     'installable': True,
     'auto_install': False,
