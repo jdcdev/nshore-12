@@ -19,9 +19,11 @@ class ResPartner(models.Model):
     allow_supervisor = fields.Boolean('Allow Supervisor', default=False)
     fax = fields.Char(string="Fax")
     invoice_start_date = fields.Date('Invoice Start Date')
-    invoice_end_date = fields.Date('Invoice End Date')
-    user_id = fields.Many2one('res.users', string='Salesperson',
-      help='The internal user in charge of this contact.', default=_default_user_id)
+    invoice_end_date = fields.Date('Invoice Start Date')
+    user_id = fields.Many2one(
+        'res.users', string='Salesperson',
+        help='The internal user in charge of this contact.',
+        default=_default_user_id)
 
     @api.multi
     def name_get(self):
@@ -32,7 +34,49 @@ class ResPartner(models.Model):
             res.append((partner.id, name.replace('_', ' ').title()))
         return res
 
-    # @job
+    @api.multi
+    def get_all_products(self):
+        """Get all Products."""
+        products_obj = self.env['product.product'].search([], order='name')
+        products = []
+        vals = {}
+        for product in products_obj:
+            temp = 0
+            for items in self.property_product_pricelist.item_ids.filtered(
+                lambda p: p.product_id == product or \
+                    p.product_tmpl_id == product.product_tmpl_id):
+                temp = 1
+                price_product = ''
+                if items.base == 'pricelist':
+                    price_product = items.base_pricelist_id.name
+                else:
+                    price_product = items.price
+                if items.product_id:
+                    vals = {
+                        'product': items.product_id.name,
+                        'price_list': 'Yes',
+                        'price_product': price_product
+                    }
+                    products.append(vals)
+                elif items.product_tmpl_id:
+                    vals = {
+                        'product': items.product_tmpl_id.name,
+                        'price_list': 'Yes',
+                        'price_product': price_product
+                    }
+                    products.append(vals)
+            if temp != 1:
+                vals = {
+                    'product': product.name,
+                    'price_list': 'No',
+                    'price_product': "{:.2f}".format(round(
+                        product.list_price, 2))
+                }
+                products.append(vals)
+        final_list = sorted(
+            products, key=lambda i: i['price_list'], reverse=True)
+        return final_list
+
     @api.model
     def _send_customer_statement(self):
         today = datetime.datetime.today()

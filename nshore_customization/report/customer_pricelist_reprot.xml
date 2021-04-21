@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+    <template id="report_layout_customer_product_pricelist">
+        <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.html_container">
+                    <div class="page">
+                        <h3><center><span t-field="o.name"/></center></h3>
+                    </div>
+                    <table class="table table-sm o_main_table" name="customer_price_list">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th width="300px;" class="text-center">Price List</th>
+                                <th class="text-right">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="o.get_all_products()" t-as="line">
+                                <td t-esc="line.get('product')"></td>
+                                <td class="text-center" t-esc="line.get('price_list')"></td>
+                                <td t-esc="line.get('price_product')"></td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </t>
+            </t>
+        </t>
+    </template>
+    </data>
+</odoo>
