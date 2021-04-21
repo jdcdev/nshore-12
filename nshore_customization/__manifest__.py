@@ -45,6 +45,8 @@
         'report/customer_purchase_report_detail_views.xml',
         'report/report_sale_order_view.xml',
         'report/report_invoice_extended.xml',
+        'report/report_pricelist.xml',
+        'report/customer_pricelist_reprot.xml',
         'views/customer_statement_unmail_views.xml',
         'views/menus.xml',
         'views/payment_terms.xml',
