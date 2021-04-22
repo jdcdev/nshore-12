@@ -119,6 +119,8 @@ class AccountInvoiceLine(models.Model):
 
     _inherit = "account.invoice.line"
 
+    product_net_cost = fields.Float('Product Net Cost')
+
     @api.model_create_multi
     def create(self, vals_list):
         """Create override to update name."""
@@ -178,6 +180,8 @@ class AccountInvoiceLine(models.Model):
             if fpos:
                 self.account_id = fpos.map_account(self.account_id)
         else:
+            self.product_net_cost = self.product_id.net_cost
+            print("\n\n\n self.product_net_cost", self.product_net_cost)
             self_lang = self
             if part.lang:
                 self_lang = self.with_context(lang=part.lang)
