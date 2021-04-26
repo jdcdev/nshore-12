@@ -47,11 +47,23 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
                 MAX(i.date_invoice) AS last_purchased_date,
                 SUM(l.quantity) AS quantity,
                 SUM(l.price_subtotal) AS total_amount_purchased,
-                SUM(l.price_unit) AS price,
+                l.price_unit AS price,
                 CAST(SUM(((pt.list_price - l.price_unit) / NULLIF(pt.list_price, 0)) * 100) As numeric(36,2)) AS total_discounts,
-                SUM((l.price_unit - l.product_net_cost) * l.quantity) AS total_gross_profit,
+                /*SUM((l.price_unit - l.product_net_cost) * l.quantity) AS total_gross_profit,*/
+                (CASE WHEN l.new_price
+                        THEN SUM((l.price_unit - l.product_net_cost) * l.quantity)
+                        ELSE SUM((l.price_unit - pt.net_cost) * l.quantity)
+                    END) AS total_gross_profit,
                 CAST(SUM((((l.price_unit - l.product_net_cost) * l.quantity) / NULLIF(l.price_subtotal, 0)) * 100) AS numeric(36,2)) as total_profit_margin,
-                pt.list_price AS list_price,
+                /*(CASE WHEN l.new_price
+                        THEN (SUM((((l.price_unit - l.product_net_cost) * l.quantity) / NULLIF(l.price_subtotal, 0)) * 100) AS numeric(36,2))
+                        ELSE (SUM((((l.price_unit - pt.net_cost) * l.quantity) / NULLIF(l.price_subtotal, 0)) * 100) AS numeric(36,2))
+                    END) AS total_profit_margin,*/
+                /*l.product_list_price AS list_price,*/
+                (CASE WHEN l.new_price
+                        THEN l.product_list_price
+                        ELSE pt.list_price
+                    END) AS list_price,
                 c.id,
                 c.name,
                 c.phone,
@@ -85,7 +97,7 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
             if user_id:
                 query_where += " AND (i.user_id = %s)" % user_id
 
-        groupby = "group by pc.id, pc.name,pt.default_code,pt.name,pt.list_price,c.id,c.name,pt.product_ref"
+        groupby = "group by pc.id, pc.name,l.price_unit,pt.default_code,pt.name,pt.list_price,l.product_list_price,l.new_price,c.id,c.name,pt.product_ref"
         # sort_by = "ORDER BY pt.categ_id"
         final_sql_qry = sqlstr + ' ' + query_where + ' ' + groupby
         final_sql_qry += ' ORDER BY category, product_ref'
@@ -104,6 +116,12 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
                     grand_total_profit_margin_details = ((grand_total_gross_profit_details / grand_total_purchased_amount) * 100)
                 else:
                     grand_total_profit_margin_details = 0.0
+                total_gross_profit = res[9] or 0.0
+                total_amount_purchased = res[6] or 0.0
+                if total_gross_profit != 0:
+                    total_profit_margin = (total_gross_profit / total_amount_purchased * 100)
+                else:
+                    total_profit_margin = 0.0
                 vals_dict = {
                     'default_code': res[2] or '',
                     'description': res[3] or '',
@@ -113,7 +131,8 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
                     'price': res[7] or 0.0,
                     'total_discounts': res[8] or 0.0,
                     'total_gross_profit': res[9] or 0.0,
-                    'total_profit_margin': res[10] or 0.0,
+                    # 'total_profit_margin': res[10] or 0.0,
+                    'total_profit_margin': total_profit_margin or 0.0,
                     'list_price': res[11] or 0.0,
                 }
                 if res[13] not in partner_dict.keys():

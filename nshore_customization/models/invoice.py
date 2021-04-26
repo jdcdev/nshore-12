@@ -120,11 +120,15 @@ class AccountInvoiceLine(models.Model):
     _inherit = "account.invoice.line"
 
     product_net_cost = fields.Float('Product Net Cost')
+    product_list_price = fields.Float('Product Sales Price')
+    new_price = fields.Boolean("New Price")
 
     @api.model_create_multi
     def create(self, vals_list):
         """Create override to update name."""
         for vals in vals_list:
+            if not vals.get('new_price'):
+                vals.update({'new_price': True})
             if vals.get('name') is False:
                 vals_list = [i for i in vals_list if not (i['name']is False)]
         return super(AccountInvoiceLine, self).create(vals_list)
@@ -181,7 +185,8 @@ class AccountInvoiceLine(models.Model):
                 self.account_id = fpos.map_account(self.account_id)
         else:
             self.product_net_cost = self.product_id.net_cost
-            print("\n\n\n self.product_net_cost", self.product_net_cost)
+            self.product_list_price = self.product_id.lst_price
+            self.update({'new_price': True})
             self_lang = self
             if part.lang:
                 self_lang = self.with_context(lang=part.lang)
