@@ -273,7 +273,12 @@ class CustomerPurchasesReportView(models.AbstractModel):
                 grand_total_discounts += res[4] or 0.0
                 grand_total_gross_profit += res[5] or 0.0
                 grand_total_margin += res[6] or 0.0
-                total_margin = res[5] / res[3] * 100
+                total_gross_profit = res[5] or 0.0
+                total_purchased_amount = res[3] or 0.0
+                if total_gross_profit != 0.0 and total_purchased_amount != 0.0:
+                    total_margin = res[5] / res[3] * 100
+                else:
+                    total_margin = 0.0
                 vals.append({
                     'cust_ref': partner_data.parent_id.ref if partner_data.parent_id else res[0] or '',
                     'cust_name': partner_data.parent_id.name if partner_data.parent_id else res[1] or '',
