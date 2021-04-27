@@ -15,8 +15,11 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
         model = self.env.context.get('active_model')
         docs = data
         all_dates = data['dates']
-        start_date = datetime.strptime(data['start_date'], "%Y-%m-%d")
-        end_date = datetime.strptime(data['end_date'], "%Y-%m-%d")
+        start_date = ''
+        end_date = ''
+        if not all_dates:
+            start_date = datetime.strptime(data['start_date'], "%Y-%m-%d")
+            end_date = datetime.strptime(data['end_date'], "%Y-%m-%d")
         all_customer = data['customer']
         customer_id = data['partner_id'][0] if data['partner_id'] else None
         cust_phone = data['pho_no'] or None
