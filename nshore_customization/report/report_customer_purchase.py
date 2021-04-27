@@ -212,7 +212,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
                     total_changed_per = round(
                         (total_changed_amount / past_total_purchased_amount) * 100, 2)
                 total_gross_profit = past_rec[5] or 0.0
-                if total_gross_profit != 0:
+                if total_gross_profit != 0 and total_purchased_amount != 0:
                     total_margin = (past_rec[5] / total_purchased_amount * 100)
                 else:
                     total_gross_profit = 0.0
