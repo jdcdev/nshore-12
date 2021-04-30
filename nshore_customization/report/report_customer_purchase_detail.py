@@ -2,7 +2,7 @@ from datetime import datetime
 
 from odoo import models, api, _
 from odoo.exceptions import ValidationError
-
+from collections import OrderedDict
 
 class CustomerPurchasesDetailReportView(models.AbstractModel):
     _name = 'report.nshore_customization.report_customer_purchase_detail'
@@ -40,7 +40,7 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
         grand_total_purchased_amount = 0.0
         grand_total_gross_profit_details = 0.0
         grand_total_profit_margin_details = 0.0
-
+        # CAST(SUM(((pt.list_price - l.price_unit) / NULLIF(pt.list_price, 0)) * 100) As numeric(36,2)) AS total_discounts,
         sqlstr = """
             SELECT
                 pc.id,
@@ -51,7 +51,10 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
                 SUM(l.quantity) AS quantity,
                 SUM(l.price_subtotal) AS total_amount_purchased,
                 l.price_unit AS price,
-                CAST(SUM(((pt.list_price - l.price_unit) / NULLIF(pt.list_price, 0)) * 100) As numeric(36,2)) AS total_discounts,
+                (CASE WHEN l.new_price
+                        THEN SUM(((l.product_list_price - l.price_unit) / NULLIF(l.product_list_price, 0)) * 100)
+                        ELSE SUM(((pt.list_price - l.price_unit) / NULLIF(pt.list_price, 0)) * 100)
+                    END) AS total_discounts,
                 /*SUM((l.price_unit - l.product_net_cost) * l.quantity) AS total_gross_profit,*/
                 (CASE WHEN l.new_price
                         THEN SUM((l.price_unit - l.product_net_cost) * l.quantity)
@@ -154,6 +157,7 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
                     })
                 else:
                     partner_dict[res[13]][res[1]].append(vals_dict)
+        partner_dict = OrderedDict(sorted(partner_dict.items()))
         data = {
             'doc_ids': self.ids,
             'doc_model': model,

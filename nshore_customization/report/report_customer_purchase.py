@@ -2,7 +2,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from odoo import models, api, _
 from odoo.exceptions import ValidationError
-
+from collections import OrderedDict
 
 class CustomerPurchasesReportView(models.AbstractModel):
     _name = 'report.nshore_customization.report_customer_purchase'
@@ -43,13 +43,18 @@ class CustomerPurchasesReportView(models.AbstractModel):
         with_margin = data['with_margin']
         gross_profit = data['gross_profit']
         # sum((l.price_unit - l.product_net_cost) * l.quantity) as total_gross_profit,
+        # sum(l.discount) as total_discounts
+        # CAST(SUM(((pt.list_price - l.price_unit) / NULLIF(pt.list_price, 0)) * 100) As numeric(36,2)) AS total_discounts
         sqlstr = """
             select
                 c.ref as cust_ref,
                 c.name as customer_name,
                 max(i.date_invoice) as last_purchased_date,
                 sum(l.price_subtotal) as total_amount_purchased,
-                sum(l.discount) as total_discounts,
+                (CASE WHEN l.new_price
+                        THEN SUM(((l.product_list_price - l.price_unit) / NULLIF(l.product_list_price, 0)) * 100)
+                        ELSE SUM(((pt.list_price - l.price_unit) / NULLIF(pt.list_price, 0)) * 100)
+                    END) AS total_discounts,
                 (CASE WHEN l.new_price
                         THEN SUM((l.price_unit - l.product_net_cost) * l.quantity)
                         ELSE SUM((l.price_unit - pt.net_cost) * l.quantity)
@@ -105,8 +110,10 @@ class CustomerPurchasesReportView(models.AbstractModel):
             if user_id:
                 query_where += " AND (i.user_id = %s)" % user_id
 
-        query_groupby = "group by c.name, c.ref, c.id,l.new_price"
+        query_groupby = "group by c.name, c.ref, c.id,l.new_price,l.product_list_price"
+        query_sort = ' ORDER BY c.name'
         final_sql_qry = sqlstr + ' ' + query_where + ' ' + query_groupby
+        final_sql_qry += ' ORDER BY c.name'
 
         if is_comparsion_reprot:
             # sum((l.price_unit - l.product_net_cost) * l.quantity) as total_gross_profit,
@@ -118,7 +125,10 @@ class CustomerPurchasesReportView(models.AbstractModel):
                         c.name as customer_name,
                         max(i.date_invoice) as last_purchased_date,
                         sum(l.price_subtotal) as total_amount_purchased,
-                        sum(l.discount) as total_discounts,
+                        (CASE WHEN l.new_price
+                        THEN SUM(((l.product_list_price - l.price_unit) / NULLIF(l.product_list_price, 0)) * 100)
+                        ELSE SUM(((pt.list_price - l.price_unit) / NULLIF(pt.list_price, 0)) * 100)
+                    END) AS total_discounts,
                         (CASE WHEN l.new_price
                             THEN SUM((l.price_unit - l.product_net_cost) * l.quantity)
                             ELSE SUM((l.price_unit - pt.net_cost) * l.quantity)
@@ -130,7 +140,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
                         left join res_partner c on (i.partner_id = c.id)
                         left join product_product p on (p.id=l.product_id)
                         left join product_template pt on (pt.id = p.product_tmpl_id)
-                        left join product_category categ on (categ.id = pt.categ_id) """ + query_where + """ """ + query_groupby + """),
+                        left join product_category categ on (categ.id = pt.categ_id) """ + query_where + """ """ + query_groupby + """ """ + query_sort + """),
                 past_customer_purchase AS (
                     select
                         c.ref as cust_ref,
@@ -149,7 +159,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
                     left join res_partner c on (i.partner_id = c.id)
                     left join product_product p on (p.id=l.product_id)
                     left join product_template pt on (pt.id = p.product_tmpl_id)
-                    left join product_category categ on (categ.id = pt.categ_id)""" + past_query_where + """ """ + query_groupby + """)
+                    left join product_category categ on (categ.id = pt.categ_id)""" + past_query_where + """ """ + query_groupby + """ """ + query_sort + """)
                 SELECT
                 cp.cust_ref AS cust_ref,
                 cp.customer_name AS customer_name,
@@ -294,7 +304,6 @@ class CustomerPurchasesReportView(models.AbstractModel):
                     'total_changed_amount': 0.0,
                     'total_changed_per': 0.0
                 })
-                print("\n\n\n vals", vals)
         data = {
             'doc_ids': self.ids,
             'doc_model': model,
