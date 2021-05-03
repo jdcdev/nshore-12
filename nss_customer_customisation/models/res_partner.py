@@ -9,9 +9,10 @@ class ResPartner(models.Model):
 
     @api.onchange('default_delivery')
     def _onchange_default_invoice(self):
-        if self.default_invoice:
+        if self.default_delivery:
             if self.parent_id:
                 res_partner = self.parent_id
-                if res_partner.child_ids and any([partner.default_delivery == True for partner in res_partner.child_ids]):
+                default_delivery = res_partner.child_ids.filtered(lambda x: x.default_delivery == True)
+                if res_partner.child_ids and len(default_delivery) > 1:
                     raise ValidationError(
                         """ There is one default invoice address. """)
