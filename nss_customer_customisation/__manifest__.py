@@ -1,6 +1,6 @@
 {
     'name': 'Customer Customisation',
-    'version': '12.0.0.3',
+    'version': '12.0.0.4',
     'summary': """    """,
     'description': """- Changes in Payment Screen. (#12802)
                 - Default shipping address""",

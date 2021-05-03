@@ -13,7 +13,8 @@ class ResPartner(models.Model):
         if args is None:
             args = []
         if self._context.get('is_company'):
-            domain = [('is_company', '=', True)]
+            # domain = [('is_company', '=', True)]
+            domain = [('is_company', '=', True), ('name', operator, name)]
             account_ids = self._search(expression.AND([domain, args]), limit=limit, access_rights_uid=name_get_uid)
             return self.browse(account_ids).name_get()
         return super(ResPartner, self)._name_search(name, args, operator=operator, limit=limit,
