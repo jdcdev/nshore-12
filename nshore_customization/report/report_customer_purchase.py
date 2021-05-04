@@ -42,6 +42,14 @@ class CustomerPurchasesReportView(models.AbstractModel):
         is_all_salesperson = data['is_all_salesperson']
         with_margin = data['with_margin']
         gross_profit = data['gross_profit']
+        # (CASE WHEN l.new_price
+        #                 THEN SUM((l.price_unit - l.product_net_cost) * l.quantity)
+        #                 ELSE SUM((l.price_unit - pt.net_cost) * l.quantity)
+        #             END) AS total_gross_profit,
+        # (CASE WHEN l.new_price
+        #                 THEN SUM(((l.product_list_price - l.price_unit) / NULLIF(l.product_list_price, 0)) * 100)
+        #                 ELSE SUM(((pt.list_price - l.price_unit) / NULLIF(pt.list_price, 0)) * 100)
+        #             END) AS total_discounts,
         # sum((l.price_unit - l.product_net_cost) * l.quantity) as total_gross_profit,
         # sum(l.discount) as total_discounts
         # CAST(SUM(((pt.list_price - l.price_unit) / NULLIF(pt.list_price, 0)) * 100) As numeric(36,2)) AS total_discounts
@@ -51,14 +59,8 @@ class CustomerPurchasesReportView(models.AbstractModel):
                 c.name as customer_name,
                 max(i.date_invoice) as last_purchased_date,
                 sum(l.price_subtotal) as total_amount_purchased,
-                (CASE WHEN l.new_price
-                        THEN SUM(((l.product_list_price - l.price_unit) / NULLIF(l.product_list_price, 0)) * 100)
-                        ELSE SUM(((pt.list_price - l.price_unit) / NULLIF(pt.list_price, 0)) * 100)
-                    END) AS total_discounts,
-                (CASE WHEN l.new_price
-                        THEN SUM((l.price_unit - l.product_net_cost) * l.quantity)
-                        ELSE SUM((l.price_unit - pt.net_cost) * l.quantity)
-                    END) AS total_gross_profit,
+                CAST(SUM(((l.product_list_price - l.price_unit) / NULLIF(pt.list_price, 0)) * 100) As numeric(36,2)) AS total_discounts,
+                sum((l.price_unit - l.product_net_cost) * l.quantity) as total_gross_profit,
                 cast(sum((((l.price_unit - l.product_net_cost) * l.quantity) / NULLIF(l.price_subtotal, 0)) * 100) as numeric(36,2)) as total_profit_margin,
                 c.id as cust_id
             from account_invoice_line l
@@ -110,7 +112,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
             if user_id:
                 query_where += " AND (i.user_id = %s)" % user_id
 
-        query_groupby = "group by c.name, c.ref, c.id,l.new_price,l.product_list_price"
+        query_groupby = "group by c.name, c.ref, c.id,l.product_list_price"
         query_sort = ' ORDER BY c.name'
         final_sql_qry = sqlstr + ' ' + query_where + ' ' + query_groupby
         final_sql_qry += ' ORDER BY c.name'
@@ -125,14 +127,8 @@ class CustomerPurchasesReportView(models.AbstractModel):
                         c.name as customer_name,
                         max(i.date_invoice) as last_purchased_date,
                         sum(l.price_subtotal) as total_amount_purchased,
-                        (CASE WHEN l.new_price
-                        THEN SUM(((l.product_list_price - l.price_unit) / NULLIF(l.product_list_price, 0)) * 100)
-                        ELSE SUM(((pt.list_price - l.price_unit) / NULLIF(pt.list_price, 0)) * 100)
-                    END) AS total_discounts,
-                        (CASE WHEN l.new_price
-                            THEN SUM((l.price_unit - l.product_net_cost) * l.quantity)
-                            ELSE SUM((l.price_unit - pt.net_cost) * l.quantity)
-                            END) AS total_gross_profit,
+                        CAST(SUM(((l.product_list_price - l.price_unit) / NULLIF(pt.list_price, 0)) * 100) As numeric(36,2)) AS total_discounts,
+                        sum((l.price_unit - l.product_net_cost) * l.quantity) as total_gross_profit,
                         cast(sum((((l.price_unit - l.product_net_cost) * l.quantity) / NULLIF(l.price_subtotal, 0)) * 100) as numeric(36,2)) as total_profit_margin,
                         c.id as cust_id
                         from account_invoice_line l
@@ -148,10 +144,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
                         max(i.date_invoice) as last_purchased_date,
                         sum(l.price_subtotal) as total_amount_purchased,
                         sum(l.discount) as total_discounts,
-                        (CASE WHEN l.new_price
-                            THEN SUM((l.price_unit - l.product_net_cost) * l.quantity)
-                            ELSE SUM((l.price_unit - pt.net_cost) * l.quantity)
-                            END) AS total_gross_profit,
+                        sum((l.price_unit - l.product_net_cost) * l.quantity) as total_gross_profit,
                         cast(sum((((l.price_unit - l.product_net_cost) * l.quantity) / NULLIF(l.price_subtotal, 0)) * 100) as numeric(36,2)) as total_profit_margin,
                         c.id as cust_id
                     from account_invoice_line l
@@ -222,6 +215,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
                     total_changed_per = round(
                         (total_changed_amount / past_total_purchased_amount) * 100, 2)
                 total_gross_profit = past_rec[5] or 0.0
+                total_margin = 0.0
                 if total_gross_profit != 0 and total_purchased_amount != 0:
                     total_margin = (past_rec[5] / total_purchased_amount * 100)
                 else:

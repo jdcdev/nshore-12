@@ -32,7 +32,7 @@ class Import(models.TransientModel):
             # Match should have consumed the first row (iif headers), get
             # the ``count`` next rows for preview
             # Added static conter of preview rom as 1000.
-            count = 1000
+            count = 2000
             preview = list(itertools.islice(rows, count))
             assert preview, "file seems to have no content"
             header_types = self._find_type_from_preview(options, preview)
