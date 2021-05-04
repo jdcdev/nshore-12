@@ -34,6 +34,7 @@ class report_account_aged_receivable(models.AbstractModel):
                 account_types, self._context['date_to'], 'posted', 30)
         # Payment line total
         payment_lines = self.env['account.partial.reconcile']
+        # dict to append valaues
         all_payment_by_partner = {}
         all_direct_payment_partner = {}
         partners_amount = {}
