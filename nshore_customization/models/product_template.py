@@ -10,8 +10,21 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
     _order = 'name'
 
-    net_cost = fields.Float(string='Net Cost')
+    net_cost = fields.Float(string='Net Cost', track_visibility='always')
     product_ref = fields.Char(string='Product Reference')
+    list_price = fields.Float(
+        'Sales Price', default=1.0,
+        digits=dp.get_precision('Product Price'),
+        help="Price at which the product is sold to customers.", track_visibility='always')
+    # lst_price: catalog price for template, but including extra for variants
+    lst_price = fields.Float(
+        'Public Price', related='list_price', readonly=False,
+        digits=dp.get_precision('Product Price'), track_visibility='always')
+    standard_price = fields.Float(
+        'Cost', compute='_compute_standard_price',
+        inverse='_set_standard_price', search='_search_standard_price',
+        digits=dp.get_precision('Product Price'), groups="base.group_user", track_visibility='always',
+        help="Cost used for stock valuation in standard price and as a first price to set in average/FIFO.")
 
 
 class ProductProduct(models.Model):

@@ -45,7 +45,7 @@
                         position="after">
                     <field name="product_net_cost"/>
                     <field name="product_list_price"/>
-                    <field name="new_price"/>
+                    <!-- <field name="new_price"/> -->
                 </xpath>
             </field>
         </record>
