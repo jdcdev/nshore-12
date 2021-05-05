@@ -8,6 +8,11 @@ class SaleOrder(models.Model):
 
     _inherit = 'sale.order'
 
+    def price_updates(self):
+        """Update products prices when change the partner."""
+        for line in self.order_line:
+            line.product_id_change()
+
     @api.model
     def create(self, vals):
         """Function override to pass sales person on readonly field."""
