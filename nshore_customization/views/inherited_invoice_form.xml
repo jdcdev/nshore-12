@@ -47,6 +47,11 @@
                     <field name="product_list_price"/>
                     <!-- <field name="new_price"/> -->
                 </xpath>
+                <xpath expr="//button[@name='action_invoice_open']" position="after">
+                    <button name="price_updates" id="price_updates"
+                        string="Prices Updates" class="btn-primary" type="object" attrs="{'invisible': [('state', 'not in', ['draft'])]}"
+                        />
+                </xpath>
             </field>
         </record>
 

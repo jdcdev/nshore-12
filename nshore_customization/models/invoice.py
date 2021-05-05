@@ -78,6 +78,11 @@ class AccountInvoice(models.Model):
         readonly=True, states={'draft': [('readonly', False)]})
     user_id = fields.Many2one('res.users', readonly=False)
 
+    def price_updates(self):
+        """Update products prices when change the partner."""
+        for line in self.invoice_line_ids:
+            line._onchange_product_id()
+
     @api.multi
     def action_invoice_open(self):
         for order in self:
