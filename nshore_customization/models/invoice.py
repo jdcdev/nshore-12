@@ -77,6 +77,9 @@ class AccountInvoice(models.Model):
         'product.pricelist', string='Pricelist',
         readonly=True, states={'draft': [('readonly', False)]})
     user_id = fields.Many2one('res.users', readonly=False)
+    invoice_line_ids = fields.One2many(
+        'account.invoice.line', 'invoice_id',
+        string='Invoice Lines', oldname='invoice_line', copy=True)
 
     def price_updates(self):
         """Update products prices when change the partner."""
