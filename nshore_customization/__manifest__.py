@@ -32,7 +32,7 @@
         'wizard/customer_purchases_views.xml',
         'wizard/wizard_inventory_adjustment_views.xml',
         'wizard/update_pricelist_item_view.xml',
-        'wizard/update_pricelist_item_view.xml',
+        'wizard/update_invoice_line_views.xml',
         'report/report_registration.xml',
         'report/customer_statement_report.xml',
         'report/report_daily_monthly_invoices.xml',
