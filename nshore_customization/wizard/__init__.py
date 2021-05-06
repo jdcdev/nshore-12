@@ -7,3 +7,4 @@ from . import mail_compose_message
 from . import customer_purchases
 from . import wizard_inventory_adjustment
 from . import update_price_list_item
+from . import update_invoice_lines
