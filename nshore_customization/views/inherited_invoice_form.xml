@@ -43,8 +43,8 @@
                 </xpath>
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='quantity']"
                         position="after">
-                    <field name="product_net_cost"/>
-                    <field name="product_list_price"/>
+                    <field name="product_net_cost" readonly="1"/>
+                    <field name="product_list_price" readonly="1"/>
                     <!-- <field name="new_price"/> -->
                 </xpath>
             </field>
