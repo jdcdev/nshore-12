@@ -3,8 +3,6 @@ from odoo.http import request
 
 
 class CustomPopMessage(models.TransientModel):
-    """Class create for pop message."""
-
     _name = "custom.pop.message"
 
     _description = 'Custom Pop Message'
@@ -18,7 +16,6 @@ class CustomPopMessage(models.TransientModel):
 
     @api.multi
     def approve_over_limit(self):
-        """Function call to approve time."""
         self.allow_supervisor = True
         view = self.env.ref(
             'nshore_customization.custom_pop_message_wizard_view_form')
@@ -80,6 +77,14 @@ class AccountInvoice(models.Model):
         'product.pricelist', string='Pricelist',
         readonly=True, states={'draft': [('readonly', False)]})
     user_id = fields.Many2one('res.users', readonly=False)
+    invoice_line_ids = fields.One2many(
+        'account.invoice.line', 'invoice_id',
+        string='Invoice Lines', oldname='invoice_line', copy=True)
+
+    # def price_updates(self):
+    #     """Update products prices when change the partner."""
+    #     for line in self.invoice_line_ids:
+    #         line._onchange_product_id()
 
     @api.multi
     def action_invoice_open(self):
@@ -122,10 +127,45 @@ class AccountInvoiceLine(models.Model):
 
     _inherit = "account.invoice.line"
 
+    product_net_cost = fields.Float('Product Net Cost')
+    product_list_price = fields.Float('Product Sales Price')
+    # new_price = fields.Boolean("New Price")
+
+    @api.multi
+    def write(self, values):
+        """Messsage post when qty change."""
+        if 'quantity' or 'product_net_cost' or 'product_list_price' in values:
+            for line in self:
+                line._update_line_values(values)
+        return super(AccountInvoiceLine, self).write(values)
+
+    def _update_line_values(self, values):
+        """Fucntion call to add message in chatter when qty change."""
+        invoice = self.mapped('invoice_id')
+        for inv in invoice:
+            inv_lines = self.filtered(lambda x: x.invoice_id == invoice)
+            msg = '<ul>'
+            for lines in inv_lines:
+                if values.get('quantity'):
+                    msg += "<li> %s:" % (lines.product_id.display_name,)
+                    msg += "<br/>" + _("Quantity") + ": %s -> %s <br/>" % (
+                        lines.quantity, float(values['quantity']),)
+                if values.get('product_net_cost'):
+                    msg += "<li> %s:" % (lines.product_id.display_name,)
+                    msg += "<br/>" + _("Net Cost") + ": %s -> %s <br/>" % (
+                        lines.product_net_cost, float(values['product_net_cost']),)
+                if values.get('product_list_price'):
+                    msg += "<li> %s:" % (lines.product_id.display_name,)
+                    msg += "<br/>" + _("Sales Price") + ": %s -> %s <br/>" % (
+                        lines.product_list_price, float(values['product_list_price']),)
+            invoice.message_post(body=msg)
+
     @api.model_create_multi
     def create(self, vals_list):
         """Create override to update name."""
         for vals in vals_list:
+            # if not vals.get('new_price'):
+            #     vals.update({'new_price': True})
             if vals.get('name') is False:
                 vals_list = [i for i in vals_list if not (i['name']is False)]
         return super(AccountInvoiceLine, self).create(vals_list)
@@ -181,6 +221,9 @@ class AccountInvoiceLine(models.Model):
             if fpos:
                 self.account_id = fpos.map_account(self.account_id)
         else:
+            self.product_net_cost = self.product_id.net_cost
+            self.product_list_price = self.product_id.lst_price
+            # self.update({'new_price': True})
             self_lang = self
             if part.lang:
                 self_lang = self.with_context(lang=part.lang)

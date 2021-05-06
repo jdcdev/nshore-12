@@ -10,8 +10,21 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
     _order = 'name'
 
-    net_cost = fields.Float(string='Net Cost')
+    net_cost = fields.Float(string='Net Cost', track_visibility='always')
     product_ref = fields.Char(string='Product Reference')
+    list_price = fields.Float(
+        'Sales Price', default=1.0,
+        digits=dp.get_precision('Product Price'),
+        help="Price at which the product is sold to customers.", track_visibility='always')
+    # lst_price: catalog price for template, but including extra for variants
+    lst_price = fields.Float(
+        'Public Price', related='list_price', readonly=False,
+        digits=dp.get_precision('Product Price'), track_visibility='always')
+    standard_price = fields.Float(
+        'Cost', compute='_compute_standard_price',
+        inverse='_set_standard_price', search='_search_standard_price',
+        digits=dp.get_precision('Product Price'), groups="base.group_user", track_visibility='always',
+        help="Cost used for stock valuation in standard price and as a first price to set in average/FIFO.")
 
 
 class ProductProduct(models.Model):
@@ -67,6 +80,7 @@ class ProductProduct(models.Model):
     @api.multi
     @api.depends('stock_move_ids.product_qty', 'stock_move_ids.state', 'stock_move_ids.remaining_value', 'product_tmpl_id.cost_method', 'product_tmpl_id.standard_price', 'product_tmpl_id.property_valuation', 'product_tmpl_id.categ_id.property_valuation')
     def _compute_stock_value(self):
+        """Function override to update products price with net cost"""
         StockMove = self.env['stock.move']
         to_date = self.env.context.get('to_date')
 
@@ -159,14 +173,6 @@ class ProductProduct(models.Model):
                             (product.id, valuation_account_id)) or (0, 0, [])
                         product.stock_fifo_real_time_aml_ids = self.env[
                             'account.move.line'].browse(aml_ids)
-
-
-class PricelistItem(models.Model):
-    """Class inherit to add field."""
-
-    _inherit = "product.pricelist.item"
-
-    base = fields.Selection(selection_add=[('net_cost', 'Net Cost')])
 
 
 class ProductCategory(models.Model):

@@ -2,7 +2,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from odoo import models, api, _
 from odoo.exceptions import ValidationError
-
+from collections import OrderedDict
 
 class CustomerPurchasesReportView(models.AbstractModel):
     _name = 'report.nshore_customization.report_customer_purchase'
@@ -42,15 +42,26 @@ class CustomerPurchasesReportView(models.AbstractModel):
         is_all_salesperson = data['is_all_salesperson']
         with_margin = data['with_margin']
         gross_profit = data['gross_profit']
+        # (CASE WHEN l.new_price
+        #                 THEN SUM((l.price_unit - l.product_net_cost) * l.quantity)
+        #                 ELSE SUM((l.price_unit - pt.net_cost) * l.quantity)
+        #             END) AS total_gross_profit,
+        # (CASE WHEN l.new_price
+        #                 THEN SUM(((l.product_list_price - l.price_unit) / NULLIF(l.product_list_price, 0)) * 100)
+        #                 ELSE SUM(((pt.list_price - l.price_unit) / NULLIF(pt.list_price, 0)) * 100)
+        #             END) AS total_discounts,
+        # sum((l.price_unit - l.product_net_cost) * l.quantity) as total_gross_profit,
+        # sum(l.discount) as total_discounts
+        # CAST(SUM(((pt.list_price - l.price_unit) / NULLIF(pt.list_price, 0)) * 100) As numeric(36,2)) AS total_discounts
         sqlstr = """
             select
                 c.ref as cust_ref,
                 c.name as customer_name,
                 max(i.date_invoice) as last_purchased_date,
                 sum(l.price_subtotal) as total_amount_purchased,
-                sum(l.discount) as total_discounts,
-                sum((l.price_unit - pt.net_cost) * l.quantity) as total_gross_profit,
-                cast(sum((((l.price_unit - pt.net_cost) * l.quantity) / NULLIF(l.price_subtotal, 0)) * 100) as numeric(36,2)) as total_profit_margin,
+                CAST(SUM(((l.product_list_price - l.price_unit) / NULLIF(pt.list_price, 0)) * 100) As numeric(36,2)) AS total_discounts,
+                sum((l.price_unit - l.product_net_cost) * l.quantity) as total_gross_profit,
+                cast(sum((((l.price_unit - l.product_net_cost) * l.quantity) / NULLIF(l.price_subtotal, 0)) * 100) as numeric(36,2)) as total_profit_margin,
                 c.id as cust_id
             from account_invoice_line l
             left join account_invoice i on (l.invoice_id = i.id)
@@ -101,10 +112,14 @@ class CustomerPurchasesReportView(models.AbstractModel):
             if user_id:
                 query_where += " AND (i.user_id = %s)" % user_id
 
-        query_groupby = "group by c.name, c.ref, c.id"
+        query_groupby = "group by c.name, c.ref, c.id,l.product_list_price"
+        query_sort = ' ORDER BY c.name'
         final_sql_qry = sqlstr + ' ' + query_where + ' ' + query_groupby
+        final_sql_qry += ' ORDER BY c.name'
 
         if is_comparsion_reprot:
+            # sum((l.price_unit - l.product_net_cost) * l.quantity) as total_gross_profit,
+            # sum((l.price_unit - l.product_net_cost) * l.quantity) as total_gross_profit,
             past_sql_qry = """
                 with cuur_customer_purchase AS (
                     select
@@ -112,16 +127,16 @@ class CustomerPurchasesReportView(models.AbstractModel):
                         c.name as customer_name,
                         max(i.date_invoice) as last_purchased_date,
                         sum(l.price_subtotal) as total_amount_purchased,
-                        sum(l.discount) as total_discounts,
-                        sum((l.price_unit - pt.net_cost) * l.quantity) as total_gross_profit,
-                        cast(sum((((l.price_unit - pt.net_cost) * l.quantity) / NULLIF(l.price_subtotal, 0)) * 100) as numeric(36,2)) as total_profit_margin,
+                        CAST(SUM(((l.product_list_price - l.price_unit) / NULLIF(pt.list_price, 0)) * 100) As numeric(36,2)) AS total_discounts,
+                        sum((l.price_unit - l.product_net_cost) * l.quantity) as total_gross_profit,
+                        cast(sum((((l.price_unit - l.product_net_cost) * l.quantity) / NULLIF(l.price_subtotal, 0)) * 100) as numeric(36,2)) as total_profit_margin,
                         c.id as cust_id
                         from account_invoice_line l
                         left join account_invoice i on (l.invoice_id = i.id)
                         left join res_partner c on (i.partner_id = c.id)
                         left join product_product p on (p.id=l.product_id)
                         left join product_template pt on (pt.id = p.product_tmpl_id)
-                        left join product_category categ on (categ.id = pt.categ_id) """ + query_where + """ """ + query_groupby + """),
+                        left join product_category categ on (categ.id = pt.categ_id) """ + query_where + """ """ + query_groupby + """ """ + query_sort + """),
                 past_customer_purchase AS (
                     select
                         c.ref as cust_ref,
@@ -129,15 +144,15 @@ class CustomerPurchasesReportView(models.AbstractModel):
                         max(i.date_invoice) as last_purchased_date,
                         sum(l.price_subtotal) as total_amount_purchased,
                         sum(l.discount) as total_discounts,
-                        sum((l.price_unit - pt.net_cost) * l.quantity) as total_gross_profit,
-                        cast(sum((((l.price_unit - pt.net_cost) * l.quantity) / NULLIF(l.price_subtotal, 0)) * 100) as numeric(36,2)) as total_profit_margin,
+                        sum((l.price_unit - l.product_net_cost) * l.quantity) as total_gross_profit,
+                        cast(sum((((l.price_unit - l.product_net_cost) * l.quantity) / NULLIF(l.price_subtotal, 0)) * 100) as numeric(36,2)) as total_profit_margin,
                         c.id as cust_id
                     from account_invoice_line l
                     left join account_invoice i on (l.invoice_id = i.id)
                     left join res_partner c on (i.partner_id = c.id)
                     left join product_product p on (p.id=l.product_id)
                     left join product_template pt on (pt.id = p.product_tmpl_id)
-                    left join product_category categ on (categ.id = pt.categ_id)""" + past_query_where + """ """ + query_groupby + """)
+                    left join product_category categ on (categ.id = pt.categ_id)""" + past_query_where + """ """ + query_groupby + """ """ + query_sort + """)
                 SELECT
                 cp.cust_ref AS cust_ref,
                 cp.customer_name AS customer_name,
@@ -199,7 +214,14 @@ class CustomerPurchasesReportView(models.AbstractModel):
                 if past_total_purchased_amount > 0 and grand_past_total_purchased_amount:
                     total_changed_per = round(
                         (total_changed_amount / past_total_purchased_amount) * 100, 2)
-
+                total_gross_profit = past_rec[5] or 0.0
+                total_margin = 0.0
+                if total_gross_profit != 0 and total_purchased_amount != 0:
+                    total_margin = (past_rec[5] / total_purchased_amount * 100)
+                else:
+                    total_gross_profit = 0.0
+                # past_total_margin = past_rec[8] / past_total_purchased_amount * 100
+                print("\n\n past_total_margin", past_rec[8], past_total_purchased_amount)
                 vals.append({
                     'cust_ref': partner_data.parent_id.ref if partner_data.parent_id else past_rec[0] or '',
                     'cust_name': partner_data.parent_id.name if partner_data.parent_id else past_rec[1] or '',
@@ -207,14 +229,15 @@ class CustomerPurchasesReportView(models.AbstractModel):
                     'total_purchased_amount': total_purchased_amount,
                     'total_discounts': past_rec[4] or 0.0,
                     'total_gross_profit': past_rec[5] or 0.0,
-                    'total_margin': past_rec[6] or 0.0,
+                    # 'total_margin': past_rec[6] or 0.0,
+                    'total_margin': total_margin or 0.0,
                     'past_total_purchased_amount': past_total_purchased_amount,
                     'past_total_gross_profit': past_rec[8] or 0.0,
                     'past_total_margin': past_rec[9] or 0.0,
+                    # 'past_total_margin': past_total_margin or 0.0,
                     'total_changed_amount': total_changed_amount,
                     'total_changed_per': total_changed_per
                 })
-
             grand_total_changed_amount = grand_total_purchased_amount - \
                 grand_past_total_purchased_amount
 
@@ -254,6 +277,12 @@ class CustomerPurchasesReportView(models.AbstractModel):
                 grand_total_discounts += res[4] or 0.0
                 grand_total_gross_profit += res[5] or 0.0
                 grand_total_margin += res[6] or 0.0
+                total_gross_profit = res[5] or 0.0
+                total_purchased_amount = res[3] or 0.0
+                if total_gross_profit != 0.0 and total_purchased_amount != 0.0:
+                    total_margin = res[5] / res[3] * 100
+                else:
+                    total_margin = 0.0
                 vals.append({
                     'cust_ref': partner_data.parent_id.ref if partner_data.parent_id else res[0] or '',
                     'cust_name': partner_data.parent_id.name if partner_data.parent_id else res[1] or '',
@@ -261,7 +290,8 @@ class CustomerPurchasesReportView(models.AbstractModel):
                     'total_purchased_amount': res[3] or 0.0,
                     'total_discounts': res[4] or 0.0,
                     'total_gross_profit': res[5] or 0.0,
-                    'total_margin': res[6] or 0.0,
+                    # 'total_margin': res[6] or 0.0,
+                    'total_margin': total_margin or 0.0,
                     'past_total_purchased_amount': 0.0,
                     'past_total_gross_profit': 0.0,
                     'past_total_margin': 0.0,
