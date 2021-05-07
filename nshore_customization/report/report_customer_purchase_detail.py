@@ -125,7 +125,6 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
                     grand_total_profit_margin_details = 0.0
                 total_gross_profit = res[9] or 0.0
                 total_amount_purchased = res[6] or 0.0
-                print("\n\n\n total_gross_profit", total_gross_profit, total_amount_purchased, res[2])
                 if total_gross_profit != 0 and total_amount_purchased != 0:
                     total_profit_margin = (total_gross_profit / total_amount_purchased * 100)
                 else:
