@@ -164,8 +164,14 @@ class AccountInvoiceLine(models.Model):
     def create(self, vals_list):
         """Create override to update name."""
         for vals in vals_list:
-            # if not vals.get('new_price'):
-            #     vals.update({'new_price': True})
+            if not vals.get('product_net_cost') or not vals.get(
+                    'product_list_price'):
+                product_obj = self.env['product.product'].browse(
+                    vals.get('product_id'))
+                vals.update({
+                    'product_net_cost': product_obj.net_cost,
+                    'product_list_price': product_obj.lst_price
+                })
             if vals.get('name') is False:
                 vals_list = [i for i in vals_list if not (i['name']is False)]
         return super(AccountInvoiceLine, self).create(vals_list)
