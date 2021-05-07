@@ -81,10 +81,10 @@ class AccountInvoice(models.Model):
         'account.invoice.line', 'invoice_id',
         string='Invoice Lines', oldname='invoice_line', copy=True)
 
-    # def price_updates(self):
-    #     """Update products prices when change the partner."""
-    #     for line in self.invoice_line_ids:
-    #         line._onchange_product_id()
+    def price_updates(self):
+        """Update products prices when change the partner."""
+        for line in self.invoice_line_ids:
+            line._onchange_product_id()
 
     @api.multi
     def action_invoice_open(self):
