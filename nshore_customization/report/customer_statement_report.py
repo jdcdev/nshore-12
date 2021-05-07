@@ -267,7 +267,7 @@ class CustomerStatementReport(models.AbstractModel):
             for rec in results:
                 if rec['partner_id'] == partner.id:
                     cust_dict = {
-                        'last_balance': rec['direction'],
+                        # 'last_balance': rec['direction'],
                         'current_amount': rec['direction'],
                         'between_30days': rec['4'],
                         'between_60days': rec['3'],
