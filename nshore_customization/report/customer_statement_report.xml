@@ -240,8 +240,11 @@
                                     <td class="text-right">
                                         <span t-esc="total_paid" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                     </td>
-                                    <td class="text-right">
+                                    <!-- <td class="text-right">
                                         <span t-esc="lines_data[o].get('last_balance', 0)" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td> -->
+                                    <td class="text-right">
+                                        <span t-esc="total_amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                     </td>
                                 </tr>
                             </tbody>
