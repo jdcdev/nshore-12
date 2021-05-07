@@ -221,7 +221,6 @@ class CustomerPurchasesReportView(models.AbstractModel):
                 else:
                     total_gross_profit = 0.0
                 # past_total_margin = past_rec[8] / past_total_purchased_amount * 100
-                print("\n\n past_total_margin", past_rec[8], past_total_purchased_amount)
                 vals.append({
                     'cust_ref': partner_data.parent_id.ref if partner_data.parent_id else past_rec[0] or '',
                     'cust_name': partner_data.parent_id.name if partner_data.parent_id else past_rec[1] or '',
