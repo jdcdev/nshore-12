@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.addons import decimal_precision as dp
 
 
@@ -10,22 +10,49 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
     _order = 'name'
 
-    net_cost = fields.Float(string='Net Cost', track_visibility='always')
+    net_cost = fields.Float(string='Net Cost')
     product_ref = fields.Char(string='Product Reference')
     list_price = fields.Float(
         'Sales Price', default=1.0,
         digits=dp.get_precision('Product Price'),
-        help="Price at which the product is sold to customers.", track_visibility='always')
+        help="Price at which the product is sold to customers.")
     # lst_price: catalog price for template, but including extra for variants
     lst_price = fields.Float(
         'Public Price', related='list_price', readonly=False,
-        digits=dp.get_precision('Product Price'), track_visibility='always')
+        digits=dp.get_precision('Product Price'))
     standard_price = fields.Float(
         'Cost', compute='_compute_standard_price',
         inverse='_set_standard_price', search='_search_standard_price',
-        digits=dp.get_precision('Product Price'), groups="base.group_user", track_visibility='always',
+        digits=dp.get_precision('Product Price'), groups="base.group_user",
         help="Cost used for stock valuation in standard price and as a first price to set in average/FIFO.")
 
+    def _update_price_values(self, values):
+        """Fucntion call to add message in chatter when qty change."""
+        msg = '<ul>'
+        if values.get('list_price'):
+            msg += "<li> %s:" % (self.name,)
+            msg += "<br/>" + _("Sales Price") + ": %s -> %s <br/>" % (
+                self.list_price, float(values['list_price']),)
+        if values.get('lst_price'):
+            msg += "<li> %s:" % (self.name,)
+            msg += "<br/>" + _("Public Price") + ": %s -> %s <br/>" % (
+                self.lst_price, float(values['lst_price']),)
+        if values.get('standard_price'):
+            msg += "<li> %s:" % (self.name,)
+            msg += "<br/>" + _("Cost") + ": %s -> %s <br/>" % (
+                self.standard_price, float(values['standard_price']),)
+        if values.get('net_cost'):
+            msg += "<li> %s:" % (self.name,)
+            msg += "<br/>" + _("Net Cost") + ": %s -> %s <br/>" % (
+                self.net_cost, float(values['net_cost']),)
+        self.message_post(body=msg)
+
+    @api.multi
+    def write(self, vals):
+        if vals.get('list_price') or vals.get('lst_price') or vals.get('standard_price') or vals.get('net_cost'):
+            self._update_price_values(vals)
+        else:
+            return super(ProductTemplate, self).write(vals)
 
 class ProductProduct(models.Model):
     """Class inherit for modify some functions."""
