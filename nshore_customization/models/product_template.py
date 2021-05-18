@@ -49,6 +49,7 @@ class ProductTemplate(models.Model):
 
     @api.multi
     def write(self, vals):
+        """Function override for teacking note."""
         if vals.get('list_price') or vals.get('lst_price') or vals.get('standard_price') or vals.get('net_cost'):
             self._update_price_values(vals)
         else:
