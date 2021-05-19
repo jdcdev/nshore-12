@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api, _
+from odoo import models, fields, api, _, tools
 from odoo.addons import decimal_precision as dp
 
 
@@ -47,12 +47,25 @@ class ProductTemplate(models.Model):
                 self.net_cost, float(values['net_cost']),)
         self.message_post(body=msg)
 
+    # @api.multi
+    # def write(self, vals):
+    #     """Function override for teacking note."""
+    #     if vals.get('lst_price') or vals.get('standard_price') or vals.get('net_cost'):
+    #         self._update_price_values(vals)
+    #     else:
+    #         return super(ProductTemplate, self).write(vals)
+
     @api.multi
     def write(self, vals):
-        if vals.get('list_price') or vals.get('lst_price') or vals.get('standard_price') or vals.get('net_cost'):
-            self._update_price_values(vals)
-        else:
-            return super(ProductTemplate, self).write(vals)
+        self._update_price_values(vals)
+        print("\n\n\n vals *******111*********", vals)
+        tools.image_resize_images(vals)
+        res = super(ProductTemplate, self).write(vals)
+        if 'attribute_line_ids' in vals or vals.get('active'):
+            self.create_variant_ids()
+        if 'active' in vals and not vals.get('active'):
+            self.with_context(active_test=False).mapped('product_variant_ids').write({'active': vals.get('active')})
+        return res
 
 class ProductProduct(models.Model):
     """Class inherit for modify some functions."""
