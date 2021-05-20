@@ -10,6 +10,7 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
 
     @api.model
     def _get_report_values(self, docids, data=None):
+        # Function to get report value
         partner_contact_dict = {}
         partner_dict = {}
         model = self.env.context.get('active_model')
