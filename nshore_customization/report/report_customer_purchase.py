@@ -113,7 +113,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
             if user_id:
                 query_where += " AND (i.user_id = %s)" % user_id
 
-        query_groupby = "group by c.name, c.ref, c.id,l.product_list_price"
+        query_groupby = "group by c.name, c.ref, c.id"
         query_sort = ' ORDER BY c.name'
         final_sql_qry = sqlstr + ' ' + query_where + ' ' + query_groupby
         final_sql_qry += ' ORDER BY c.name'
