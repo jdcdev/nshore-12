@@ -3,6 +3,7 @@ import base64
 import datetime
 from calendar import monthrange
 from odoo import api, fields, models
+from dateutil.relativedelta import relativedelta
 # from odoo.addons.queue_job.job import job
 
 
@@ -118,12 +119,15 @@ class ResPartner(models.Model):
                     partner_list.append(payment.partner_id.id)
         if partner_list:
             partner_list = list(set(partner_list))
+            previous_month = final_start_date + relativedelta(months=-1)
             template_id = self.env.ref(
                 'nshore_customization.email_template_partner_statement')
             ctx = {
                 'start_date': final_start_date,
-                'end_date': final_end_date
+                'end_date': final_end_date,
+                'previous_month': previous_month.strftime("%B")
             }
+            print("\n\n\n ctx", ctx)
             partners = partner_obj.browse(partner_list)
             for partner in partners.filtered(lambda l: l.email):
                 partner.sudo().write({
