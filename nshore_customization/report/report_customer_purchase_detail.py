@@ -10,6 +10,7 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
 
     @api.model
     def _get_report_values(self, docids, data=None):
+        # Function to get report value
         partner_contact_dict = {}
         partner_dict = {}
         model = self.env.context.get('active_model')
@@ -40,11 +41,6 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
         grand_total_purchased_amount = 0.0
         grand_total_gross_profit_details = 0.0
         grand_total_profit_margin_details = 0.0
-        # CAST(SUM(((pt.list_price - l.price_unit) / NULLIF(pt.list_price, 0)) * 100) As numeric(36,2)) AS total_discounts,
-        # (CASE WHEN l.new_price
-        #                 THEN SUM(((l.product_list_price - l.price_unit) / NULLIF(l.product_list_price, 0)) * 100)
-        #                 ELSE SUM(((pt.list_price - l.price_unit) / NULLIF(pt.list_price, 0)) * 100)
-        #             END) AS total_discounts,
         sqlstr = """
             SELECT
                 pc.id,
@@ -57,20 +53,8 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
                 l.price_unit AS price,
                 CAST(SUM(((l.product_list_price - l.price_unit) / NULLIF(pt.list_price, 0)) * 100) As numeric(36,2)) AS total_discounts,
                 SUM((l.price_unit - l.product_net_cost) * l.quantity) AS total_gross_profit,
-                /*(CASE WHEN l.new_price
-                        THEN SUM((l.price_unit - l.product_net_cost) * l.quantity)
-                        ELSE SUM((l.price_unit - pt.net_cost) * l.quantity)
-                    END) AS total_gross_profit,*/
                 CAST(SUM((((l.price_unit - l.product_net_cost) * l.quantity) / NULLIF(l.price_subtotal, 0)) * 100) AS numeric(36,2)) as total_profit_margin,
-                /*(CASE WHEN l.new_price
-                        THEN (SUM((((l.price_unit - l.product_net_cost) * l.quantity) / NULLIF(l.price_subtotal, 0)) * 100) AS numeric(36,2))
-                        ELSE (SUM((((l.price_unit - pt.net_cost) * l.quantity) / NULLIF(l.price_subtotal, 0)) * 100) AS numeric(36,2))
-                    END) AS total_profit_margin,*/
                 l.product_list_price AS list_price,
-                /*(CASE WHEN l.new_price
-                        THEN l.product_list_price
-                        ELSE pt.list_price
-                    END) AS list_price,*/
                 c.id,
                 c.name,
                 c.phone,
@@ -104,8 +88,7 @@ class CustomerPurchasesDetailReportView(models.AbstractModel):
             if user_id:
                 query_where += " AND (i.user_id = %s)" % user_id
 
-        groupby = "group by pc.id, pc.name,l.price_unit,pt.default_code,pt.name,pt.list_price,l.product_list_price,c.id,c.name,pt.product_ref"
-        # sort_by = "ORDER BY pt.categ_id"
+        groupby = "group by pc.id, pc.name,l.price_unit,pt.default_code,pt.name,pt.list_price,c.id,c.name,pt.product_ref,l.product_list_price"
         final_sql_qry = sqlstr + ' ' + query_where + ' ' + groupby
         final_sql_qry += ' ORDER BY category, product_ref'
 
