@@ -10,6 +10,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
 
     @api.model
     def _get_report_values(self, docids, data=None):
+        # Function to get report value
         vals = []
         model = self.env.context.get('active_model')
         docs = data
@@ -42,17 +43,7 @@ class CustomerPurchasesReportView(models.AbstractModel):
         is_all_salesperson = data['is_all_salesperson']
         with_margin = data['with_margin']
         gross_profit = data['gross_profit']
-        # (CASE WHEN l.new_price
-        #                 THEN SUM((l.price_unit - l.product_net_cost) * l.quantity)
-        #                 ELSE SUM((l.price_unit - pt.net_cost) * l.quantity)
-        #             END) AS total_gross_profit,
-        # (CASE WHEN l.new_price
-        #                 THEN SUM(((l.product_list_price - l.price_unit) / NULLIF(l.product_list_price, 0)) * 100)
-        #                 ELSE SUM(((pt.list_price - l.price_unit) / NULLIF(pt.list_price, 0)) * 100)
-        #             END) AS total_discounts,
-        # sum((l.price_unit - l.product_net_cost) * l.quantity) as total_gross_profit,
-        # sum(l.discount) as total_discounts
-        # CAST(SUM(((pt.list_price - l.price_unit) / NULLIF(pt.list_price, 0)) * 100) As numeric(36,2)) AS total_discounts
+
         sqlstr = """
             select
                 c.ref as cust_ref,
@@ -112,14 +103,12 @@ class CustomerPurchasesReportView(models.AbstractModel):
             if user_id:
                 query_where += " AND (i.user_id = %s)" % user_id
 
-        query_groupby = "group by c.name, c.ref, c.id,l.product_list_price"
+        query_groupby = "group by c.name, c.ref, c.id"
         query_sort = ' ORDER BY c.name'
         final_sql_qry = sqlstr + ' ' + query_where + ' ' + query_groupby
         final_sql_qry += ' ORDER BY c.name'
 
         if is_comparsion_reprot:
-            # sum((l.price_unit - l.product_net_cost) * l.quantity) as total_gross_profit,
-            # sum((l.price_unit - l.product_net_cost) * l.quantity) as total_gross_profit,
             past_sql_qry = """
                 with cuur_customer_purchase AS (
                     select
@@ -220,7 +209,6 @@ class CustomerPurchasesReportView(models.AbstractModel):
                     total_margin = (past_rec[5] / total_purchased_amount * 100)
                 else:
                     total_gross_profit = 0.0
-                # past_total_margin = past_rec[8] / past_total_purchased_amount * 100
                 vals.append({
                     'cust_ref': partner_data.parent_id.ref if partner_data.parent_id else past_rec[0] or '',
                     'cust_name': partner_data.parent_id.name if partner_data.parent_id else past_rec[1] or '',
@@ -228,12 +216,10 @@ class CustomerPurchasesReportView(models.AbstractModel):
                     'total_purchased_amount': total_purchased_amount,
                     'total_discounts': past_rec[4] or 0.0,
                     'total_gross_profit': past_rec[5] or 0.0,
-                    # 'total_margin': past_rec[6] or 0.0,
                     'total_margin': total_margin or 0.0,
                     'past_total_purchased_amount': past_total_purchased_amount,
                     'past_total_gross_profit': past_rec[8] or 0.0,
                     'past_total_margin': past_rec[9] or 0.0,
-                    # 'past_total_margin': past_total_margin or 0.0,
                     'total_changed_amount': total_changed_amount,
                     'total_changed_per': total_changed_per
                 })
