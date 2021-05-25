@@ -2,7 +2,7 @@
 
 from odoo import fields, models, api, _
 from odoo.exceptions import UserError
-
+from dateutil.relativedelta import relativedelta
 
 class AccountPrintStatement(models.TransientModel):
     """Added new module for sending mail."""
@@ -28,9 +28,11 @@ class AccountPrintStatement(models.TransientModel):
         data_dict = {}
         start_date = data['start_date']
         end_date = data['end_date']
+        previous_month = start_date + relativedelta(months=-1)
         ctx = {
             'start_date': start_date,
-            'end_date': end_date
+            'end_date': end_date,
+            'previous_month': previous_month.strftime("%B")
         }
         if start_date > end_date:
             raise UserError(
@@ -49,12 +51,12 @@ class AccountPrintStatement(models.TransientModel):
                         'email_to': email_partner.email,
                         'email_from': email_from})
                     template_id.with_context(ctx).send_mail(
-                        email_partner.id, force_send=False)
+                        email_partner.id, force_send=True)
                 if partner_list:
                     data_dict = {
                         'partner_ids': list(set(partner_list)),
                         'start_date': start_date,
-                        'end_date': end_date
+                        'end_date': end_date,
                     }
                     return self.env.ref(
                         'nshore_customization.custom_customer_statement'

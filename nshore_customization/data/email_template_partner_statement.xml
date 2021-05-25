@@ -2,7 +2,7 @@
 <odoo>
 
     <record id="email_template_partner_statement" model="mail.template">
-        <field name="name">Customer Statement</field>
+        <field name="name">Customer statement</field>
         <field name="email_from">${ctx['email_from']|safe}</field>
         <field name="subject">Statement</field>
         <field name="email_to">${ctx['email_to']|safe}</field>
@@ -12,7 +12,7 @@
         <field name="body_html">
             <![CDATA[
                 <p>Dear ${object.name},</p>
-                <p>Here is your statement for the month of (previous month), please remit payment at your earliest convenience, if you have any questions please do not hesitate to call, as always we appreciate your business.</p>
+                <p>Here is your statement for the month of ${ctx['previous_month']}, please remit payment at your earliest convenience, if you have any questions please do not hesitate to call, as always we appreciate your business.</p>
                 <p>Than you,<br>
                 North Shore Sprinkler Supply Corp<br>
                 665 Union Ave Suite 1<br>
