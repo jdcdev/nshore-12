@@ -20,6 +20,21 @@
         </xpath>
         <xpath expr="//p[@name='note']" position="replace">
         </xpath>
+        <xpath expr="//div[hasclass('clearfix')]" position="after">
+            <div id="image_before" class="col-6 position-relative">
+                <h5 class="pt-3" style="font-size: 15px;">
+                    <t t-if="o.digital_signature">
+                        <strong>Signature:</strong>
+                    </t>
+                    <t t-else="">
+                        <strong style="position: absolute;left: 13%;right: 0;top: 50%;">
+                            SIGNATURE</strong>
+                    </t>
+                    <img style="height:122px;width:366px;"
+                         t-att-src="'data:image/png;base64,%s' % to_text(o.digital_signature)"/>
+                </h5>
+            </div>
+        </xpath>
         <xpath expr="//div[@class='page']" position="before">
             <div class="row ml-auto">
                 <t t-if="o.partner_shipping_id">
@@ -69,8 +84,24 @@
                     </t>
                     <br/>
                     <t t-if="o.date_due">
-                        <strong>Due Date : </strong><span t-field="o.date_due"/>
+                        <strong>Source : </strong><span t-field="o.date_due"/>
                     </t>
+                    <!-- <strong>Signature : </strong><img style="height:122px;width:366px;"
+                                                    t-att-src="'data:image/png;base64,%s' % to_text(o.digital_signature)"/> -->
+                   <!--  <div id="image_before" class="col-6 position-relative">
+                        <h5 class="pt-3" style="font-size: 15px;">
+                            <t t-if="o.digital_signature">
+                                <strong>Signature:</strong>
+                            </t>
+                            <t t-else="">
+                                <strong style="position: absolute;left: 13%;right: 0;top: 50%;">
+                                    SIGNATURE</strong>
+                            </t>
+                            <img style="height:122px;width:366px;"
+                                 t-att-src="'data:image/png;base64,%s' % to_text(o.digital_signature)"/>
+                        </h5>
+                    </div> -->
+                   <!--  </t> -->
                     <br/>
                     <t t-if="o.reference">
                         <strong>Reference : </strong><span t-field="o.reference"/>

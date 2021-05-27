@@ -80,6 +80,9 @@ class AccountInvoice(models.Model):
     invoice_line_ids = fields.One2many(
         'account.invoice.line', 'invoice_id',
         string='Invoice Lines', oldname='invoice_line', copy=True, readonly=False)
+    digital_signature = fields.Binary('Signature', copy=False)
+    has_to_be_signed = fields.Boolean(copy=False)
+    signed_by = fields.Char('Signed by', help='Name of the person that signed the SO.', copy=False)
 
     def price_updates(self):
         """Update products prices when change the partner."""
@@ -112,6 +115,15 @@ class AccountInvoice(models.Model):
                 }
             else:
                 return super(AccountInvoice, self).action_invoice_open()
+
+    @api.multi
+    def write(self, values):
+        """Update Signature boolean for readonly it."""
+        print("<<<<<<<<<<<<<<<<<<<<<<", self._context)
+        if self._context.get('params') and self._context.get('params').get('view_type') == 'form' and \
+                values.get('digital_signature'):
+            values.update({'has_to_be_signed': True})
+        return super(AccountInvoice, self).write(values)
 
     @api.onchange('partner_id')
     def onchange_partner(self):

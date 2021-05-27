@@ -52,6 +52,15 @@
                         string="Prices Updates" class="btn-primary" type="object" attrs="{'invisible': [('state', 'not in', ['draft'])]}"
                         />
                 </xpath>
+                <xpath expr="//page[@name='other_info']" position="after">
+                    <page name="digital_signature" string="Digital Signature" >
+                        <field name="has_to_be_signed" invisible="1"/>
+                        <label for="digital_signature" string="Signature" class="oe_edit_only"/>
+                        <h2>
+                            <field name="digital_signature" widget="signature" attrs="{'readonly':['|',('state', 'in', ['draft']), ('has_to_be_signed', '!=', False)]}"/>
+                        </h2>
+                    </page>
+                </xpath>
             </field>
         </record>
 
