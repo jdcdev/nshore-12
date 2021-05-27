@@ -119,9 +119,7 @@ class AccountInvoice(models.Model):
     @api.multi
     def write(self, values):
         """Update Signature boolean for readonly it."""
-        print("<<<<<<<<<<<<<<<<<<<<<<", self._context)
-        if self._context.get('params') and self._context.get('params').get('view_type') == 'form' and \
-                values.get('digital_signature'):
+        if self._context.get('params') and self._context.get('params').get('view_type') == 'form' and values.get('digital_signature'):
             values.update({'has_to_be_signed': True})
         return super(AccountInvoice, self).write(values)
 
