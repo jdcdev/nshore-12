@@ -35,7 +35,7 @@ class ProductTemplate(models.Model):
                 self.list_price, float(values['list_price']),)
         if values.get('lst_price'):
             msg += "<li> %s:" % (self.name,)
-            msg += "<br/>" + _("Public Price") + ": %s -> %s <br/>" % (
+            msg += "<br/>" + _("Sales Price") + ": %s -> %s <br/>" % (
                 self.lst_price, float(values['lst_price']),)
         if values.get('standard_price'):
             msg += "<li> %s:" % (self.name,)
@@ -47,18 +47,10 @@ class ProductTemplate(models.Model):
                 self.net_cost, float(values['net_cost']),)
         self.message_post(body=msg)
 
-    # @api.multi
-    # def write(self, vals):
-    #     """Function override for teacking note."""
-    #     if vals.get('lst_price') or vals.get('standard_price') or vals.get('net_cost'):
-    #         self._update_price_values(vals)
-    #     else:
-    #         return super(ProductTemplate, self).write(vals)
-
     @api.multi
     def write(self, vals):
-        self._update_price_values(vals)
-        print("\n\n\n vals *******111*********", vals)
+        for rec in self:
+            rec._update_price_values(vals)
         tools.image_resize_images(vals)
         res = super(ProductTemplate, self).write(vals)
         if 'attribute_line_ids' in vals or vals.get('active'):
