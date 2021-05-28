@@ -111,7 +111,8 @@ class AccountInvoice(models.Model):
                     'view_id': view.id,
                     'res_model': 'custom.pop.message',
                     'target': 'new',
-                    'context': {'default_message': msg, 'default_invoice': order.id}
+                    'context': {
+                        'default_message': msg, 'default_invoice': order.id}
                 }
             else:
                 return super(AccountInvoice, self).action_invoice_open()
@@ -119,8 +120,13 @@ class AccountInvoice(models.Model):
     @api.multi
     def write(self, values):
         """Update Signature boolean for readonly it."""
-        if self._context.get('params') and self._context.get('params').get('view_type') == 'form' and values.get('digital_signature'):
+        if self._context.get('active_model') == 'sale.order' and values.get(
+                'digital_signature'):
             values.update({'has_to_be_signed': True})
+        if self._context.get('params') and self._context.get('params').get(
+                'view_type') == 'form':
+            if values.get('digital_signature'):
+                values.update({'has_to_be_signed': True})
         return super(AccountInvoice, self).write(values)
 
     @api.onchange('partner_id')
