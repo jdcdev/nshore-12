@@ -276,6 +276,7 @@ class CustomerStatementReport(models.AbstractModel):
                         'on_account': on_account
                     }
                     partner_dict[partner].update(cust_dict)
+        print("\n\n\n partner_dict", partner_dict)
         return partner_dict
 
     @api.model
