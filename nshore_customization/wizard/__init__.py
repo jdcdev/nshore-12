@@ -8,3 +8,4 @@ from . import customer_purchases
 from . import wizard_inventory_adjustment
 from . import update_price_list_item
 from . import update_invoice_lines
+from . import open_po_report_wizard
