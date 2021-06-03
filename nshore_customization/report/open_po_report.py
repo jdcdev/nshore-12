@@ -76,35 +76,65 @@ class OpenPoReport(models.AbstractModel):
                             new_dict = {'categ_partner': data['catgeory_partner']}
                             partner_dict[partner].update(new_dict)
         if data['catgeory_partner'] == 'category':
-            categ_ids = self.env['product.category'].browse(
-                data['category_ids'])
-            for category in categ_ids:
-                partner = category
-                purchase_order_line = self.env['purchase.order.line'].search(
-                    [('order_id.date_order', '>=', start_date),
-                        ('order_id.date_order', '<=', end_date),
-                        ('product_id.categ_id', '=', category.id),
-                        ('order_id.state', 'not in', ['purchase', 'cancel'])])
-                for line in purchase_order_line:
-                    purchase_line_vals = {
-                        'date': line.order_id.date_order.date(),
-                        'purchase_order': line.order_id.name,
-                        'product': line.product_id.name,
-                        'categ_id': line.product_id.categ_id.complete_name,
-                        'product_qty': line.product_qty,
-                        'qty_received': line.qty_received
-                    }
-                    if partner not in partner_dict.keys():
-                        partner_dict.update({
-                            partner: {
-                                'order_line': [purchase_line_vals],
-                            }
-                        })
-                    else:
-                        partner_dict[partner]['order_line'].append(
-                            purchase_line_vals)
-                    new_dict = {'categ_partner': data['catgeory_partner']}
-                    partner_dict[partner].update(new_dict)
+            if data['all_categ']:
+                all_categ_ids = self.env['product.category'].search([])
+                for category in all_categ_ids:
+                    partner = category
+                    purchase_order_line = self.env['purchase.order.line'].search(
+                        [('order_id.date_order', '>=', start_date),
+                            ('order_id.date_order', '<=', end_date),
+                            ('product_id.categ_id', '=', category.id),
+                            ('order_id.state', 'not in', ['purchase', 'cancel'])])
+                    for line in purchase_order_line:
+                        purchase_line_vals = {
+                            'date': line.order_id.date_order.date(),
+                            'purchase_order': line.order_id.name,
+                            'product': line.product_id.name,
+                            'categ_id': line.product_id.categ_id.complete_name,
+                            'product_qty': line.product_qty,
+                            'qty_received': line.qty_received
+                        }
+                        if partner not in partner_dict.keys():
+                            partner_dict.update({
+                                partner: {
+                                    'order_line': [purchase_line_vals],
+                                }
+                            })
+                        else:
+                            partner_dict[partner]['order_line'].append(
+                                purchase_line_vals)
+                        new_dict = {'categ_partner': data['catgeory_partner']}
+                        partner_dict[partner].update(new_dict)
+            if not data['all_categ']:
+                categ_ids = self.env['product.category'].browse(
+                    data['category_ids'])
+                for category in categ_ids:
+                    partner = category
+                    purchase_order_line = self.env['purchase.order.line'].search(
+                        [('order_id.date_order', '>=', start_date),
+                            ('order_id.date_order', '<=', end_date),
+                            ('product_id.categ_id', '=', category.id),
+                            ('order_id.state', 'not in', ['purchase', 'cancel'])])
+                    for line in purchase_order_line:
+                        purchase_line_vals = {
+                            'date': line.order_id.date_order.date(),
+                            'purchase_order': line.order_id.name,
+                            'product': line.product_id.name,
+                            'categ_id': line.product_id.categ_id.complete_name,
+                            'product_qty': line.product_qty,
+                            'qty_received': line.qty_received
+                        }
+                        if partner not in partner_dict.keys():
+                            partner_dict.update({
+                                partner: {
+                                    'order_line': [purchase_line_vals],
+                                }
+                            })
+                        else:
+                            partner_dict[partner]['order_line'].append(
+                                purchase_line_vals)
+                        new_dict = {'categ_partner': data['catgeory_partner']}
+                        partner_dict[partner].update(new_dict)
         return partner_dict
 
     @api.model
