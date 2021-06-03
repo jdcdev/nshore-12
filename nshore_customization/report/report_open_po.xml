@@ -2,92 +2,77 @@
 <odoo>
     <template id="open_purchase_order_report_template">
         <t t-call="web.external_layout">
-                <div class="page">
-                    <div t-foreach="lines_data" t-as="o" style="page-break-after: always">
-                        <div class="row">
-                            <div class="col-12">
-                                <center><h2>Open Purchase Order Report</h2></center>
-                            </div>
-                        </div>
-                        <div class="row mt16">
+            <div class="row">
+                <div class="col-12">
+                    <center><h2>Open Purchase Order Report</h2></center>
+                    <br />
+                </div>
+            </div>
+            <div t-foreach="lines_data" t-as="o">
+                <div class="row" style="width:100%">
+                    <t t-if="lines_data[o].get('categ_partner') == 'partner'">
+                        <span class="text-left" t-esc="o.name"/>
+                    </t>
+                    <t t-if="lines_data[o].get('categ_partner') == 'category'">
+                        <span class="text-left" t-esc="o.complete_name"/>
+                    </t>
+                </div>
+                <div class="row mt16">
+                    <table class="table div-rounded" width="100%">
+                        <tr>
+                            <td class="text-right">
+                                <b>SR. No</b>
+                            </td>
+                            <td class="text-right">
+                                <b>Date</b>
+                            </td>
+                            <td class="text-left">
+                                <b>Product</b>
+                            </td>
+                            <td class="text-left">
+                                <b>Purchase Order</b>
+                            </td>
                             <t t-if="lines_data[o].get('categ_partner') == 'partner'">
-                                <div class="col-3" align="left">
-                                    <span class="text-left" t-esc="o.name"/>
-                                    <br/>
-                                </div>
+                                <td class="text-left">
+                                    <b>Product Category</b>
+                                </td>
                             </t>
-                            <t t-if="lines_data[o].get('categ_partner') == 'category'">
-                                <div class="col-3" align="left">
-                                    <span class="text-left" t-esc="o.complete_name"/>
-                                    <br/>
-                                </div>
+                            <td class="text-right">
+                                <b>Ordered Qty</b>
+                            </td>
+                            <td class="text-right">
+                                <b>Received Qty</b>
+                            </td>
+                        </tr>
+                        <t t-set="i" t-value="1" /> 
+                        <tr t-foreach="lines_data[o].get('order_line', [])" t-as="move_list">
+                            <td class="text-right">
+                                <span t-esc="i"/> 
+                                <t t-set="i" t-value="i+1"/>
+                            </td>
+                            <td class="text-right">
+                               <span t-esc="move_list.get('date')"/>
+                            </td>
+                            <td class="text-left">
+                               <span t-esc="move_list.get('product')"/>
+                            </td>
+                            <td class="text-left">
+                                <span t-esc="move_list.get('purchase_order')"/>
+                            </td>
+                            <t t-if="lines_data[o].get('categ_partner') == 'partner'">
+                                <td class="text-left">
+                                    <span t-esc="move_list.get('categ_id')"/>
+                                </td>
                             </t>
-                             <div class="col-1">
-                             </div>
-                            <div class="col-8 text-left">
-                                <p>
-                                    <strong>Printed:</strong>
-                                    <span style="margin-left:1px;" t-esc="datetime.date.today().strftime('%B %d, %Y')"/>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="row mt16">
-                            <table class="table div-rounded" width="100%">
-                                <tr>
-                                    <td class="text-right">
-                                        <b>Sr No</b>
-                                    </td>
-                                    <td class="text-right">
-                                        <b>Date</b>
-                                    </td>
-                                    <td class="text-right">
-                                        <b>Product</b>
-                                    </td>
-                                    <td class="text-right">
-                                        <b>Purchase Order</b>
-                                    </td>
-                                    <t t-if="lines_data[o].get('categ_partner') == 'partner'">
-                                        <td class="text-right">
-                                            <b>Product Category</b>
-                                        </td>
-                                    </t>
-                                    <td class="text-right">
-                                        <b>Ordered Qty</b>
-                                    </td>
-                                    <td class="text-right">
-                                        <b>Received Qty</b>
-                                    </td>
-                                </tr>
-                                <t t-set="i" t-value="1" /> 
-                                <tr t-foreach="lines_data[o].get('order_line', [])" t-as="move_list">
-                                    <td class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
-                                        <span t-esc="i"/> 
-                                        <t t-set="i" t-value="i+1"/>
-                                    </td>
-                                    <td class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
-                                       <span t-esc="move_list.get('date')"/>
-                                    </td>
-                                    <td style="padding-top:0px;padding-bottom:0px;font-size:13px" class="text-right">
-                                       <span t-esc="move_list.get('product')"/>
-                                    </td>
-                                    <td class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
-                                        <span t-esc="move_list.get('purchase_order')"/>
-                                    </td>
-                                    <t t-if="lines_data[o].get('categ_partner') == 'partner'">
-                                        <td class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
-                                            <span t-esc="move_list.get('categ_id')"/>
-                                        </td>
-                                    </t>
-                                    <td class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
-                                        <span t-esc="move_list.get('product_qty')"/>
-                                    </td>
-                                    <td class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
-                                        <span t-esc="move_list.get('qty_received')"/>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
+                            <td class="text-right">
+                                <span t-esc="move_list.get('product_qty')"/>
+                            </td>
+                            <td class="text-right">
+                                <span t-esc="move_list.get('qty_received')"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </t>
     </template>

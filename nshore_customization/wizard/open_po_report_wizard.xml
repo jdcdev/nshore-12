@@ -5,14 +5,19 @@
         <field name="model">open.po.report.wizard</field>
         <field name="arch" type="xml">
             <form string="Open PO Report">
-                <group col="4">
-                    <field name="start_date" required="1"/>
-                    <field name="end_date" required="1"/>
-                    <field name="all_vendor" attrs="{'invisible': [('catgeory_partner', '=', 'category')]}"/>
-                    <field name="catgeory_partner" required="1"/>
+                <group>
+                    <group>
+                        <field name="start_date" required="1"/>
+                        <field name="all_vendor" attrs="{'invisible': [('catgeory_partner', '=', 'category')]}"/>
+                        <field name="all_categ" attrs="{'invisible': [('catgeory_partner', '=', 'partner')]}"/>
+                    </group>
+                    <group>
+                        <field name="end_date" required="1"/>
+                        <field name="catgeory_partner" required="1"/>
+                    </group>
                 </group>
                 <group>
-                    <field name="category_ids" widget="many2many_tags" attrs="{'invisible': [('catgeory_partner', '=', 'partner')]}"/>
+                    <field name="category_ids" widget="many2many_tags" attrs="{'invisible': ['|', ('all_categ', '=', True),('catgeory_partner', '=', 'partner')]}"/>
                     <field name="partner_ids" widget="many2many_tags" attrs="{'invisible': ['|', ('all_vendor', '=', True),('catgeory_partner', '=', 'category')]}"/>
                 </group>
                 <footer>

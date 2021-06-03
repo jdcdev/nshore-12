@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import fields, models, api, _
+from odoo import fields, models, _
 from odoo.exceptions import UserError
 
 
@@ -9,8 +9,8 @@ class OpenPOReportWizard(models.TransientModel):
 
     _name = 'open.po.report.wizard'
 
-    start_date = fields.Datetime(string="Start Date")
-    end_date = fields.Datetime(string="End Date")
+    start_date = fields.Date(string="Start Date")
+    end_date = fields.Date(string="End Date")
     partner_ids = fields.Many2many(
         'res.partner', string='Vendor', domain="[('is_company', '=', True)]")
     category_ids = fields.Many2many(
@@ -19,6 +19,7 @@ class OpenPOReportWizard(models.TransientModel):
         'res.company', String="Company",
         default=lambda self: self.env.user.company_id)
     all_vendor = fields.Boolean(string="All Vendor?", default=True)
+    all_categ = fields.Boolean(string="All Category?", default=True)
     catgeory_partner = fields.Selection([
         ('partner', 'Partner'), ('category', 'Category')],
         string="Report for?", default='partner')
@@ -35,7 +36,8 @@ class OpenPOReportWizard(models.TransientModel):
             'start_date',
             'end_date',
             'all_vendor',
-            'catgeory_partner'
+            'catgeory_partner',
+            'all_categ'
         ])[0]
         start_date = data['start_date']
         end_date = data['end_date']
@@ -43,15 +45,16 @@ class OpenPOReportWizard(models.TransientModel):
         catgeory_partner = data['catgeory_partner']
         partner_list = self.partner_ids.ids
         category_list = self.category_ids.ids
+        all_categ = data['all_categ']
         data_dict.update({
             'partner_ids': list(set(partner_list)),
             'category_ids': list(set(category_list)),
             'start_date': start_date,
             'end_date': end_date,
             'all_vendor': all_vendor,
-            'catgeory_partner': catgeory_partner
+            'catgeory_partner': catgeory_partner,
+            'all_categ': all_categ
         })
-        print("\n\n\n data_dict", data_dict)
         return self.env.ref(
             'nshore_customization.action_report_open_po').report_action(
             self, data_dict)
