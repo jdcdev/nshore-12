@@ -9,13 +9,15 @@
                 </div>
             </div>
             <div t-foreach="lines_data" t-as="o">
-                <div class="row" style="width:100%">
-                    <t t-if="lines_data[o].get('categ_partner') == 'partner'">
-                        <span class="text-left" t-esc="o.name"/>
-                    </t>
-                    <t t-if="lines_data[o].get('categ_partner') == 'category'">
-                        <span class="text-left" t-esc="o.complete_name"/>
-                    </t>
+                <div class="row">
+                    <div class="col-12">
+                        <t t-if="lines_data[o].get('categ_partner') == 'partner'">
+                            <span class="text-left" t-esc="o.name"/>
+                        </t>
+                        <t t-if="lines_data[o].get('categ_partner') == 'category'">
+                            <span class="text-left" t-esc="o.complete_name"/>
+                        </t>
+                    </div>
                 </div>
                 <div class="row mt16">
                     <table class="table div-rounded" width="100%">
