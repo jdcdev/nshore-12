@@ -2,6 +2,14 @@
 <odoo>
     <template id="open_purchase_order_report_template">
         <t t-call="web.external_layout">
+            <div class="row mt16">
+                <div class="col-8">
+                    <strong>Start Date : </strong><span t-esc="start_date"/>
+                </div>
+                <div class="col-4 text-right">
+                    <strong>End Date : </strong><span t-esc="end_date"/>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-12">
                     <center><h2>Open Purchase Order Report</h2></center>
@@ -10,6 +18,10 @@
             </div>
             <div t-foreach="lines_data" t-as="o">
                 <div class="row">
+                    <t t-set="start_date" t-value="''"/>
+                    <t t-set="end_date" t-value="''"/>
+                    <span t-esc="lines_data[o].get('start_date')"/>
+                    <span t-esc="lines_data[o].get('end_date')"/>
                     <div class="col-12">
                         <t t-if="lines_data[o].get('categ_partner') == 'partner'">
                             <span class="text-left" t-esc="o.name"/>
