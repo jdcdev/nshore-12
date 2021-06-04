@@ -43,7 +43,9 @@ class OpenPoReport(models.AbstractModel):
                             else:
                                 partner_dict[partner]['order_line'].append(
                                     purchase_line_vals)
-                            new_dict = {'categ_partner': data['catgeory_partner']}
+                            new_dict = {'categ_partner': data['catgeory_partner'],
+                                        'start_date': start_date,
+                                        'end_date': end_date}
                             partner_dict[partner].update(new_dict)
             if not data['all_vendor']:
                 partner_ids = self.env['res.partner'].browse(
@@ -73,7 +75,9 @@ class OpenPoReport(models.AbstractModel):
                             else:
                                 partner_dict[partner]['order_line'].append(
                                     purchase_line_vals)
-                            new_dict = {'categ_partner': data['catgeory_partner']}
+                            new_dict = {'categ_partner': data['catgeory_partner'],
+                                        'start_date': start_date,
+                                        'end_date': end_date}
                             partner_dict[partner].update(new_dict)
         if data['catgeory_partner'] == 'category':
             if data['all_categ']:
@@ -103,7 +107,9 @@ class OpenPoReport(models.AbstractModel):
                         else:
                             partner_dict[partner]['order_line'].append(
                                 purchase_line_vals)
-                        new_dict = {'categ_partner': data['catgeory_partner']}
+                        new_dict = {'categ_partner': data['catgeory_partner'],
+                                    'start_date': start_date,
+                                    'end_date': end_date}
                         partner_dict[partner].update(new_dict)
             if not data['all_categ']:
                 categ_ids = self.env['product.category'].browse(
@@ -133,8 +139,11 @@ class OpenPoReport(models.AbstractModel):
                         else:
                             partner_dict[partner]['order_line'].append(
                                 purchase_line_vals)
-                        new_dict = {'categ_partner': data['catgeory_partner']}
+                        new_dict = {'categ_partner': data['catgeory_partner'],
+                                    'start_date': start_date,
+                                    'end_date': end_date}
                         partner_dict[partner].update(new_dict)
+        print("\n\n\n partner_dict", partner_dict)
         return partner_dict
 
     @api.model
