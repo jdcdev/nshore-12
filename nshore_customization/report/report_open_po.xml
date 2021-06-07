@@ -57,6 +57,9 @@
                             <td class="text-right">
                                 <b>Received Qty</b>
                             </td>
+                            <td class="text-right">
+                                <b>Backorder Qty</b>
+                            </td>
                         </tr>
                         <t t-set="i" t-value="1" /> 
                         <tr t-foreach="lines_data[o].get('order_line', [])" t-as="move_list">
@@ -79,10 +82,13 @@
                                 </td>
                             </t>
                             <td class="text-right">
-                                <span t-esc="move_list.get('product_qty')"/>
+                                <t t-esc="'{0:,.0f}'.format(move_list.get('product_qty'))"/>
                             </td>
                             <td class="text-right">
-                                <span t-esc="move_list.get('qty_received')"/>
+                                <t t-esc="'{0:,.0f}'.format(move_list.get('qty_received'))"/>
+                            </td>
+                            <td class="text-right">
+                                <t t-esc="'{0:,.0f}'.format(move_list.get('back_order_qty'))"/>
                             </td>
                         </tr>
                     </table>
