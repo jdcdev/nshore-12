@@ -26,8 +26,10 @@ class OpenPoReport(models.AbstractModel):
                             ('order_id.date_order', '<=', end_date),
                             ('order_id.state', 'not in', ['lock', 'cancel', 'return'])])
                     # for purchase in purchase_line_data:
-                    for line in purchase_line_data.sorted(
+                    for line in purchase_line_data.filtered(
+                        lambda l: l.qty_received < l.product_qty).sorted(
                             key=lambda p: (p.product_id.name)):
+                        # if line.qty_received < line.product_qty:
                         if line.order_id.picking_count > 1:
                             back_order_qty = line.product_qty - line.qty_received
                         purchase_line_vals = {
@@ -62,7 +64,8 @@ class OpenPoReport(models.AbstractModel):
                             ('order_id.date_order', '<=', end_date),
                             ('order_id.state', 'not in', ['lock', 'cancel', 'return'])])
                     # for purchase in purchase_data:
-                    for line in purchase_line_data.sorted(
+                    for line in purchase_line_data.filtered(
+                        lambda l: l.qty_received < l.product_qty).sorted(
                             key=lambda p: (p.product_id.name)):
                         if line.order_id.picking_count > 1:
                             back_order_qty = line.product_qty - line.qty_received
@@ -98,7 +101,8 @@ class OpenPoReport(models.AbstractModel):
                             ('order_id.date_order', '<=', end_date),
                             ('product_id.categ_id', '=', category.id),
                             ('order_id.state', 'not in', ['done', 'cancel', 'return'])])
-                    for line in purchase_order_line.sorted(
+                    for line in purchase_order_line.filtered(
+                        lambda l: l.qty_received < l.product_qty).sorted(
                             key=lambda p: (p.product_id.name)):
                         if line.order_id.picking_count > 1:
                             back_order_qty = line.product_qty - line.qty_received
@@ -134,7 +138,8 @@ class OpenPoReport(models.AbstractModel):
                             ('order_id.date_order', '<=', end_date),
                             ('product_id.categ_id', '=', category.id),
                             ('order_id.state', 'not in', ['done', 'cancel', 'return'])])
-                    for line in purchase_order_line.sorted(
+                    for line in purchase_order_line.filtered(
+                        lambda l: l.qty_received < l.product_qty).sorted(
                             key=lambda p: (p.product_id.name)):
                         if line.order_id.picking_count > 1:
                             back_order_qty = line.product_qty - line.qty_received
