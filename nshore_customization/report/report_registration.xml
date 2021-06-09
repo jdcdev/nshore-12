@@ -233,5 +233,16 @@
             name="nshore_customization.report_layout_customer_product_pricelist"
             file="nshore_customization.report_layout_customer_product_pricelist"/>
 
+        <!-- Open PO Report-->
+        <report 
+            id="action_report_open_po"
+            model="purchase.order"
+            string="Open PO Report"
+            report_type="qweb-pdf"
+            name="nshore_customization.report_open_po"
+            file="nshore_customization.report_open_po"
+            menu="False"
+        />
+
     </data>
 </odoo>
