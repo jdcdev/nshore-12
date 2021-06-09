@@ -7,4 +7,10 @@
     <record id="stock.stock_picking_type_menu" model="ir.ui.menu">
         <field name="sequence">1</field>
     </record>
+
+    <menuitem id="purchase.purchase_report" name="Reporting" parent="purchase.menu_purchase_root" sequence="99"
+        groups="purchase.group_purchase_manager"/>
+
+    <menuitem id="purchase_report_report" name="Reporting" parent="purchase.purchase_report" sequence="100"
+        groups="purchase.group_purchase_manager" action="purchase.action_purchase_order_report_all"/>
 </odoo>
