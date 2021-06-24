@@ -12,23 +12,26 @@
                     <div class="m-0">
                         <div class="page">
                             <style type="text/css">
-                                .table td {
+                            .table td {
                                 border: none;
                                 height: 2px !important;
-                                }
-                                .table th {
+                            }
+
+                            .table th {
                                 border: 0px;
-                                }
-                                td:first-child, th:first-child {
+                            }
+
+                            td:first-child,
+                            th:first-child {
                                 border-left: none;
-                                }
+                            }
                             </style>
                             <table class="table" width="100%">
                                 <t t-if="docs['comparsion'] == True">
                                     <tr style="line-height:0px;">
-                                        <td/>
-                                        <td/>
-                                        <td/>
+                                        <td />
+                                        <td />
+                                        <td />
                                         <td colspan="4">
                                             _________Report
                                             Peroid____________
@@ -37,7 +40,7 @@
                                             _________Previous
                                             Peroid____________
                                         </td>
-                                        <td/>
+                                        <td />
                                     </tr>
                                 </t>
                                 <tr style="font-size:13px">
@@ -87,80 +90,71 @@
                                 <tbody>
                                     <tr t-foreach="purchase_rec" t-as="rec_data">
                                         <td style="padding-top:0px;padding-bottom:0px;font-size:13px">
-                                            <span t-esc="rec_data['cust_ref']"/>
+                                            <span t-esc="rec_data['cust_ref']" />
                                         </td>
                                         <td style="padding-top:0px;padding-bottom:0px;font-size:13px;white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 350px;">
-                                            <span t-esc="rec_data['cust_name']"/>
+                                            <span t-esc="rec_data['cust_name']" />
                                         </td>
                                         <td style="padding-top:0px;padding-bottom:0px;font-size:13px;white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 350px;">
-                                            <span t-esc="rec_data['purchased_date']"/>
+                                            <span t-esc="rec_data['purchased_date']" />
                                         </td>
                                         <td class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
-                                            <span t-esc="rec_data['total_purchased_amount']"
-                                                  t-options="{'widget': 'monetary','display_currency': currency_id}"/>
+                                            <span t-esc="rec_data['total_purchased_amount']" t-options="{'widget': 'monetary','display_currency': currency_id}" />
                                         </td>
                                         <td class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
-                                            <span t-esc="rec_data['total_discounts']"
-                                                  t-options='{"widget": "float", "precision": 2}'/>%
+                                            <span t-esc="rec_data['total_discounts']" t-options='{"widget": "float", "precision": 2}' />%
                                         </td>
                                         <td class="text-right" t-if="docs['gross_profit'] == False" style="padding-top:0px;padding-bottom:0px;font-size:13px">
-                                            <span t-esc="rec_data['total_gross_profit']"
-                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                            <span t-esc="rec_data['total_gross_profit']" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
                                         </td>
                                         <td t-if="docs['with_margin'] == False" class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
-                                            <span t-esc="rec_data['total_margin']"  t-options='{"widget": "float", "precision": 2}'/>%
+                                            <span t-esc="rec_data['total_margin']" t-options='{"widget": "float", "precision": 2}' />%
                                         </td>
                                         <!-- <td t-if="docs['with_margin'] == True" class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
                                             <span t-esc="rec_data['total_margin']"/>%
                                         </td> -->
                                         <td t-if="docs['comparsion'] == True" class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
-                                            <span t-esc="rec_data['past_total_purchased_amount']"
-                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                            <span t-esc="rec_data['past_total_purchased_amount']" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
                                         </td>
                                         <td t-if="docs['comparsion'] == True and docs['gross_profit'] == False" class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
-                                            <span t-esc="rec_data['past_total_gross_profit']"
-                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                            <span t-esc="rec_data['past_total_gross_profit']" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
                                         </td>
                                         <td t-if="docs['comparsion'] == True and docs['with_margin'] == False" class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
-                                            <span t-esc="rec_data['past_total_margin']" t-options='{"widget": "float", "precision": 2}'/>%
+                                            <span t-esc="rec_data['past_total_margin']" t-options='{"widget": "float", "precision": 2}' />%
                                         </td>
                                         <td t-if="docs['comparsion'] == True" class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
-                                            <span t-esc="rec_data['total_changed_amount']"
-                                                  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                            <span t-esc="rec_data['total_changed_amount']" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
                                         </td>
                                         <td t-if="docs['comparsion'] == True" class="text-right" style="padding-top:0px;padding-bottom:0px;font-size:13px">
-                                            <span t-esc="rec_data['total_changed_per']"/>%
+                                            <span t-esc="rec_data['total_changed_per']" />%
                                         </td>
                                     </tr>
-                                    <tr/>
+                                    <tr />
                                     <tr>
                                         <td colspan="2">
                                             <b>Grand total:</b>
                                             <div style="border:1px; border-style: groove;"></div>
                                             <div style="border:1px; border-style: groove;margin-top:1px;"></div>
                                         </td>
-                                        <td/>
+                                        <td />
                                         <td class="text-right">
                                             <b>
-                                                <span t-esc="grand_total_purchased_amount"
-                                                      t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                                <span t-esc="grand_total_purchased_amount" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
                                             </b>
-                                            <br/>
+                                            <br />
                                             <div style="border:1px; border-style: groove;"></div>
                                             <div style="border:1px; border-style: groove;margin-top:1px;"></div>
                                         </td>
                                         <td class="text-right">
                                             <b>
-                                                <span t-esc="grand_total_discounts"
-                                                      t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                                <span t-esc="grand_total_discounts" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
                                             </b>
                                             <div style="border:1px; border-style: groove;"></div>
                                             <div style="border:1px; border-style: groove;margin-top:1px;"></div>
                                         </td>
                                         <td class="text-right" t-if="docs['gross_profit'] == False">
                                             <b>
-                                                <span t-esc="grand_total_gross_profit"
-                                                      t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                                <span t-esc="grand_total_gross_profit" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
                                             </b>
                                             <div style="border:1px; border-style: groove;"></div>
                                             <div style="border:1px; border-style: groove;margin-top:1px;"></div>
@@ -173,46 +167,40 @@
                                             <div style="border:1px; border-style: groove;margin-top:1px;"></div>
                                         </td> -->
                                         <td class="text-right" t-if="docs['with_margin'] == False">
-                                            <b><span t-esc="grand_total_margin"
-                                                     t-options='{"widget": "float", "precision": 2}'/>%
+                                            <b><span t-esc="grand_total_margin" t-options='{"widget": "float", "precision": 2}' />%
                                             </b>
                                             <div style="border:1px; border-style: groove;"></div>
                                             <div style="border:1px; border-style: groove;margin-top:1px;"></div>
                                         </td>
                                         <td t-if="docs['comparsion'] == True" class="text-right">
                                             <b>
-                                                <span t-esc="grand_past_total_purchased_amount"
-                                                      t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                                <span t-esc="grand_past_total_purchased_amount" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
                                             </b>
                                             <div style="border:1px; border-style: groove;"></div>
                                             <div style="border:1px; border-style: groove;margin-top:1px;"></div>
                                         </td>
                                         <td t-if="docs['comparsion'] == True and docs['gross_profit'] == False" class="text-right">
                                             <b>
-                                                <span t-esc="grand_past_total_gross_profit"
-                                                      t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                                <span t-esc="grand_past_total_gross_profit" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
                                             </b>
                                             <div style="border:1px; border-style: groove;"></div>
                                             <div style="border:1px; border-style: groove;margin-top:1px;"></div>
                                         </td>
                                         <td t-if="docs['comparsion'] == True and docs['with_margin'] == False" class="text-right">
-                                            <b><span t-esc="grand_past_total_margin"
-                                                     t-options='{"widget": "float", "precision": 2}'/>%
+                                            <b><span t-esc="grand_past_total_margin" t-options='{"widget": "float", "precision": 2}' />%
                                             </b>
                                             <div style="border:1px; border-style: groove;"></div>
                                             <div style="border:1px; border-style: groove;margin-top:1px;"></div>
                                         </td>
                                         <td t-if="docs['comparsion'] == True" class="text-right">
                                             <b>
-                                                <span t-esc="grand_total_changed_amount"
-                                                      t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                                <span t-esc="grand_total_changed_amount" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
                                             </b>
                                             <div style="border:1px; border-style: groove;"></div>
                                             <div style="border:1px; border-style: groove;margin-top:1px;"></div>
                                         </td>
                                         <td t-if="docs['comparsion'] == True" class="text-right">
-                                            <b><span t-esc="grand_total_changed_per"
-                                                     t-options='{"widget": "float", "precision": 2}'/>%
+                                            <b><span t-esc="grand_total_changed_per" t-options='{"widget": "float", "precision": 2}' />%
                                             </b>
                                             <div style="border:1px; border-style: groove;"></div>
                                             <div style="border:1px; border-style: groove;margin-top:1px;"></div>
@@ -232,11 +220,10 @@
                 <div class="col-6">
                     <h2 class="text-left">Customer Purchases</h2>
                 </div>
-
                 <div class="col-6 text-right">
                     <p>
                         <strong>Printed:</strong>
-                        <span style="margin-left:10px;" t-esc="datetime.date.today().strftime('%B %d, %Y')"/>
+                        <span style="margin-left:10px;" t-esc="datetime.date.today().strftime('%B %d, %Y')" />
                     </p>
                 </div>
             </div>
@@ -247,29 +234,28 @@
                     <div class="col-6 text-right">
                         <p>
                             <strong>From:</strong>
-                            <span t-esc="docs['start_date']"/>&amp;nbsp;&amp;nbsp;&amp;nbsp;
+                            <span t-esc="docs['start_date']" />&amp;nbsp;&amp;nbsp;&amp;nbsp;
                             <strong>To:</strong>
-                            <span t-esc="docs['end_date']"/>
+                            <span t-esc="docs['end_date']" />
                         </p>
                     </div>
                 </t>
             </div>
         </div>
-        <t t-raw="0"/>
+        <t t-raw="0" />
         <div class="footer">
             <div class="text-center col-md-1">
                 <ul class="list-inline">
                     <li class="list-inline-item">Page</li>
                     <li class="list-inline-item">
-                        <span class="page"/>
+                        <span class="page" />
                     </li>
                     <li class="list-inline-item">of</li>
                     <li class="list-inline-item">
-                        <span class="topage"/>
+                        <span class="topage" />
                     </li>
                 </ul>
             </div>
         </div>
     </template>
-
 </odoo>
