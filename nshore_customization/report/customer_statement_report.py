@@ -80,7 +80,7 @@ class CustomerStatementReport(models.AbstractModel):
                 'date': {
                     'date_from': start_date,
                     'date_to': end_date, 'filter': 'False',
-                    'string': 'From' + start_date + '\n to' + end_date},
+                    'string': 'From' + str(start_date) + '\n to' + str(end_date)},
                 'hierarchy': None,
                 'journals': None,
                 'partner': True,
