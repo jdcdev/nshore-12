@@ -150,7 +150,7 @@ class AccountInvoiceLine(models.Model):
     @api.multi
     def write(self, values):
         """Messsage post when qty change."""
-        if 'quantity' or 'product_net_cost' or 'product_list_price' in values:
+        if 'quantity' or 'product_net_cost' or 'product_list_price' or 'price_unit' in values:
             for line in self:
                 line._update_line_values(values)
         return super(AccountInvoiceLine, self).write(values)
@@ -174,6 +174,10 @@ class AccountInvoiceLine(models.Model):
                     msg += "<li> %s:" % (lines.product_id.display_name,)
                     msg += "<br/>" + _("Sales Price") + ": %s -> %s <br/>" % (
                         lines.product_list_price, float(values['product_list_price']),)
+                if values.get('price_unit'):
+                    msg += "<li> %s:" % (lines.product_id.display_name,)
+                    msg += "<br/>" + _("Price") + ": %s -> %s <br/>" % (
+                        lines.price_unit, float(values['price_unit']),)
             invoice.message_post(body=msg)
 
     @api.model_create_multi
