@@ -141,6 +141,25 @@ class SaleOrderLine(models.Model):
 
     _inherit = 'sale.order.line'
 
+    def _update_line_quantity(self, values):
+        orders = self.mapped('order_id')
+        for order in orders:
+            order_lines = self.filtered(lambda x: x.order_id == order)
+            msg = "<b>The Quantity and price has been updated.</b><ul>"
+            for line in order_lines:
+                msg += "<li> %s:" % (line.product_id.display_name,)
+                msg += "<br/>" + _("Ordered Quantity") + ": %s -> %s <br/>" % (
+                    line.product_uom_qty, float(values['product_uom_qty']),)
+                if line.product_id.type in ('consu', 'product'):
+                    msg += _("Delivered Quantity") + ": %s <br/>" % (line.qty_delivered,)
+                msg += _("Invoiced Quantity") + ": %s <br/>" % (line.qty_invoiced,)
+                if values.get('price_unit'):
+                    # msg += "<li> %s:" % (line.product_id.display_name,)
+                    msg += _("Price") + ": %s -> %s <br/>" % (
+                        line.price_unit, float(values['price_unit']),)
+            msg += "</ul>"
+            order.message_post(body=msg)
+
     @api.model
     def _get_purchase_price(self, pricelist, product, product_uom, date):
         """Function Ovveride to change margin price."""
