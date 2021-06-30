@@ -1,14 +1,14 @@
 from odoo import fields, models, _, api
 from odoo.exceptions import UserError
 from odoo.tools import float_compare
-
+from odoo.tools import float_round
 
 class SaleOrder(models.Model):
     """Class Inherit for added some functionality."""
 
     _inherit = 'sale.order'
 
-    def price_updates(self):
+    def price_updates(self, values):
         """Update products prices when change the partner."""
         for line in self.order_line:
             line.product_id_change()
@@ -141,24 +141,35 @@ class SaleOrderLine(models.Model):
 
     _inherit = 'sale.order.line'
 
-    def _update_line_quantity(self, values):
+    @api.multi
+    def write(self, values):
+        """Messsage post when qty change."""
+        if 'product_uom_qty' in values:
+            precision = self.env['decimal.precision'].precision_get(
+                'Product Unit of Measure')
+            self.filtered(
+                lambda r: float_compare(
+                    r.product_uom_qty, values['product_uom_qty'],
+                    precision_digits=precision) != 0)._update_line_quantity(
+                values)
+        for line in self:
+            if 'price_unit' in values:
+                line._update_line_values(values)
+        return super(SaleOrderLine, self).write(values)
+
+    def _update_line_values(self, values):
         orders = self.mapped('order_id')
         for order in orders:
             order_lines = self.filtered(lambda x: x.order_id == order)
-            msg = "<b>The Quantity and price has been updated.</b><ul>"
-            for line in order_lines:
-                msg += "<li> %s:" % (line.product_id.display_name,)
-                msg += "<br/>" + _("Ordered Quantity") + ": %s -> %s <br/>" % (
-                    line.product_uom_qty, float(values['product_uom_qty']),)
-                if line.product_id.type in ('consu', 'product'):
-                    msg += _("Delivered Quantity") + ": %s <br/>" % (line.qty_delivered,)
-                msg += _("Invoiced Quantity") + ": %s <br/>" % (line.qty_invoiced,)
-                if values.get('price_unit'):
-                    # msg += "<li> %s:" % (line.product_id.display_name,)
-                    msg += _("Price") + ": %s -> %s <br/>" % (
-                        line.price_unit, float(values['price_unit']),)
-            msg += "</ul>"
-            order.message_post(body=msg)
+            for lines in order_lines:
+                price_unit = float_round(values['price_unit'], 2)
+                msg = '<ul>'
+                if values.get('price_unit') and lines.price_unit != price_unit:
+                    msg += "<li> %s:" % (lines.product_id.display_name,)
+                    msg += "<br/>" + _("Price") + ": %s -> %s <br/>" % (
+                        lines.price_unit, price_unit,)
+                    msg += "</ul>"
+                    order.message_post(body=msg)
 
     @api.model
     def _get_purchase_price(self, pricelist, product, product_uom, date):
