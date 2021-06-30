@@ -8,6 +8,8 @@ from odoo.tools.float_utils import float_compare
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
+    amount_total = fields.Monetary(string='Total', store=True, readonly=True, compute='_amount_all', track_visibility='always')
+
     def _get_notes(self):
         for purchase in self:
             if purchase.notes:
@@ -119,6 +121,12 @@ class PurchaseOrderLine(models.Model):
     @api.multi
     def write(self, values):
         """Messsage post when qty change."""
+        if 'product_qty' in values:
+            for line in self:
+                if line.order_id.state != 'purchase':
+                    line.order_id.message_post_with_view('purchase.track_po_line_template',
+                                                         values={'line': line, 'product_qty': values['product_qty']},
+                                                         subtype_id=self.env.ref('mail.mt_note').id)
         if 'price_unit' in values:
             for line in self:
                 line._update_line_quantity(values)
@@ -129,7 +137,7 @@ class PurchaseOrderLine(models.Model):
         purchase_order = self.mapped('order_id')
         for purchase in purchase_order:
             po_lines = self.filtered(lambda x: x.order_id == purchase)
-            msg = "<b>The Unit Price has been updated.</b><ul>"
+            msg = "<b>Unit Price has been updated.</b><ul>"
             for line in po_lines:
                 msg += "<li> %s:" % (line.product_id.display_name,)
                 msg += "<br/>" + _("Unit Price") + ": %s -> %s <br/>" % (
