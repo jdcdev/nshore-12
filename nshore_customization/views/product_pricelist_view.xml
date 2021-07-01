@@ -20,6 +20,12 @@
             <xpath expr="//field[@name='item_ids']/tree/field[@name='price']" position="after">
                 <field name="old_fixed_price" invisible="1"/>
             </xpath>
+            <xpath expr="//form" position="inside">
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </xpath>
         </field>
     </record>
 </odoo>
