@@ -2,6 +2,7 @@ from odoo import fields, models, _, api
 from odoo.exceptions import UserError
 from odoo.tools import float_compare
 from odoo.tools import float_round
+from odoo.addons import decimal_precision as dp
 
 class SaleOrder(models.Model):
     """Class Inherit for added some functionality."""
@@ -162,12 +163,13 @@ class SaleOrderLine(models.Model):
         for order in orders:
             order_lines = self.filtered(lambda x: x.order_id == order)
             for lines in order_lines:
-                price_unit = float_round(values['price_unit'], 2)
+                price_unit = float_round(values['price_unit'], 3)
+                print("\n\n price_unit", price_unit)
                 msg = '<ul>'
-                if values.get('price_unit') and lines.price_unit != price_unit:
+                if values.get('price_unit') and lines.price_unit != (values['price_unit']):
                     msg += "<li> %s:" % (lines.product_id.display_name,)
                     msg += "<br/>" + _("Price") + ": %s -> %s <br/>" % (
-                        lines.price_unit, price_unit,)
+                        lines.price_unit, (values['price_unit']),)
                     msg += "</ul>"
                     order.message_post(body=msg)
 
