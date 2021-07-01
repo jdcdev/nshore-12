@@ -128,6 +128,7 @@ class CustomerStatementReport(models.AbstractModel):
                         date_format),
                     'type': invoice.type
                 }
+                # print("\n\n vals_dict", vals_dict)
                 if partner not in partner_dict.keys():
                     partner_dict.update({
                         partner: {

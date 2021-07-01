@@ -150,7 +150,6 @@ class AccountInvoiceLine(models.Model):
     @api.multi
     def write(self, values):
         """Inherited to update tracking log when price changes."""
-        print("\n\n values *********** ", values)
         if 'quantity' in values:
             self._update_line_quantity(values)
         if 'product_net_cost' in values:
