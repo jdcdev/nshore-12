@@ -1,5 +1,6 @@
 from odoo import api, models, fields, _
 from odoo.http import request
+from odoo.addons import decimal_precision as dp
 
 
 class CustomPopMessage(models.TransientModel):
@@ -143,8 +144,8 @@ class AccountInvoiceLine(models.Model):
 
     _inherit = "account.invoice.line"
 
-    product_net_cost = fields.Float('Product Net Cost')
-    product_list_price = fields.Float('Product Sales Price')
+    product_net_cost = fields.Float('Product Net Cost', digits=dp.get_precision('Product Price'))
+    product_list_price = fields.Float('Product Sales Price', digits=dp.get_precision('Product Price'))
     # new_price = fields.Boolean("New Price")
 
     @api.multi

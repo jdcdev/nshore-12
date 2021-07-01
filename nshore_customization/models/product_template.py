@@ -10,7 +10,7 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
     _order = 'name'
 
-    net_cost = fields.Float(string='Net Cost')
+    net_cost = fields.Float(string='Net Cost', digits=dp.get_precision('Product Price'))
     product_ref = fields.Char(string='Product Reference')
     list_price = fields.Float(
         'Sales Price', default=1.0,
