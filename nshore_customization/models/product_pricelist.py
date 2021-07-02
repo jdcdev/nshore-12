@@ -18,7 +18,7 @@ class PricelistItem(models.Model):
     @api.multi
     def write(self, values):
         """Messsage post when qty change."""
-        if 'product_tmpl_id' or 'product_id' or 'percent_price' or 'applied_on' or 'compute_price' or 'base_pricelist_id' or 'base' or 'price_discount' in values:
+        if 'fixed_price' or 'product_tmpl_id' or 'product_id' or 'percent_price' or 'applied_on' or 'compute_price' or 'base_pricelist_id' or 'base' or 'price_discount' in values:
             for line in self:
                 line._update_line_quantity(values)
         return super(PricelistItem, self).write(values)
@@ -73,6 +73,11 @@ class PricelistItem(models.Model):
                     msg += "<li> %s:" % (item.name,)
                     msg += "<br/>" + _("Other Pricelist") + ": %s -> %s <br/>" % (
                         item.base_pricelist_id, values.get('base_pricelist_id'),)
+                    plist.message_post(body=msg)
+                if values.get('fixed_price') and item.fixed_price != values.get('fixed_price'):
+                    msg += "<li> %s:" % (item.name,)
+                    msg += "<br/>" + _("Fixed Price") + ": %s -> %s <br/>" % (
+                        item.fixed_price, values.get('fixed_price'),)
                     plist.message_post(body=msg)
 
 class Pricelist(models.Model):
