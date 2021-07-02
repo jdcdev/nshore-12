@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from odoo import fields, models, api
+from odoo import fields, models, api, _
 from odoo.addons import decimal_precision as dp
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from odoo.tools.float_utils import float_compare
 
-
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
+
+    amount_total = fields.Monetary(string='Total', store=True, readonly=True, compute='_amount_all', track_visibility='always')
 
     def _get_notes(self):
         for purchase in self:
@@ -21,6 +22,7 @@ class PurchaseOrderLine(models.Model):
 
     @api.onchange('product_qty', 'product_uom')
     def _onchange_quantity(self):
+        # Function override to get unit price while qty is in minus.
         if not self.product_id:
             return
         params = {'order_id': self.order_id}
@@ -34,7 +36,7 @@ class PurchaseOrderLine(models.Model):
             self.date_planned = self._get_date_planned(seller).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
 
         if not seller:
-            # When products qty is in minus, passing cost ot unit price.
+            # When products qty is in minus, passing cost to unit price.
             if self.product_qty < 0:
                 self.price_unit = self.product_id.standard_price
             # Closed based condition to achive above one.a
@@ -115,3 +117,30 @@ class PurchaseOrderLine(models.Model):
                 template['product_uom_qty'] = self.product_uom._compute_quantity(diff_quantity, self.product_uom, rounding_method='HALF-UP')
             res.append(template)
         return res
+
+    @api.multi
+    def write(self, values):
+        """Messsage post when qty change."""
+        if 'product_qty' in values:
+            for line in self:
+                if line.order_id.state != 'purchase':
+                    line.order_id.message_post_with_view('purchase.track_po_line_template',
+                                                         values={'line': line, 'product_qty': values['product_qty']},
+                                                         subtype_id=self.env.ref('mail.mt_note').id)
+        if 'price_unit' in values:
+            for line in self:
+                line._update_line_quantity(values)
+        return super(PurchaseOrderLine, self).write(values)
+
+    def _update_line_quantity(self, values):
+        """Fucntion call to add message in chatter when qty change."""
+        purchase_order = self.mapped('order_id')
+        for purchase in purchase_order:
+            po_lines = self.filtered(lambda x: x.order_id == purchase)
+            msg = "<b>Unit Price has been updated.</b><ul>"
+            for line in po_lines:
+                msg += "<li> %s:" % (line.product_id.display_name,)
+                msg += "<br/>" + _("Unit Price") + ": %s -> %s <br/>" % (
+                    line.price_unit, float(values['price_unit']),)
+            msg += "</ul>"
+            purchase_order.message_post(body=msg)
