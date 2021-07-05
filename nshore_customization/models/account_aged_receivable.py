@@ -6,6 +6,7 @@ from odoo.tools.misc import format_date
 from datetime import datetime
 from collections import OrderedDict
 
+
 class report_account_aged_receivable(models.AbstractModel):
     """Class Inherit to update aged receivable report."""
 
@@ -50,7 +51,8 @@ class report_account_aged_receivable(models.AbstractModel):
                 if m_line.journal_id.code in ['INV', 'BILL', 'CSH1', 'CC', 'CHK', 'BNK1']:
                     # direct payment added in final payment and in groupby
                     if not payment_lines and m_line.journal_id.code in ['CSH1', 'CC', 'CHK', 'BNK1']:
-                        total_payment_amount += m_line.payment_id.amount if m_line.payment_id and m_line.journal_id.code in ['CSH1', 'CC', 'CHK', 'BNK1'] else 0.0
+                        total_payment_amount += m_line.payment_id.amount if m_line.payment_id and m_line.journal_id.code in [
+                            'CSH1', 'CC', 'CHK', 'BNK1'] else 0.0
                         total_payment_amount_final = (
                             "{0:.2f}".format(total_payment_amount))
                         all_direct_payment_partner = {
@@ -61,9 +63,14 @@ class report_account_aged_receivable(models.AbstractModel):
                         }
                         all_payment_list.append(all_direct_payment_partner)
                     # if payment_lines:
+                    # payment_line = payment_lines.search(
+                    #     ['|', ('debit_move_id', '=', m_line.id),
+                    #         ('credit_move_id', '=', m_line.id)], limit=1)
+                    # All payment lines ordered by create date.
                     payment_line = payment_lines.search(
                         ['|', ('debit_move_id', '=', m_line.id),
-                            ('credit_move_id', '=', m_line.id)], limit=1)
+                            ('credit_move_id', '=', m_line.id)],
+                        order='create_date desc', limit=1)
                     if payment_line:
                         all_direct_payment_partner = {
                             'create_date': payment_line.create_date,
@@ -73,15 +80,21 @@ class report_account_aged_receivable(models.AbstractModel):
                         }
                         all_payment_list.append(all_direct_payment_partner)
                     # Added condition on Journal for moves
-                    total_payment_amount += payment_line.amount if m_line.journal_id.code in ['INV', 'BILL', 'CSH1', 'CC', 'CHK', 'BNK1'] else 0.0
+                    total_payment_amount += payment_line.amount if m_line.journal_id.code in [
+                        'INV', 'BILL', 'CSH1', 'CC', 'CHK', 'BNK1'] else 0.0
                     total_payment_amount_final = (
                         "{0:.2f}".format(total_payment_amount))
-                    all_payment_by_partner[(values['partner_id'])] = all_payment_list
-                    all_payment_by_partner.get(values['partner_id']).sort(key=lambda x:x['create_date'])
-                    all_payment_data = all_payment_by_partner[(values['partner_id'])]
+                    all_payment_by_partner[(
+                        values['partner_id'])] = all_payment_list
+                    all_payment_by_partner.get(values['partner_id']).sort(
+                        key=lambda x: x['create_date'])
+                    all_payment_data = all_payment_by_partner[(
+                        values['partner_id'])]
                     for data in all_payment_data:
-                        final_payment_date[(values['partner_id'])] = data.get('payment_date')
-                        partners_amount[(values['partner_id'])] = data.get('payment_amount')
+                        final_payment_date[(values['partner_id'])] = data.get(
+                            'payment_date')
+                        partners_amount[(values['partner_id'])] = (
+                            "{0:.2f}".format(data.get('payment_amount')))
             if line_id and 'partner_%s' % (values['partner_id'],) != line_id:
                 continue
             # Add total by partner in vals
@@ -89,9 +102,13 @@ class report_account_aged_receivable(models.AbstractModel):
                 'id': 'partner_%s' % (values['partner_id'],),
                 'name': values['name'],
                 'level': 2,
-                'columns': [{'name': ''}] * 1 + [{'name': final_payment_date[(values['partner_id'])]}] + [{'name': partners_amount[(values['partner_id'])]}] + [{'name': ''}] * 2 + [{'name': self.format_value(sign * v)} for v in [values['direction'], values['4'],
-                                                                                                 values['3'], values['2'],
-                                                                                                 values['1'], values['0'], values['total']]],
+                'columns': [{'name': ''}] * 1 + [{'name': final_payment_date[
+                    (values['partner_id'])]}] + [{'name': partners_amount[
+                        (values['partner_id'])]}] + [{'name': ''}] * 2 + [
+                            {'name': self.format_value(sign * v)} for v in [
+                                values['direction'], values['4'],
+                                values['3'], values['2'],
+                                values['1'], values['0'], values['total']]],
                 'trust': values['trust'],
                 'unfoldable': True,
                 'unfolded': 'partner_%s' % (values['partner_id'],) in options.get('unfolded_lines'),
@@ -102,19 +119,29 @@ class report_account_aged_receivable(models.AbstractModel):
                     payment_amount = 0.0
                     aml = line['line']
                     # Get last payment amount and date for invoice by partner
-                    payment_line = payment_lines.search(['|', ('debit_move_id', '=', aml.id), ('credit_move_id', '=', aml.id)], order="id desc", limit=1)
+                    payment_line = payment_lines.search(
+                        ['|', ('debit_move_id', '=', aml.id),
+                            ('credit_move_id', '=', aml.id)],
+                        order="id desc", limit=1)
                     payment_date = payment_line.max_date if payment_line.max_date else ' '
                     # Added condition on Journal for moves
                     if payment_line:
-                        payment_date = payment_date if aml.journal_id.code in ['INV', 'BILL', 'CSH1', 'CC', 'CHK', 'BNK1'] else ' '
-                        payment_amount = payment_line.amount if aml.journal_id.code in ['INV', 'BILL', 'CSH1', 'CC', 'CHK', 'BNK1'] else 0.0
+                        payment_date = payment_date if aml.journal_id.code in [
+                            'INV', 'BILL', 'CSH1', 'CC', 'CHK', 'BNK1'] else ' '
+                        payment_amount = payment_line.amount if aml.journal_id.code in [
+                            'INV', 'BILL', 'CSH1', 'CC', 'CHK', 'BNK1'] else 0.0
+                        payment_amount = (
+                            "{0:.2f}".format(payment_amount))
                     # direct payment added in move lines
                     if not payment_line and aml.journal_id.code in ['CSH1', 'CC', 'CHK', 'BNK1']:
                         payment_date = aml.payment_id.payment_date if aml.payment_id else ' '
                         payment_amount = aml.payment_id.amount if aml.payment_id else 0.0
+                        payment_amount = (
+                            "{0:.2f}".format(payment_amount))
                     caret_type = 'account.move'
                     if aml.invoice_id:
-                        caret_type = 'account.invoice.in' if aml.invoice_id.type in ('in_refund', 'in_invoice') else 'account.invoice.out'
+                        caret_type = 'account.invoice.in' if aml.invoice_id.type in (
+                            'in_refund', 'in_invoice') else 'account.invoice.out'
                     elif aml.payment_id:
                         caret_type = 'account.payment'
                     line_date = aml.date_maturity or aml.date
@@ -131,8 +158,9 @@ class report_account_aged_receivable(models.AbstractModel):
                         'columns': [{'name': v} for v in [
                             aml.journal_id.code, str(payment_date),
                             payment_amount, aml.account_id.code,
-                            self._format_aml_name(aml)]] +\
-                        [{'name': v} for v in [line['period'] == 6-i and self.format_value(sign * line['amount']) or '' for i in range(7)]],
+                            self._format_aml_name(aml)]] +
+                        [{'name': v} for v in [
+                            line['period'] == 6-i and self.format_value(sign * line['amount']) or '' for i in range(7)]],
                         'action_context': aml.get_action_context(),
                     }
                     lines.append(vals)
