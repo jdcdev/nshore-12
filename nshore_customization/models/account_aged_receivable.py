@@ -70,7 +70,7 @@ class report_account_aged_receivable(models.AbstractModel):
                     payment_line = payment_lines.search(
                         ['|', ('debit_move_id', '=', m_line.id),
                             ('credit_move_id', '=', m_line.id)],
-                        order='create_date desc', limit=1)
+                        order='id desc', limit=1)
                     if payment_line:
                         all_direct_payment_partner = {
                             'create_date': payment_line.create_date,
