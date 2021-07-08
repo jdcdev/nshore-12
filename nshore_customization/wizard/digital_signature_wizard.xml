@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <record id="view_digital_signature_form" model="ir.ui.view">
+            <field name="name">digital.signature.wizardform</field>
+            <field name="model">digital.signature.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Sign Invoice">
+                    <sheet>
+                        <group>
+                        <label for="digital_signature" string="Signature" class="oe_edit_only"/>
+                        <h2>
+                            <field name="digital_signature" widget="signature"/>
+                        </h2>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string='Submit' name="action_registered_sign" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_digital_signature" model="ir.actions.act_window">
+            <field name="name">Digital Signature</field>
+            <field name="res_model">digital.signature.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_digital_signature_form"/>
+            <field name="context">{'default_invoice_ids': [(4, active_id, None)]}</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

@@ -83,7 +83,7 @@ class AccountInvoice(models.Model):
         string='Invoice Lines', oldname='invoice_line', copy=True, readonly=False)
     digital_signature = fields.Binary('Signature', copy=False)
     has_to_be_signed = fields.Boolean(copy=False)
-    signed_by = fields.Char('Signed by', help='Name of the person that signed the SO.', copy=False)
+    signed_by = fields.Char('Signed by', help='Name of the person that signed the Invoice.', copy=False)
 
     def price_updates(self):
         """Update products prices when change the partner."""

@@ -15,6 +15,7 @@
         'views/partner_view.xml',
         'views/template.xml',
         'views/inherited_sale_order.xml',
+        'wizard/digital_signature_wizard.xml',
         'views/inherited_invoice_form.xml',
         'views/inherited_purchase_form.xml',
         'report/payment.xml',
