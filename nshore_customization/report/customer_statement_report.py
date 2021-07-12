@@ -96,8 +96,11 @@ class CustomerStatementReport(models.AbstractModel):
             partner_ledger = self.env['account.partner.ledger']
             group_by_partner = partner_ledger.with_context(
                 ctx)._group_by_partner_id(options=options, line_id=None)
-            initial_balance = group_by_partner[
-                partner]['initial_bal']['balance']
+            if not group_by_partner:
+                initial_balance = 0.0
+            if group_by_partner:
+                initial_balance = group_by_partner[
+                    partner]['initial_bal']['balance']
             total_credit_note_amount = total_invoice_amount = total_pay = 0.0
             for invoice in invoice_obj.search([
                     ('partner_id', '=', partner.id),
