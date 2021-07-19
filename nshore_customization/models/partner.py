@@ -127,7 +127,6 @@ class ResPartner(models.Model):
                 'end_date': final_end_date,
                 'previous_month': previous_month.strftime("%B")
             }
-            print("\n\n\n ctx", ctx)
             partners = partner_obj.browse(partner_list)
             for partner in partners.filtered(lambda l: l.email):
                 partner.sudo().write({

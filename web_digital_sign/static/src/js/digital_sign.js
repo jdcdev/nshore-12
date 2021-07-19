@@ -41,6 +41,7 @@ odoo.define('web_digital_sign.web_digital_sign', function (require) {
             this.empty_sign = this.$(".signature").jSignature("getData",
                 'image');
             self._render();
+            this.$('.signature > canvas').focus();
         },
         _on_clear_sign: function () {
             this.$(".signature > canvas").remove();

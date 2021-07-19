@@ -184,7 +184,6 @@ class AccountInvoiceLine(models.Model):
             for lines in inv_lines:
                 msg = '<ul>'
                 if values.get('product_net_cost') and lines.product_net_cost != float(values['product_net_cost']):
-                    print("\n\n\n lines ", values.get('product_net_cost'))
                     msg += "<li> %s:" % (lines.product_id.display_name,)
                     msg += "<br/>" + _("Product Net Cost") + ": %s -> %s <br/>" % (
                         lines.product_net_cost, float(values['product_net_cost']),)
@@ -199,7 +198,6 @@ class AccountInvoiceLine(models.Model):
             for lines in inv_lines:
                 msg = '<ul>'
                 if values.get('product_list_price') and lines.product_list_price != float(values['product_list_price']):
-                    print("\n\n\n lines ", values.get('product_list_price'))
                     msg += "<li> %s:" % (lines.product_id.display_name,)
                     msg += "<br/>" + _("Product Sales Price") + ": %s -> %s <br/>" % (
                         lines.product_list_price, float(values['product_list_price']),)
@@ -214,7 +212,6 @@ class AccountInvoiceLine(models.Model):
             for lines in inv_lines:
                 msg = '<ul>'
                 if values.get('price_unit') and lines.price_unit != float(values['price_unit']):
-                    print("\n\n\n lines ", values.get('price_unit'))
                     msg += "<li> %s:" % (lines.product_id.display_name,)
                     msg += "<br/>" + _("Price") + ": %s -> %s <br/>" % (
                         lines.price_unit, float(values['price_unit']),)

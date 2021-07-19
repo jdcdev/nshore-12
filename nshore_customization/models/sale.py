@@ -164,7 +164,6 @@ class SaleOrderLine(models.Model):
             order_lines = self.filtered(lambda x: x.order_id == order)
             for lines in order_lines:
                 price_unit = float_round(values['price_unit'], 3)
-                print("\n\n price_unit", price_unit)
                 msg = '<ul>'
                 if values.get('price_unit') and lines.price_unit != (values['price_unit']):
                     msg += "<li> %s:" % (lines.product_id.display_name,)
