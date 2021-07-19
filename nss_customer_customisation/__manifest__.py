@@ -5,7 +5,7 @@
     'description': """- Changes in Payment Screen. (#12802)
                 - Default shipping address""",
     'category': '',
-    'author': 'JDC System',
+    'author': 'JDC Systems',
     'website': '',
     'license': '',
     'depends': ['account', 'sale'],

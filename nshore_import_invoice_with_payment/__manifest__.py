@@ -5,7 +5,7 @@
     'version': '12.0.1.0.0',
     'category': 'Invoice',
     'license': 'AGPL-3',
-    'author': 'Aktiv Software',
+    'author': 'JDC Systems',
     'summary': 'Nshore Website',
     'depends': [
         'account'

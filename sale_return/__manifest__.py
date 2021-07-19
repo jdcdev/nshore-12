@@ -6,7 +6,7 @@
     This module tracks product returns and also generate credit note..
         """,
 
-    'author': 'JDC System',
+    'author': 'JDC Systems',
     'category': 'sale',
     'version': '12.0.1.0.0',
     'license': "AGPL-3",

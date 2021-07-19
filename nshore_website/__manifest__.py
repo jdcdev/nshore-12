@@ -4,7 +4,7 @@
     'version': '12.0.1.0.0',
     'category': 'Partner',
     'license': 'AGPL-3',
-    'author': 'JDC system',
+    'author': 'JDC Systems',
     'summary': 'Nshore Website',
     'depends': [
         'website', 'website_crm'

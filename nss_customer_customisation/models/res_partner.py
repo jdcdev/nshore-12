@@ -8,6 +8,8 @@ class ResPartner(models.Model):
 
     default_delivery = fields.Boolean("Default delivery Address?")
 
+    # Changes in Payment Screen. (#12802)
+    # - Default shipping address
     @api.model
     def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
         if args is None:
