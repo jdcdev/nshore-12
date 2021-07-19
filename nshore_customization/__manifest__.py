@@ -3,8 +3,8 @@
     'version': '12.0.1.0.1',
     'category': 'Partner',
     'license': 'AGPL-3',
-    'author': 'JDC system',
-    'summary': 'Nshore Customization',
+    'author': 'JDC Systems',
+    'summary': 'All Customization Based on NSS Requierment.',
     'depends': [
         'sale', 'sale_management', 'account_reports', 'sale_margin', 'mail',
         'contacts', 'web', 'stock', 'purchase', 'point_of_sale', 'account'],

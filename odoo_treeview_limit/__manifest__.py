@@ -6,7 +6,7 @@
     This module helps users to see all the records in the list view.
         """,
 
-    'author': 'JDC System',
+    'author': 'JDC Systems',
     'category': 'web',
     'version': '12.0.1.0.0',
     'license': "AGPL-3",

@@ -4,6 +4,8 @@ from odoo import api, models
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
+    # Changes in Payment Screen. (#12802)
+    # - Default shipping address
     @api.onchange('partner_id')
     def onchange_partner_id(self):
         super(SaleOrder, self).onchange_partner_id()

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Cron Job to send customer statement report-->
     <record id="account_asset_cron" model="ir.cron">
         <field name="name">Send Customer Statement</field>
         <field name="model_id" ref="model_res_partner"/>

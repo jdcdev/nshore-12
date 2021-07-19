@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <odoo>
-
+    <!-- Template to send Customer statemnt report an email to partner -->
     <record id="email_template_partner_statement" model="mail.template">
         <field name="name">Customer statement</field>
         <field name="email_from">${ctx['email_from']|safe}</field>
