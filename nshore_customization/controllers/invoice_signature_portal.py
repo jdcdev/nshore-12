@@ -15,7 +15,6 @@ class PortalAccount(CustomerPortal):
         try:
             invoice_sudo = self._document_check_access(
                 'account.invoice', res_id, access_token=access_token)
-            print("\n\n\n invoice_sudo", invoice_sudo)
         except (AccessError, MissingError):
             return {'error': _('Invalid Invoice')}
 

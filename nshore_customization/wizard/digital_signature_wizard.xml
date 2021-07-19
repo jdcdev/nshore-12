@@ -10,7 +10,7 @@
                         <group>
                         <label for="digital_signature" string="Signature" class="oe_edit_only"/>
                         <h2>
-                            <field name="digital_signature" widget="signature"/>
+                            <field name="digital_signature" widget="signature" class="focus_field"/>
                         </h2>
                         </group>
                     </sheet>

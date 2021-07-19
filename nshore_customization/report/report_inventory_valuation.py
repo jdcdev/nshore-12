@@ -54,9 +54,7 @@ class InventoryValuationReport(models.AbstractModel):
     @api.model
     def _get_report_values(self, docids, data=None):
         docids = self.env['product.category'].search([]).ids
-        print("\n\n docids LLLLLL docids", docids)
         docs = self.env['product.category'].browse(docids)
-        print("\n\n docs **** docs", docs)
         return {
             'doc_ids': docids,
             'doc_model': 'product.category',
