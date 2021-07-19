@@ -305,8 +305,7 @@ class ReturnOrder(models.Model):
                 invoice_ids = return_line.sale_order_id.invoice_ids.filtered(
                     lambda m: m.state not in ['draft', 'cancelled'])
                 if not invoice_ids:
-                    raise ValidationError(
-                        "Please create a Invoice of this Sale Order first!")
+                    raise ValidationError(_('Please Create Invoice or Check state of Invoice for Sales Order %s.' % return_line.sale_order_id.name))
                 if invoice_ids:
                     self.env['account.invoice.line'].create({
                         'name': return_line.product_id.name or '',
