@@ -41,9 +41,15 @@ odoo.define('web_digital_sign.web_digital_sign', function (require) {
             this.empty_sign = this.$(".signature").jSignature("getData",
                 'image');
             self._render();
-            this.$('.signature > canvas').focus();
+            $(this.$(".signature")).on('focus', function(e){
+                console.log('focused')
+            });
+
+            setTimeout(function(){ this.$('#sign_clean').trigger('click'); }, 1000);
+            
         },
         _on_clear_sign: function () {
+            console.log("----clear---")
             this.$(".signature > canvas").remove();
             this.$('> img').remove();
             this.$(".signature").attr("tabindex", "0");
