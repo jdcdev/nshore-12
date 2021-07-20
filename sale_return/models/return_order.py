@@ -173,8 +173,7 @@ class ReturnOrder(models.Model):
                     lambda m: m.state not in ['draft', 'cancelled'])
                 # Raised warning when seleted PO don't have vendor Bill.
                 if not invoice_ids:
-                    raise ValidationError(
-                        "Please create a Vendor Bill of this Sale Order first!")
+                    raise ValidationError(_('Please Create Invoice or Check state of Invoice for Sales Order %s.' % return_line.sale_order_id.name))
                 # Invoice Line
                 if invoice_ids:
                     self.env['account.invoice.line'].create({
