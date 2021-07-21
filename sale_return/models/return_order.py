@@ -506,6 +506,7 @@ class ReturnOrderLine(models.Model):
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer(string='Sequence', default=10)
 
     @api.onchange('product_id')
     def _onchange_product_get_so_po(self):
