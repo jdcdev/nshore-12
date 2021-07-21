@@ -6,3 +6,4 @@ class PortalWizard(models.Model):
     """Class inherit to add some function."""
 
     _inherit = 'portal.wizard'
+
