@@ -47,15 +47,28 @@
                     </group>
                     <notebook>
                         <page string="Order Lines">
-                            <field name="line_ids" attrs="{'readonly': [('state', 'not in', ('draft'))]}">
+                            <!-- "Add widget for note and display_type ,name  filed" -->
+                            <field 
+                                name="line_ids"
+                                widget="section_and_note_one2many"
+                                mode="tree,kanban"
+                                attrs="{'readonly': [('state', 'not in', ('draft'))]}">
                                 <tree editable="bottom">
+                                    <control>
+                                        <create string="Add a line"/>
+                                        <!-- <create string="Add a section" context="{'default_display_type': 'line_section'}"/> -->
+                                        <create string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                    </control>
+                                    <field name="sequence" widget="handle" />
+                                    <field name="display_type" invisible="1"/>
                                     <field name="product_id" options="{'no_create': True,'no_edit': True,'no_open': True}" context="{'sale_order_id': sale_order_id}" />
+                                    <field name="name" widget="section_and_note_text" attrs="{'readonly': [('display_type', '!=', 'line_note')]}"/>
                                     <field name="sale_order_id" options="{'no_create': True,'no_edit': True,'no_open': True}" attrs="{'column_invisible': [('parent.type_partner', '=', 'supplier')]}" />
                                     <field name="purchase_order_id"
                                      options="{'no_create': True,'no_edit': True}" force_save="1" attrs="{'readonly': [('sale_order_id','!=',False)],'column_invisible': [('parent.type_partner', '=', 'customer')]}" />
                                     <field name="qty" widget="integer"/>
                                     <field name="unit_price"/>
-                                    <field name="tax_id" widget="many2many_tags" invisible="1"/>
+                                    <field name="tax_id" widget="many2many_tags" invisible="0"/>
                                     <field name="value_before_tax" invisible="0"/>
                                     <field name="value" widget="monetary" invisible="1"/>
                                     <field name="state" invisible="1"/>
@@ -98,6 +111,7 @@
                 <field name="partner_id" />
                 <field name="sale_person_id" />
                 <field name="state" />
+                <field name="line_ids" string="Product" filter_domain="[('line_ids.product_id', 'ilike', self)]"/>
             </search>
         </field>
     </record>

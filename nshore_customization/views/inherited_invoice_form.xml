@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <odoo>
     <data>
-
         <record id="view_customer_invoice_form_inherit_nshore"
                 model="ir.ui.view">
             <field name="name">account.invoice.form.nshore</field>
@@ -99,9 +98,20 @@
             </field>
         </record>
 
+        <record id="view_account_invoice_filter_form_inherit_nshore" model="ir.ui.view">
+            <field name="name">account.invoice.filter.form.nshore</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="invoice_line_ids" string="Product" filter_domain="[('invoice_line_ids.product_id', 'ilike', self)]"/>
+                </xpath>
+            </field>
+        </record>
+
+
         <record id="account.product_product_action_sellable" model="ir.actions.act_window">
             <field name="view_mode">tree,kanban,form,activity</field>
         </record>
-
     </data>
 </odoo>
