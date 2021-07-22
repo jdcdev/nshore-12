@@ -138,6 +138,22 @@ class AccountInvoice(models.Model):
         }
         self.update(values)
 
+    @api.multi
+    def sign_invoice(self):
+        view = self.env.ref('nshore_customization.view_digital_signature_form')
+        context = dict(self._context or {})
+        return{
+            'name': 'Digital Signature',
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'digital.signature.wizard',
+            'views': [(view.id, 'form')],
+            'view_id': view.id,
+            'target': 'current',
+            'context': context
+        }
+
 
 class AccountInvoiceLine(models.Model):
     """Account Invoice Line Inherit for pricelist,create modification."""
