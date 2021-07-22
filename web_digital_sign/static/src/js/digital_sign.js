@@ -26,8 +26,8 @@ odoo.define('web_digital_sign.web_digital_sign', function (require) {
                 'decor-color': '#D1D0CE',
                 'color': '#000',
                 'background-color': '#fff',
-                'height': '150',
-                'width': '550',
+                'height': '550',
+                'width': '850',
             };
             this.empty_sign = [];
         },
@@ -41,15 +41,14 @@ odoo.define('web_digital_sign.web_digital_sign', function (require) {
             this.empty_sign = this.$(".signature").jSignature("getData",
                 'image');
             self._render();
-            $(this.$(".signature")).on('focus', function(e){
+            /*$(this.$(".signature")).on('focus', function(e){
                 console.log('focused')
-            });
+            });*/
 
-            setTimeout(function(){ this.$('#sign_clean').trigger('click'); }, 1000);
+            /*setTimeout(function(){ this.$('#sign_clean').trigger('click'); }, 1000);*/
             
         },
         _on_clear_sign: function () {
-            console.log("----clear---")
             this.$(".signature > canvas").remove();
             this.$('> img').remove();
             this.$(".signature").attr("tabindex", "0");
@@ -57,12 +56,12 @@ odoo.define('web_digital_sign.web_digital_sign', function (require) {
                 'decor-color': '#D1D0CE',
                 'color': '#000',
                 'background-color': '#fff',
-                'height': '150',
-                'width': '550',
+                'height': '550',
+                'width': '850',
                 'clear': true,
             };
             this.$(".signature").jSignature(sign_options);
-            this.$(".signature").focus();
+            /*this.$(".signature").focus();*/
             this._setValue(false);
         },
         _on_save_sign: function (value_) {
@@ -134,8 +133,8 @@ odoo.define('web_digital_sign.web_digital_sign', function (require) {
                         'decor-color': '#D1D0CE',
                         'color': '#000',
                         'background-color': '#fff',
-                        'height': '150',
-                        'width': '550',
+                        'height': '550',
+                        'width': '850',
                     };
                     this.$(".signature").jSignature("init", sign_options);
                 }
@@ -147,8 +146,8 @@ odoo.define('web_digital_sign.web_digital_sign', function (require) {
                         'decor-color': '#D1D0CE',
                         'color': '#000',
                         'background-color': '#fff',
-                        'height': '150',
-                        'width': '550',
+                        'height': '550',
+                        'width': '850',
                     });
                 }
             }
