@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <record id="view_digital_signature_form" model="ir.ui.view">
-            <field name="name">digital.signature.wizardform</field>
+            <field name="name">digital.signature.wizard.form</field>
             <field name="model">digital.signature.wizard</field>
             <field name="arch" type="xml">
                 <form string="Sign Invoice">
