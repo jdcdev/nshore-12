@@ -400,10 +400,10 @@ class ReturnOrder(models.Model):
         if not self.line_ids:
             raise ValidationError("""Can not process return as there is no order line
                 associated with this record!""")
-        for line in self.line_ids:
-            if line.qty == 0:
-                raise ValidationError("""Can not process return as there is no return qty in line.
-                    Please put return quantity in line!""")
+        # for line in self.line_ids:
+        #     if line.qty == 0:
+        #         raise ValidationError("""Can not process return as there is no return qty in line.
+        #             Please put return quantity in line!""")
 
     def check_delivery_status(self):
         """Method to check if there is delivery done or not."""
