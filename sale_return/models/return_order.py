@@ -173,7 +173,7 @@ class ReturnOrder(models.Model):
                     lambda m: m.state not in ['draft', 'cancelled'])
                 # Raised warning when seleted PO don't have vendor Bill.
                 if not invoice_ids:
-                    raise ValidationError(_('Please Create Invoice or Check state of Invoice for Sales Order %s.' % return_line.sale_order_id.name))
+                    raise ValidationError(_('Please Create Bill or Check state of Bill for Purchase Order %s.' % return_line.purchase_order_id.name))
                 # Invoice Line
                 if invoice_ids:
                     self.env['account.invoice.line'].create({
@@ -304,8 +304,7 @@ class ReturnOrder(models.Model):
                 invoice_ids = return_line.sale_order_id.invoice_ids.filtered(
                     lambda m: m.state not in ['draft', 'cancelled'])
                 if not invoice_ids:
-                    raise ValidationError(
-                        "Please create a Invoice of this Sale Order first!")
+                    raise ValidationError(_('Please Create Invoice or Check state of Invoice for Sales Order %s.' % return_line.sale_order_id.name))
                 if invoice_ids:
                     self.env['account.invoice.line'].create({
                         'name': return_line.product_id.name or '',
@@ -501,6 +500,12 @@ class ReturnOrderLine(models.Model):
         "res.partner", string="Customer", related='return_id.partner_id')
     manufacturer_partner_id = fields.Many2one(
         'res.partner', string='Manufacturer')
+    """ Add filed name & display_type for Add note selection"""
+    name = fields.Text(string='Description')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer(string='Sequence', default=10)
 
     @api.onchange('product_id')
     def _onchange_product_get_so_po(self):
@@ -511,6 +516,7 @@ class ReturnOrderLine(models.Model):
             return {'domain': {'sale_order_id': [('id', 'in', sale_id.ids)]}}
         for record in self:
             # Get value of order line fields from So or Without SO
+            record.name = record.product_id.description
             if record.return_id.type_partner == 'customer':
                 if record.sale_order_id:
                     record.sale_order_id = False
@@ -578,7 +584,7 @@ class ReturnOrderLine(models.Model):
                     lambda p: p.product_id == record.product_id)
                 total_qty = 0.00
                 if order_line:
-                    for rec in order_line:
+                    for rec in order_line: 
                         total_qty += (rec.product_uom_qty - rec.return_qty)
                         record.unit_price = rec.price_unit
                         record.tax_id = rec.tax_id
