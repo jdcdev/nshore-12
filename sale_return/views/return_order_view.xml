@@ -68,7 +68,7 @@
                                      options="{'no_create': True,'no_edit': True}" force_save="1" attrs="{'readonly': [('sale_order_id','!=',False)],'column_invisible': [('parent.type_partner', '=', 'customer')]}" />
                                     <field name="qty" widget="integer"/>
                                     <field name="unit_price"/>
-                                    <field name="tax_id" widget="many2many_tags" invisible="0"/>
+                                    <field name="tax_id" widget="many2many_tags" invisible="1"/>
                                     <field name="value_before_tax" invisible="0"/>
                                     <field name="value" widget="monetary" invisible="1"/>
                                     <field name="state" invisible="1"/>

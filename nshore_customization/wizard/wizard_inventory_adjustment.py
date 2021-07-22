@@ -24,7 +24,6 @@ class InventoryAdjustment(models.Model):
     line_ids = fields.One2many(
         'inventory.adj.product.line', 'adjustment_id',
         string="Products to Import")
-    create_date = fields.Datetime("Creation Date", index=True)
 
     @api.model
     def create(self, vals):
