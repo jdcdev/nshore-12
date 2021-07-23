@@ -73,7 +73,7 @@
                                     <field name="state" invisible="1"/>
                                 </tree>
                             </field>
-                            <field name="note"/>
+                            <field name="note" class="oe_inline" placeholder="Terms and conditions... (note: you can setup default ones in the Configuration menu)"/>
                         </page>
                         <page string="Stock Moves">
                             <field name="stock_move_ids" readonly="1"/>
@@ -140,6 +140,7 @@
                 <field name="partner_id" />
                 <field name="sale_person_id" />
                 <field name="state" />
+                <field name="notes"/>
                 <field name="amount_total" />
             </tree>
         </field>
