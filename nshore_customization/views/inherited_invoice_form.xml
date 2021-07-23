@@ -52,7 +52,7 @@
                         string="Prices Updates" class="btn-primary" type="object" attrs="{'invisible': [('state', 'not in', ['draft'])]}"
                         />
                 </xpath>
-                <xpath expr="//div[@name='button_box']" position="inside">
+                <xpath expr="//field[@name='team_id']" position="after">
                     <button name="sign_invoice"
                         type="object"
                         class="oe_stat_button"
@@ -61,6 +61,15 @@
                         string="Digital Signature">
                     </button>
                 </xpath>
+                <!-- <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="sign_invoice"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-pencil-square-o"
+                        attrs="{'invisible': ['|', ('state', '=', 'draft'), ('has_to_be_signed', '=', True)]}"
+                        string="Digital Signature">
+                    </button>
+                </xpath> -->
                 <xpath expr="//page[@name='other_info']" position="after">
                     <page name="digital_signature" string="Digital Signature" >
                         <field name="has_to_be_signed" invisible="1"/>

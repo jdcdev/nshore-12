@@ -6,8 +6,6 @@ class AccountMove(models.Model):
     _name = "account.move"
     _inherit = ['account.move','mail.thread', 'mail.activity.mixin']
 
-
-
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
 
