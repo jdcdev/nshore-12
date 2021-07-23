@@ -15,3 +15,5 @@ from . import account_aged_receivable
 from . import stock_inventory_line
 from . import product_pricelist
 from . import ir_filter
+from . import account_move_line
+from . import portal_note

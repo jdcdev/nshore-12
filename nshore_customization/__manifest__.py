@@ -57,6 +57,7 @@
         'views/stock_inventory_line_view.xml',
         'views/product_pricelist_view.xml',
         'views/res_company_view.xml',
+        'views/account_move_line_inherit_view.xml'
     ],
     'qweb': [
         'static/src/xml/pos.xml',
