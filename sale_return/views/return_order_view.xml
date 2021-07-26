@@ -61,7 +61,7 @@
                                     <field name="sequence" widget="handle" />
                                     <field name="display_type" invisible="1"/>
                                     <field name="product_id" options="{'no_create': True,'no_edit': True,'no_open': True}" context="{'sale_order_id': sale_order_id}" />
-                                    <field name="name" widget="section_and_note_text" attrs="{'readonly': [('display_type', '!=', 'line_note')]}"/>
+                                    <field name="name" widget="section_and_note_text" attrs="{'readonly': [('display_type', '!=', 'line_note')]}" force_save="True"/>
                                     <field name="sale_order_id" options="{'no_create': True,'no_edit': True,'no_open': True}" attrs="{'column_invisible': [('parent.type_partner', '=', 'supplier')]}" />
                                     <field name="purchase_order_id"
                                      options="{'no_create': True,'no_edit': True}" force_save="1" attrs="{'readonly': [('sale_order_id','!=',False)],'column_invisible': [('parent.type_partner', '=', 'customer')]}" />

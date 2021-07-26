@@ -43,16 +43,22 @@
             </thead>
                 <tbody class="sale_tbody">
                     <t t-foreach="doc.line_ids" t-as="line">
-                      <tr>
-                        <td><span t-field="line.product_id.name"/></td>
-                        <td class="text-right"><span t-esc="'{0:,.0f}'.format(line.qty)"/></td>
-                        <td class="text-right"><span t-field="line.unit_price" /></td>
-                        <td class="text-right"><span t-field="line.value" t-options='{"widget": "float", "precision": 2}'/></td>
+                      <tr t-att-class="'font-italic o_line_note' if line.display_type == 'line_note' else ''">
+                        <t t-if="not line.display_type">
+                          <td><span t-field="line.product_id.name"/></td>
+                          <td class="text-right"><span t-esc="'{0:,.0f}'.format(line.qty)"/></td>
+                          <td class="text-right"><span t-field="line.unit_price" /></td>
+                          <td class="text-right"><span t-field="line.value" t-options='{"widget": "float", "precision": 2}'/></td>
+                        </t>
+                        <t t-if="line.display_type == 'line_note'">
+                            <td name="td_note_line" colspan="99">
+                              <span t-field="line.name"/>
+                            </td>
+                        </t>
                       </tr>
                     </t>
                 </tbody>
             </table>
-            <strong>Note : </strong><span t-field="doc.note" />
             <div class="clearfix">
               <div id="total" class="row" name="total">
                     <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">
@@ -79,6 +85,7 @@
                     </div>
                 </div>
             </div>
+          <strong>Note : </strong><span t-field="doc.note" />
           </t>
         </t>
       </t>
