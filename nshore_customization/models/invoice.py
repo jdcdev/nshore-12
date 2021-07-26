@@ -142,6 +142,8 @@ class AccountInvoice(models.Model):
     def sign_invoice(self):
         view = self.env.ref('nshore_customization.view_digital_signature_form')
         context = dict(self._context or {})
+        context.update({'id': self.id})
+        print("\n\n context", context)
         return{
             'name': 'Digital Signature',
             'type': 'ir.actions.act_window',
