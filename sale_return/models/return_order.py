@@ -10,6 +10,7 @@ class ReturnOrder(models.Model):
     _description = 'Return Order'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
+
     # Defined fields
     name = fields.Char(
         string="Name", required=1,
@@ -56,7 +57,8 @@ class ReturnOrder(models.Model):
         domain=[('supplier', '=', True)])
     sale_ids = fields.Many2many('sale.order', string="Sales Order")
     purchase_ids = fields.Many2many('purchase.order', string="Purchase Order")
-    note = fields.Text()
+    note = fields.Text('Notes')
+    notes = fields.Text('Notes', compute='_get_notes')
 
     @api.onchange('partner_id')
     def onchange_partner(self):
@@ -66,6 +68,11 @@ class ReturnOrder(models.Model):
             self.partner_id.property_product_pricelist.id or False,
         }
         self.update(values)
+
+    def _get_notes(self):
+        for ro in self:
+            ro.notes = ro.note[0:10] + "..." if ro.note else ''
+                
 
     @api.depends('line_ids.value_before_tax', 'line_ids.price_tax')
     def _amount_all(self):

@@ -5,7 +5,7 @@
     'license': 'AGPL-3',
     'author': 'JDC system',
     'summary': 'Nshore Customization',
-    'depends': ['sale', 'sale_management', 'account_reports', 'sale_margin', 'mail', 'contacts', 'web','stock', 'purchase', 'point_of_sale', 'account'],
+    'depends': ['sale', 'sale_management', 'account_reports', 'sale_margin', 'mail', 'contacts', 'web','stock', 'purchase', 'point_of_sale', 'account', 'web_digital_sign'],
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
