@@ -58,7 +58,7 @@ class ReturnOrder(models.Model):
     sale_ids = fields.Many2many('sale.order', string="Sales Order")
     purchase_ids = fields.Many2many('purchase.order', string="Purchase Order")
     note = fields.Text('Notes')
-    notes = fields.Text('Notes', compute='_get_notes', store=True)
+    notes = fields.Text('Notes', compute='_get_notes')
 
     @api.onchange('partner_id')
     def onchange_partner(self):
@@ -71,8 +71,8 @@ class ReturnOrder(models.Model):
 
     def _get_notes(self):
         for ro in self:
-            if ro.note:
-                ro.notes = ro.note[0:10] + "..."
+            ro.notes = ro.note[0:10] + "..." if ro.note else ''
+                
 
     @api.depends('line_ids.value_before_tax', 'line_ids.price_tax')
     def _amount_all(self):
