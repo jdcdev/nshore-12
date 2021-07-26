@@ -2,6 +2,24 @@
 <odoo>
     <data>
 
+        <!-- <record id="inherited_account_invoice_form_sales_team"
+                model="ir.ui.view">
+            <field name="name">account.invoice.form.sales.team</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="sale.account_invoice_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='team_id']" position="after">
+                    <button name="sign_invoice"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-pencil-square-o"
+                        attrs="{'invisible': ['|', ('state', '=', 'draft'), ('has_to_be_signed', '=', True)]}"
+                        string="Digital Signature">
+                    </button>
+                </xpath>
+            </field>
+        </record> -->
+
         <record id="view_customer_invoice_form_inherit_nshore"
                 model="ir.ui.view">
             <field name="name">account.invoice.form.nshore</field>
@@ -52,24 +70,21 @@
                         string="Prices Updates" class="btn-primary" type="object" attrs="{'invisible': [('state', 'not in', ['draft'])]}"
                         />
                 </xpath>
-                <xpath expr="//field[@name='team_id']" position="after">
-                    <button name="sign_invoice"
-                        type="object"
-                        class="oe_stat_button"
-                        icon="fa-pencil-square-o"
-                        attrs="{'invisible': ['|', ('state', '=', 'draft'), ('has_to_be_signed', '=', True)]}"
-                        string="Digital Signature">
-                    </button>
+                <xpath expr="//sheet/group" position="inside">
+                    <group>
+                    </group>
+                    <group>
+                        <div class="o_row">
+                            <button name="sign_invoice"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-pencil-square-o"
+                                attrs="{'invisible': ['|', ('state', '=', 'draft'), ('has_to_be_signed', '=', True)]}"
+                                string="Digital Signature">
+                            </button>
+                        </div>
+                    </group>
                 </xpath>
-                <!-- <xpath expr="//div[@name='button_box']" position="inside">
-                    <button name="sign_invoice"
-                        type="object"
-                        class="oe_stat_button"
-                        icon="fa-pencil-square-o"
-                        attrs="{'invisible': ['|', ('state', '=', 'draft'), ('has_to_be_signed', '=', True)]}"
-                        string="Digital Signature">
-                    </button>
-                </xpath> -->
                 <xpath expr="//page[@name='other_info']" position="after">
                     <page name="digital_signature" string="Digital Signature" >
                         <field name="has_to_be_signed" invisible="1"/>
