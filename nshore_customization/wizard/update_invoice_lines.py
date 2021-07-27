@@ -7,6 +7,7 @@ class UpdateInvoiceLines(models.TransientModel):
     """Added new module import Inventory adjustment."""
 
     _name = 'update.account.invoice'
+    _description = "Update Invoice Line's Price field."
 
     @api.multi
     def update_invoice_lines(self):
