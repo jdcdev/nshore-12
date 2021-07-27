@@ -141,6 +141,29 @@
             </field>
         </record>
 
+        <record id="view_supplier_invoice_tree_inherit_nshore" model="ir.ui.view">
+            <field name="name">account.invoice.supplier.tree.nshore</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='origin']"
+                       position="after">
+                    <field name="notes"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="nss_view_account_invoice_tree_inherit" model="ir.ui.view">
+            <field name="name">account.invoice.tree.nss</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="notes"/>
+                </xpath>
+            </field>
+        </record>
+
         <record id="view_account_invoice_filter_form_inherit_nshore" model="ir.ui.view">
             <field name="name">account.invoice.filter.form.nshore</field>
             <field name="model">account.invoice</field>
@@ -148,6 +171,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='user_id']" position="after">
                     <field name="invoice_line_ids" string="Product" filter_domain="[('invoice_line_ids.product_id', 'ilike', self)]"/>
+                    <field name="comment" string="Notes"/>
                 </xpath>
             </field>
         </record>
