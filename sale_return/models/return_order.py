@@ -57,7 +57,7 @@ class ReturnOrder(models.Model):
         domain=[('supplier', '=', True)])
     sale_ids = fields.Many2many('sale.order', string="Sales Order")
     purchase_ids = fields.Many2many('purchase.order', string="Purchase Order")
-    note = fields.Text('Notes')
+    note = fields.Text('Note')
     notes = fields.Text('Notes', compute='_get_notes')
 
     @api.onchange('partner_id')
@@ -502,8 +502,6 @@ class ReturnOrderLine(models.Model):
         readonly=1)
     return_option = fields.Selection([
         ('stock', 'Return to Stock')], default="stock")
-    return_option_po = fields.Selection([
-        ('stock', 'Return to Stock')], string="Return Option", default="stock")
     state = fields.Selection(
         [('draft', 'Draft'), ('done', 'Done')], default='draft', readonly=1)
     partner_id = fields.Many2one(
