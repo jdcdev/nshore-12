@@ -10,6 +10,7 @@ class ReturnOrder(models.Model):
     _description = 'Return Order'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
+
     # Defined fields
     name = fields.Char(
         string="Name", required=1,
@@ -56,7 +57,8 @@ class ReturnOrder(models.Model):
         domain=[('supplier', '=', True)])
     sale_ids = fields.Many2many('sale.order', string="Sales Order")
     purchase_ids = fields.Many2many('purchase.order', string="Purchase Order")
-    note = fields.Text()
+    note = fields.Text('Notes')
+    notes = fields.Text('Notes', compute='_get_notes')
 
     @api.onchange('partner_id')
     def onchange_partner(self):
@@ -66,6 +68,11 @@ class ReturnOrder(models.Model):
             self.partner_id.property_product_pricelist.id or False,
         }
         self.update(values)
+
+    def _get_notes(self):
+        for ro in self:
+            ro.notes = ro.note[0:10] + "..." if ro.note else ''
+                
 
     @api.depends('line_ids.value_before_tax', 'line_ids.price_tax')
     def _amount_all(self):
@@ -165,7 +172,7 @@ class ReturnOrder(models.Model):
             'partner_id': self.supplier_id.id,
             'return_order_id': self.id}
         refund = self.env['account.invoice'].create(refund_vals)
-        for return_line in lines:
+        for return_line in lines.filtered(lambda line: line.product_id):
             # When Purchase order selected in return line
             if return_line.purchase_order_id:
                 # Get Vendor Bill Details
@@ -297,7 +304,7 @@ class ReturnOrder(models.Model):
             'partner_id': self.partner_id.id,
             'return_order_id': self.id})
         # Loop for return order line
-        for return_line in lines:
+        for return_line in lines.filtered(lambda line: line.product_id):
             # When Sales order selected in return line
             if return_line.sale_order_id:
                 # Get Invoice Details
@@ -316,7 +323,8 @@ class ReturnOrder(models.Model):
                         'price_unit': return_line.unit_price or 0.0,
                         'invoice_line_tax_ids': [
                             (6, 0, return_line.tax_id.ids)] or False,
-                        'invoice_id': credit_note and credit_note.id or False})
+                        'invoice_id': credit_note and credit_note.id or False,
+                        'display_type': return_line.display_type})
                 # Get Picking type and create merge picking for return
                 picking_type_id_so = self.env[
                     'stock.picking.type'].sudo().search([
@@ -328,7 +336,7 @@ class ReturnOrder(models.Model):
                      ('picking_type_id', '=', picking_type_id_so.id),
                      ('state', '=', 'done')], limit=1)
                 # Raised waarning when no delivery order for selected SO
-                if not picking_id:
+                if not picking_id and not return_line.display_type:
                     raise ValidationError(
                         """Please make delivery for this seletced sales order first.""")
                 # Create return moves
@@ -368,7 +376,8 @@ class ReturnOrder(models.Model):
                     'uom_id': return_line.product_id.product_tmpl_id.uom_id.id or False,
                     'price_unit': return_line.unit_price or 0.0,
                     'invoice_line_tax_ids': [(6, 0, return_line.tax_id.ids)] or False,
-                    'invoice_id': credit_note and credit_note.id or False})
+                    'invoice_id': credit_note and credit_note.id or False,
+                    'display_type': return_line.display_type,}),
                 # Moves
                 self.env['stock.move'].create({
                     'name': return_line.product_id.name,
@@ -397,13 +406,13 @@ class ReturnOrder(models.Model):
 
     def check_orderline(self):
         """Method to check if there is orderline or not."""
-        if not self.line_ids:
+        if not self.line_ids.filtered(lambda return_line: return_line.product_id):
             raise ValidationError("""Can not process return as there is no order line
                 associated with this record!""")
-        # for line in self.line_ids:
-        #     if line.qty == 0:
-        #         raise ValidationError("""Can not process return as there is no return qty in line.
-        #             Please put return quantity in line!""")
+        for line in self.line_ids.filtered(lambda return_line: return_line.product_id):
+            if line.qty == 0:
+                raise ValidationError("""Can not process return as there is no return qty in line.
+                    Please put return quantity in line!""")
 
     def check_delivery_status(self):
         """Method to check if there is delivery done or not."""
@@ -460,6 +469,7 @@ class ReturnOrderLine(models.Model):
                     lambda p: p.product_id == line.product_id)
                 line.update({
                     'value': order_line_rec.price_subtotal})
+
 
     # Defined fields
     price_tax = fields.Float(
@@ -661,6 +671,31 @@ class ReturnOrderLine(models.Model):
                         self.return_id.company_id or self.env.user.company_id,
                         self.return_id.date or fields.Date.today())
                 return max(base_price, final_price)
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for values in vals_list:
+            if values.get('display_type', self.default_get(['display_type'])['display_type']):
+                values.update(product_id=False, unit_price=0, qty=0, value_before_tax=0)
+
+        return super(ReturnOrderLine, self).create(vals_list)
+
+
+    # _sql_constraints = [
+    #     ('accountable_required_fields',
+    #         "CHECK(display_type IS NOT NULL OR product_id IS NOT NULL)",
+    #         "Missing required fields on accountable return order line."),
+    #     ('non_accountable_null_fields',
+    #         "CHECK(display_type IS NULL OR (product_id IS NULL AND unit_price = 0 AND qty = 0 AND value_before_tax = 0))",
+    #         "Forbidden values on non-accountable return order line"),
+    # ]
+
+    @api.multi
+    def write(self, values):
+        if 'display_type' in values and self.filtered(lambda line: line.display_type != values.get('display_type')):
+            raise UserError(_("You cannot change the type of a return order line. Instead you should delete the current line and create a new line of the proper type."))
+        return super(ReturnOrderLine, self).write(values)
+        
 
 
 class StockMove(models.Model):
