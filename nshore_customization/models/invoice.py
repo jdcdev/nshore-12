@@ -84,6 +84,12 @@ class AccountInvoice(models.Model):
     digital_signature = fields.Binary('Signature', copy=False)
     has_to_be_signed = fields.Boolean(copy=False)
     signed_by = fields.Char('Signed by', help='Name of the person that signed the Invoice.', copy=False)
+    notes = fields.Text('Notes', compute='_get_notes')
+    comment = fields.Text(readonly=False, states={'draft': []})
+
+    def _get_notes(self):
+        for ai in self:
+            ai.notes = ai.comment[0:10] if ai.comment else ''
 
     def price_updates(self):
         """Update products prices when change the partner."""

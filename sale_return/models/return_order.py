@@ -170,7 +170,8 @@ class ReturnOrder(models.Model):
         refund_vals = {
             'type': 'in_refund',
             'partner_id': self.supplier_id.id,
-            'return_order_id': self.id}
+            'return_order_id': self.id,
+            'comment': self.note}
         refund = self.env['account.invoice'].create(refund_vals)
         for return_line in lines.filtered(lambda line: line.product_id):
             # When Purchase order selected in return line
@@ -302,7 +303,8 @@ class ReturnOrder(models.Model):
         credit_note = self.env['account.invoice'].create({
             'type': 'out_refund',
             'partner_id': self.partner_id.id,
-            'return_order_id': self.id})
+            'return_order_id': self.id,
+            'comment': self.note})
         # Loop for return order line
         for return_line in lines.filtered(lambda line: line.product_id):
             # When Sales order selected in return line
