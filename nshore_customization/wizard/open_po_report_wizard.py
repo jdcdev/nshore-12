@@ -8,6 +8,7 @@ class OpenPOReportWizard(models.TransientModel):
     """Class added to pass report details."""
 
     _name = 'open.po.report.wizard'
+    _description = 'Open PO Report Wizard'
 
     start_date = fields.Date(string="Start Date")
     end_date = fields.Date(string="End Date")

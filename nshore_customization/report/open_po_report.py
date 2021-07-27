@@ -6,6 +6,7 @@ class OpenPoReport(models.AbstractModel):
     """Class call to add open po report."""
 
     _name = 'report.nshore_customization.report_open_po'
+    _description = "Open PO report"
 
     def get_po_line_details(self, data, date_format):
         """Get Purchase order line details."""
