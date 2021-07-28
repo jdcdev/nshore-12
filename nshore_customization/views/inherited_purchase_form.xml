@@ -52,6 +52,18 @@
             </field>
         </record>
 
+        <record id="view_purchase_order_filter_inherit_nshore" model="ir.ui.view">
+            <field name="name">purchase.order.filter.nshore</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_id']"
+                       position="after">
+                    <field name="notes" string="Notes"/>
+                </xpath>
+            </field>
+        </record>
+
         <record id="purchase.product_normal_action_puchased" model="ir.actions.act_window">
             <field name="view_mode">tree,kanban,form,activity</field>
         </record>

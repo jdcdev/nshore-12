@@ -61,6 +61,7 @@ class InventoryAdjustmentProducts(models.Model):
     """Added new module import Inventory adjustment."""
 
     _name = "inventory.adj.product.line"
+    _description = 'Adjustment Product Line'
 
     @api.model
     def _default_product_uom_id(self):

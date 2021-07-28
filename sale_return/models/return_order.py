@@ -57,7 +57,7 @@ class ReturnOrder(models.Model):
         domain=[('supplier', '=', True)])
     sale_ids = fields.Many2many('sale.order', string="Sales Order")
     purchase_ids = fields.Many2many('purchase.order', string="Purchase Order")
-    note = fields.Text('Notes')
+    note = fields.Text('Note')
     notes = fields.Text('Notes', compute='_get_notes')
 
     @api.onchange('partner_id')
@@ -170,7 +170,8 @@ class ReturnOrder(models.Model):
         refund_vals = {
             'type': 'in_refund',
             'partner_id': self.supplier_id.id,
-            'return_order_id': self.id}
+            'return_order_id': self.id,
+            'comment': self.note}
         refund = self.env['account.invoice'].create(refund_vals)
         for return_line in lines.filtered(lambda line: line.product_id):
             # When Purchase order selected in return line
@@ -302,7 +303,8 @@ class ReturnOrder(models.Model):
         credit_note = self.env['account.invoice'].create({
             'type': 'out_refund',
             'partner_id': self.partner_id.id,
-            'return_order_id': self.id})
+            'return_order_id': self.id,
+            'comment': self.note})
         # Loop for return order line
         for return_line in lines.filtered(lambda line: line.product_id):
             # When Sales order selected in return line
@@ -502,8 +504,6 @@ class ReturnOrderLine(models.Model):
         readonly=1)
     return_option = fields.Selection([
         ('stock', 'Return to Stock')], default="stock")
-    return_option_po = fields.Selection([
-        ('stock', 'Return to Stock')], string="Return Option", default="stock")
     state = fields.Selection(
         [('draft', 'Draft'), ('done', 'Done')], default='draft', readonly=1)
     partner_id = fields.Many2one(
