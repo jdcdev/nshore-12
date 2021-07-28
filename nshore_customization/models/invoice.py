@@ -91,10 +91,10 @@ class AccountInvoice(models.Model):
         for ai in self:
             ai.notes = ai.comment[0:10] if ai.comment else ''
 
-    def price_updates(self):
-        """Update products prices when change the partner."""
-        for line in self.invoice_line_ids:
-            line._onchange_product_id()
+    # def price_updates(self):
+    #     """Update products prices when change the partner."""
+    #     for line in self.invoice_line_ids:
+    #         line._onchange_product_id()
 
     @api.multi
     def action_invoice_open(self):
