@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from odoo import fields, models, api
+from odoo import fields, models, api, _
+from odoo.exceptions import ValidationError
 
 
 class DigitalSignature(models.TransientModel):
@@ -8,7 +9,6 @@ class DigitalSignature(models.TransientModel):
 
     _name = 'digital.signature.wizard'
     _description = "Digital Signature Pad"
-    _rec_name = 'name'
 
     name = fields.Char('Name')
     digital_signature = fields.Binary('Signature', copy=False)
@@ -23,4 +23,5 @@ class DigitalSignature(models.TransientModel):
             'digital_signature': res.digital_signature,
             'has_to_be_signed': True
         })
+        res.name = 'Signature_of_' + invoice_obj.partner_id.name
         return res
