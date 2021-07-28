@@ -8,15 +8,64 @@ odoo.define('web_digital_sign.web_digital_sign', function (require) {
     var utils = require('web.utils');
     var session = require('web.session');
     var field_utils = require('web.field_utils');
-
+    var Dialog = require('web.Dialog');
+    var FormController = require('web.FormController');
     var _t = core._t;
     var QWeb = core.qweb;
+    window.not_signed = '';
+
+    FormController.include({
+        _onSave: function (ev) {
+            ev.stopPropagation(); // Prevent x2m lines to be auto-saved
+            var self = this;
+            var context = self.initialState.context.form_sign
+            if (context){
+                var signature = this.$(".signature").jSignature("getData", 'image');
+                this.is_empty_sign = signature ? window.not_signed[1] === signature[1] : true;
+                if (this.is_empty_sign){
+                    alert(_t(
+                        'Please Sign this Invoice First'
+                    ));
+                }
+                else{
+                    self._disableButtons();
+                    self.saveRecord().always(function () {
+                        self._enableButtons();
+                        var last_link = $('.breadcrumb .o_back_button a')
+                        if (last_link.length)
+                        {
+                            last_link.trigger('click');
+                        }
+                        else
+                        {
+                            this.do_action({
+                                type: 'ir.actions.act_window',
+                                res_model: 'account.invoice',
+                                res_id: self.initialState.context.id,
+                                views: [[self.initialState.context.view_id, 'form']],
+                                target: 'current',
+                            });
+                        }
+                    });
+                }
+            }
+            else{
+                self._disableButtons();
+                self.saveRecord().always(function () {
+                    self._enableButtons();
+                });
+            }
+
+        },
+    });
 
     var FieldSignature = BasicFields.FieldBinaryImage.extend({
         template: 'FieldSignature',
         events: _.extend({}, BasicFields.FieldBinaryImage.prototype.events, {
             'click .save_sign': '_on_save_sign',
             'click #sign_clean': '_on_clear_sign',
+            /*'change .signature': '_on_change_sign',*/
+
         }),
         jsLibs: ['/web_digital_sign/static/lib/jSignature/jSignatureCustom.js'],
         placeholder: "/web/static/src/img/placeholder.png",
@@ -40,12 +89,8 @@ odoo.define('web_digital_sign.web_digital_sign', function (require) {
             });
             this.empty_sign = this.$(".signature").jSignature("getData",
                 'image');
+            window.not_signed = this.empty_sign
             self._render();
-            /*$(this.$(".signature")).on('focus', function(e){
-                console.log('focused')
-            });*/
-
-            /*setTimeout(function(){ this.$('#sign_clean').trigger('click'); }, 1000);*/
             
         },
         _on_clear_sign: function () {
@@ -75,6 +120,7 @@ odoo.define('web_digital_sign.web_digital_sign', function (require) {
                 self._setValue(signature[1]);
             }
         },
+
         _render: function () {
             var self = this;
             var url = this.placeholder;
@@ -109,14 +155,14 @@ odoo.define('web_digital_sign.web_digital_sign', function (require) {
             } else if (this.mode === "edit") {
                 this.$('> img').remove();
                 if (this.value) {
-                    /*var field_name = this.nodeOptions.preview_image;*/
                     var field_name = this.name;
                     this.nodeOptions.preview_image;
                     this.name;
+                    var context = 'cont'
                     self._rpc({
                         model: this.model,
                         method: 'read',
-                        args: [this.res_id, [field_name]],
+                        args: [this.res_id, [field_name], context=context],
                     }).done( function (data) {
                         if (data) {
                             var field_desc =

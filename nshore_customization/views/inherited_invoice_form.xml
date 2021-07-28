@@ -1,25 +1,6 @@
 <?xml version="1.0"?>
 <odoo>
     <data>
-
-        <!-- <record id="inherited_account_invoice_form_sales_team"
-                model="ir.ui.view">
-            <field name="name">account.invoice.form.sales.team</field>
-            <field name="model">account.invoice</field>
-            <field name="inherit_id" ref="sale.account_invoice_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='team_id']" position="after">
-                    <button name="sign_invoice"
-                        type="object"
-                        class="oe_stat_button"
-                        icon="fa-pencil-square-o"
-                        attrs="{'invisible': ['|', ('state', '=', 'draft'), ('has_to_be_signed', '=', True)]}"
-                        string="Digital Signature">
-                    </button>
-                </xpath>
-            </field>
-        </record> -->
-
         <record id="view_customer_invoice_form_inherit_nshore"
                 model="ir.ui.view">
             <field name="name">account.invoice.form.nshore</field>
@@ -79,7 +60,6 @@
                                 type="object"
                                 class="oe_stat_button"
                                 icon="fa-pencil-square-o"
-                                attrs="{'invisible': ['|', ('state', '=', 'draft'), ('has_to_be_signed', '=', True)]}"
                                 string="Digital Signature">
                             </button>
                         </div>
