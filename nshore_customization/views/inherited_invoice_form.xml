@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <odoo>
     <data>
+        <!-- Inherited Invoice form to add some new fields and modify existing.-->
         <record id="view_customer_invoice_form_inherit_nshore"
                 model="ir.ui.view">
             <field name="name">account.invoice.form.nshore</field>
@@ -44,13 +45,7 @@
                         position="after">
                     <field name="product_net_cost"/>
                     <field name="product_list_price"/>
-                    <!-- <field name="new_price"/> -->
                 </xpath>
-                <!-- <xpath expr="//button[@name='action_invoice_open']" position="after">
-                    <button name="price_updates" id="price_updates"
-                        string="Prices Updates" class="btn-primary" type="object" attrs="{'invisible': [('state', 'not in', ['draft'])]}"
-                        />
-                </xpath> -->
             </field>
         </record>
 
@@ -67,6 +62,7 @@
             </field>
         </record>
 
+        <!-- Supplier form inherited to modify or add new data.-->
         <record id="view_supplier_invoice_form_inherit_nshore" model="ir.ui.view">
             <field name="name">account.invoice.supplier.form.nshore</field>
             <field name="model">account.invoice</field>
@@ -98,6 +94,32 @@
             </field>
         </record>
 
+        <!-- Supplier tree view to add some fields.-->
+        <record id="view_supplier_invoice_tree_inherit_nshore" model="ir.ui.view">
+            <field name="name">account.invoice.supplier.tree.nshore</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='origin']"
+                       position="after">
+                    <field name="notes"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Invoice tree view to add some fields.-->
+        <record id="nss_view_account_invoice_tree_inherit" model="ir.ui.view">
+            <field name="name">account.invoice.tree.nss</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="notes"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Inherited filter view to add some new filters-->
         <record id="view_account_invoice_filter_form_inherit_nshore" model="ir.ui.view">
             <field name="name">account.invoice.filter.form.nshore</field>
             <field name="model">account.invoice</field>
@@ -105,13 +127,15 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='user_id']" position="after">
                     <field name="invoice_line_ids" string="Product" filter_domain="[('invoice_line_ids.product_id', 'ilike', self)]"/>
+                    <field name="comment" string="Notes"/>
                 </xpath>
             </field>
         </record>
 
-
+        <!-- Modified action to first open tree view-->
         <record id="account.product_product_action_sellable" model="ir.actions.act_window">
             <field name="view_mode">tree,kanban,form,activity</field>
         </record>
+
     </data>
 </odoo>

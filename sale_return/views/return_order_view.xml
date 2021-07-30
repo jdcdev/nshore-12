@@ -111,6 +111,7 @@
                 <field name="sale_person_id" />
                 <field name="state" />
                 <field name="line_ids" string="Product" filter_domain="[('line_ids.product_id', 'ilike', self)]"/>
+                <field name="note"/>
             </search>
         </field>
     </record>

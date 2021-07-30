@@ -161,12 +161,16 @@
             <field name="view_id" ref="product.product_template_tree_view"/>
         </record>
 
-       <!--  <menuitem action="account.action_invoice_tree1"
-                  id="menu_action_customer_invoice"
-                  parent="sale.sale_order_menu"
-                  sequence="1"/> -->
-
-
-
+        <record id="view_sales_order_filter_inherit_nshore" model="ir.ui.view">
+            <field name="name">view.sales.order.filter.sale.nshore</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='order_line']"
+                       position="after">
+                       <field name="note" string="Notes"/>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>
