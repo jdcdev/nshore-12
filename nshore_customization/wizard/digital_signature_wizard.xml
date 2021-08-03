@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <record id="view_digital_signature_form" model="ir.ui.view">
+            <field name="name">digital.signature.wizard.form</field>
+            <field name="model">digital.signature.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Sign Invoice">
+                    <sheet>
+                        <group>
+                        <label for="digital_signature" string="Signature" class="oe_edit_only"/>
+                        <h2>
+                            <field name="digital_signature" widget="signature" class="focus_field" context="{'form_sign' : True}"/>
+                        </h2>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

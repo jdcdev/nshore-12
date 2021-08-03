@@ -81,6 +81,9 @@ class AccountInvoice(models.Model):
     invoice_line_ids = fields.One2many(
         'account.invoice.line', 'invoice_id',
         string='Invoice Lines', oldname='invoice_line', copy=True, readonly=False)
+    digital_signature = fields.Binary('Signature', copy=False)
+    has_to_be_signed = fields.Boolean(copy=False)
+    signed_by = fields.Char('Signed by', help='Name of the person that signed the Invoice.', copy=False)
     notes = fields.Text('Notes', compute='_get_notes')
     comment = fields.Text(readonly=False, states={'draft': []})
 
@@ -110,10 +113,23 @@ class AccountInvoice(models.Model):
                     'view_id': view.id,
                     'res_model': 'custom.pop.message',
                     'target': 'new',
-                    'context': {'default_message': msg, 'default_invoice': order.id}
+                    'context': {
+                        'default_message': msg, 'default_invoice': order.id}
                 }
             else:
                 return super(AccountInvoice, self).action_invoice_open()
+
+    @api.multi
+    def write(self, values):
+        """Update Signature boolean for readonly it."""
+        if self._context.get('active_model') == 'sale.order' and values.get(
+                'digital_signature'):
+            values.update({'has_to_be_signed': True})
+        if self._context.get('params') and self._context.get('params').get(
+                'view_type') == 'form':
+            if values.get('digital_signature'):
+                values.update({'has_to_be_signed': True})
+        return super(AccountInvoice, self).write(values)
 
     @api.onchange('partner_id')
     def onchange_partner(self):
@@ -122,6 +138,24 @@ class AccountInvoice(models.Model):
             'pricelist_id': self.partner_id.property_product_pricelist and self.partner_id.property_product_pricelist.id or False,
         }
         self.update(values)
+
+    @api.multi
+    def sign_invoice(self):
+        view = self.env.ref('nshore_customization.view_digital_signature_form')
+        context = dict(self._context or {})
+        context.update({'id': self.id, 'form_sign': True, 'view_id': self.env.ref('account.invoice_form').id})
+        print("\n\n context", context)
+        return{
+            'name': 'Digital Signature',
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'digital.signature.wizard',
+            'views': [(view.id, 'form')],
+            'view_id': view.id,
+            'target': 'current',
+            'context': context
+        }
 
 
 class AccountInvoiceLine(models.Model):
@@ -169,7 +203,6 @@ class AccountInvoiceLine(models.Model):
             for lines in inv_lines:
                 msg = '<ul>'
                 if values.get('product_net_cost') and lines.product_net_cost != float(values['product_net_cost']):
-                    print("\n\n\n lines ", values.get('product_net_cost'))
                     msg += "<li> %s:" % (lines.product_id.display_name,)
                     msg += "<br/>" + _("Product Net Cost") + ": %s -> %s <br/>" % (
                         lines.product_net_cost, float(values['product_net_cost']),)
@@ -184,7 +217,6 @@ class AccountInvoiceLine(models.Model):
             for lines in inv_lines:
                 msg = '<ul>'
                 if values.get('product_list_price') and lines.product_list_price != float(values['product_list_price']):
-                    print("\n\n\n lines ", values.get('product_list_price'))
                     msg += "<li> %s:" % (lines.product_id.display_name,)
                     msg += "<br/>" + _("Product Sales Price") + ": %s -> %s <br/>" % (
                         lines.product_list_price, float(values['product_list_price']),)
@@ -199,7 +231,6 @@ class AccountInvoiceLine(models.Model):
             for lines in inv_lines:
                 msg = '<ul>'
                 if values.get('price_unit') and lines.price_unit != float(values['price_unit']):
-                    print("\n\n\n lines ", values.get('price_unit'))
                     msg += "<li> %s:" % (lines.product_id.display_name,)
                     msg += "<br/>" + _("Price") + ": %s -> %s <br/>" % (
                         lines.price_unit, float(values['price_unit']),)
