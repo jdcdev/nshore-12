@@ -46,6 +46,30 @@
                     <field name="product_net_cost"/>
                     <field name="product_list_price"/>
                 </xpath>
+                <xpath expr="//sheet/group" position="inside">
+                    <group>
+                    </group>
+                    <group>
+                        <div class="o_row">
+                            <button name="sign_invoice"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-pencil-square-o"
+                                attrs="{'invisible': [('state', 'in', ['draft'])]}"
+                                string="Digital Signature">
+                            </button>
+                        </div>
+                    </group>
+                </xpath>
+                <xpath expr="//page[@name='other_info']" position="after">
+                    <page name="digital_signature" string="Digital Signature" >
+                        <field name="has_to_be_signed" invisible="1"/>
+                        <label for="digital_signature" string="Signature" class="oe_edit_only"/>
+                        <h2>
+                            <field name="digital_signature" widget="signature" readonly="1" attrs="{'invisible': [('has_to_be_signed', '=', False)]}"/>
+                        </h2>
+                    </page>
+                </xpath>
             </field>
         </record>
 

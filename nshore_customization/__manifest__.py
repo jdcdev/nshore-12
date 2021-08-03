@@ -17,6 +17,7 @@
         'views/partner_view.xml',
         'views/template.xml',
         'views/inherited_sale_order.xml',
+        'wizard/digital_signature_wizard.xml',
         'views/inherited_invoice_form.xml',
         'views/inherited_purchase_form.xml',
         'report/payment.xml',
@@ -57,6 +58,7 @@
         'views/stock_inventory_line_view.xml',
         'views/product_pricelist_view.xml',
         'views/res_company_view.xml',
+        'views/account_portal_template_inherit.xml',
         'views/account_move_line_inherit_view.xml'
     ],
     'qweb': [
