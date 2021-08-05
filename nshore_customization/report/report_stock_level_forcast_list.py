@@ -12,7 +12,7 @@ class ReportStockForecat(models.Model):
     picking_id = fields.Many2one('stock.picking', string='Picking', readonly=True)
     partner_id = fields.Many2one(
         'res.partner', 'Customer/Vendor', related="picking_id.partner_id")
-
+    date_picking = fields.Datetime('Date', related="picking_id.scheduled_date")
 
     def init(self):
         tools.drop_view_if_exists(self._cr, 'report_stock_forecast')
