@@ -164,7 +164,7 @@
         </record>
 
         <!-- Purchase Order report action-->
-        <report
+        <!-- <report
             string="Open Purchase Order"
             id="open_purchase_order"
             model="purchase.order"
@@ -173,7 +173,7 @@
             file="nshore_customization.report_open_purchase_order"
             paperformat="nshore_customization.paperformat_open_purchase_order"
         />
-
+ -->
         <!-- Inventory Valuation Report Paper Format-->
         <record id="paperformat_inventory_valuation" model="report.paperformat">
             <field name="name">Inventory Valuation Report</field>
