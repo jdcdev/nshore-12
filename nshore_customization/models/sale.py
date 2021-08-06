@@ -12,8 +12,9 @@ class SaleOrder(models.Model):
     user_id = fields.Many2one(
         'res.users', string='Salesperson',
         index=True, track_visibility='onchange',
-        track_sequence=2, default=lambda self: self.env.user,
-        domain=[('is_salesperson', '=', True)])
+        track_sequence=2, default=lambda self: self.env.user)
+    # ,
+    #     domain=[('is_salesperson', '=', True)]
 
     def price_updates(self, values):
         """Update products prices when change the partner."""
