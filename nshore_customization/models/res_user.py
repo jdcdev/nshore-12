@@ -8,4 +8,5 @@ class ResUsers(models.Model):
 
     _inherit = 'res.users'
 
+    # added salesperson
     is_salesperson = fields.Boolean(string="Is Sales Person?")
