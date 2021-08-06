@@ -12,7 +12,7 @@ class ReportStockForecat(models.Model):
     picking_id = fields.Many2one('stock.picking', string='Picking', readonly=True)
     partner_id = fields.Many2one(
         'res.partner', 'Customer/Vendor', related="picking_id.partner_id")
-
+    date_picking = fields.Datetime('Date', related="picking_id.scheduled_date")
 
     def init(self):
         tools.drop_view_if_exists(self._cr, 'report_stock_forecast')
@@ -33,7 +33,7 @@ class ReportStockForecat(models.Model):
                     product.id as product_id,
                     date(CURRENT_DATE) as date,
                     SUM(sq.quantity) AS product_qty,
-                    '' as reference,
+                    'Available Inventory' as reference,
                     sq.company_id
                 FROM
                     product_product as product
@@ -123,7 +123,7 @@ class ReportStockForecat(models.Model):
             ) AS FINAL
         %s
         WHERE
-            final.product_qty != 0 OR final.reference = ''
+            final.product_qty != 0 OR final.reference = 'Available Inventory'
         %s
         ORDER BY
             date
@@ -201,7 +201,7 @@ class ReportStockForecat(models.Model):
                     cumulative_quantity_by_products[product_id] += line['quantity']  # Get cumulative quantity product wise
                     line['cumulative_quantity'] = cumulative_quantity_by_products[product_id]  # Sum of all quantities (i.e. cumulative quantity) product wise
                 elif line.get('reference'):
-                    if line['reference'] == '':
+                    if line['reference'] == 'Available Inventory':
                         if index == 0:
                             line['cumulative_quantity'] = line['quantity']
                         else:

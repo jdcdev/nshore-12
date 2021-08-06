@@ -9,7 +9,8 @@
                 <field name="product_id" type="row"/>
                 <field name="reference"/>
                 <field name="partner_id"/>
-                <field name="date"/>
+                <field name="date_picking"/>
+                <field name="date" invisible="1"/>
                 <field name="quantity" type="measure"/>
             </tree>
         </field>
