@@ -24,8 +24,7 @@ class ResPartner(models.Model):
     user_id = fields.Many2one(
         'res.users', string='Salesperson',
         help='The internal user in charge of this contact.',
-        default=_default_user_id)
-    # , domain=[('is_salesperson', '=', True)]
+        default=_default_user_id, domain=[('is_salesperson', '=', True)])
 
     @api.multi
     def name_get(self):
