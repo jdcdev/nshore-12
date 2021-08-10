@@ -11,8 +11,8 @@ class StockMOveLine(models.Model):
     # added field to get name of customer/vendor in move.
     partner_id = fields.Many2one(
         'res.partner', 'Customer/Vendor', related="picking_id.partner_id")
-    product_onhand_qty = fields.Float(
-        'Ealry Onhand Qty', digits=0)
+    product_onhand_qty = fields.Char(
+        'Initial On-hand Qty', default='0')
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -21,14 +21,14 @@ class StockMOveLine(models.Model):
             if 'qty_done' in vals:
                 product = self.env['product.product'].browse(
                     vals['product_id'])
-                vals['product_onhand_qty'] = product.qty_available
+                vals['product_onhand_qty'] = str(product.qty_available)
         return super(StockMOveLine, self).create(vals_list)
 
     @api.multi
     def write(self, values):
         """Messsage post when done qty change."""
         if 'qty_done' in values:
-            self.product_onhand_qty = self.product_id.qty_available
+            self.product_onhand_qty = str(self.product_id.qty_available)
             for line in self:
                 line._update_line_quantity(values)
         return super(StockMOveLine, self).write(values)
