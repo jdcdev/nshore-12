@@ -4,13 +4,22 @@ from odoo.tools import float_compare
 from odoo.tools import float_round
 from odoo.addons import decimal_precision as dp
 
+
 class SaleOrder(models.Model):
     """Class Inherit for added some functionality."""
 
     _inherit = 'sale.order'
 
-    confirmation_date = fields.Datetime(string='Confirmation Date', readonly=True, index=True, help="Date on which the sales order is confirmed.", oldname="date_confirm", copy=False, track_visibility='onchange')
-    
+    user_id = fields.Many2one(
+        'res.users', string='Salesperson',
+        index=True, track_visibility='onchange',
+        track_sequence=2, default=lambda self: self.env.user,
+        domain=[('is_salesperson', '=', True)])
+    confirmation_date = fields.Datetime(
+        string='Confirmation Date', readonly=True,
+        index=True, help="Date on which the sales order is confirmed.",
+        oldname="date_confirm", copy=False, track_visibility='onchange')
+
     def price_updates(self, values):
         """Update products prices when change the partner."""
         for line in self.order_line:

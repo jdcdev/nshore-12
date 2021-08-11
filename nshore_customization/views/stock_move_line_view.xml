@@ -9,6 +9,9 @@
             <xpath expr="//field[@name='reference']" position="after">
                 <field name="partner_id"/>
             </xpath>
+            <xpath expr="//field[@name='qty_done']" position="before">
+                <field name="product_onhand_qty"/>
+            </xpath>
         </field>
     </record>
     <!--Inherited Form view stock move lines-->
@@ -19,6 +22,9 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='lot_id']" position="before">
                 <field name="partner_id"/>
+            </xpath>
+            <xpath expr="//field[@name='qty_done']" position="after">
+                <field name="product_onhand_qty"/>
             </xpath>
         </field>
     </record>
