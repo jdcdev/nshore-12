@@ -9,6 +9,8 @@ class SaleOrder(models.Model):
 
     _inherit = 'sale.order'
 
+    confirmation_date = fields.Datetime(string='Confirmation Date', readonly=True, index=True, help="Date on which the sales order is confirmed.", oldname="date_confirm", copy=False, track_visibility='onchange')
+    
     def price_updates(self, values):
         """Update products prices when change the partner."""
         for line in self.order_line:
