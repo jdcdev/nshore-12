@@ -1,6 +1,7 @@
 from odoo import api, models, fields, _
 from odoo.http import request
 from odoo.addons import decimal_precision as dp
+from datetime import date
 
 
 class CustomPopMessage(models.TransientModel):
@@ -73,7 +74,7 @@ class AccountInvoice(models.Model):
     date_invoice = fields.Date(
         string='Invoice Date',
         readonly=True, states={'draft': [('readonly', False)]}, index=True,
-        help="Keep empty to use the current date", copy=False, default=fields.Date.today())
+        help="Keep empty to use the current date", copy=False, default=fields.Date.today(), track_visibility='onchange')
     pricelist_id = fields.Many2one(
         'product.pricelist', string='Pricelist',
         readonly=True, states={'draft': [('readonly', False)]})
@@ -86,6 +87,13 @@ class AccountInvoice(models.Model):
     signed_by = fields.Char('Signed by', help='Name of the person that signed the Invoice.', copy=False)
     notes = fields.Text('Notes', compute='_get_notes')
     comment = fields.Text(readonly=False, states={'draft': []})
+    date_due = fields.Date(string='Due Date',
+        readonly=True, states={'draft': [('readonly', False)]}, index=True, copy=False,
+        help="If you use payment terms, the due date will be computed automatically at the generation "
+             "of accounting entries. The Payment terms may compute several due dates, for example 50% "
+             "now and 50% in one month, but if you want to force a due date, make sure that the payment "
+             "term is not set on the invoice. If you keep the Payment terms and the due date empty, it "
+             "means direct payment.", track_visibility='onchange')
 
     def _get_notes(self):
         for ai in self:
@@ -158,6 +166,7 @@ class AccountInvoice(models.Model):
         }
 
 
+  
 class AccountInvoiceLine(models.Model):
     """Account Invoice Line Inherit for pricelist,create modification."""
 
