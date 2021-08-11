@@ -21,8 +21,7 @@ class CustomerPurchases(models.TransientModel):
     summary = fields.Boolean(string="Summary")
     comparsion = fields.Boolean(string="Comparsion")
     screen_view = fields.Boolean(string="Screen View", default=True)
-    user_id = fields.Many2one("res.users", string="Salesperson", domain=[
-        ('is_salesperson', '=', True)])
+    user_id = fields.Many2one("res.users", string="Salesperson")
     is_all_salesperson = fields.Boolean(string="All Salesperson", default=True)
     with_margin = fields.Boolean(string="Without Margin", default=False)
     gross_profit = fields.Boolean(string="Without Gross Profit", default=False)
