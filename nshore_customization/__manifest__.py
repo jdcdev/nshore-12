@@ -26,6 +26,7 @@
         'views/inherited_stock_product_view.xml',
         'views/contact_views.xml',
         'views/report.xml',
+        'views/res_users_view.xml',
         'wizard/account_report_customer_statement.xml',
         'wizard/daily_monthly_invoices_view.xml',
         'wizard/daily_monthly_payment_view.xml',
