@@ -3,6 +3,8 @@ from datetime import date
 
 
 class CustomerPurchases(models.TransientModel):
+    """Class to add customer purchase report fields."""
+
     _name = 'customer.purchases'
     _description = 'Customer Purchase Report'
 
@@ -21,7 +23,8 @@ class CustomerPurchases(models.TransientModel):
     summary = fields.Boolean(string="Summary")
     comparsion = fields.Boolean(string="Comparsion")
     screen_view = fields.Boolean(string="Screen View", default=True)
-    user_id = fields.Many2one("res.users", string="Salesperson")
+    user_id = fields.Many2one("res.users", string="Salesperson", domain=[
+        ('is_salesperson', '=', True)])
     is_all_salesperson = fields.Boolean(string="All Salesperson", default=True)
     with_margin = fields.Boolean(string="Without Margin", default=False)
     gross_profit = fields.Boolean(string="Without Gross Profit", default=False)
@@ -116,7 +119,7 @@ class CustomerPurchases(models.TransientModel):
             self.user_id = False
 
     @api.onchange('is_all_salesperson')
-    def _onchange_customer(self):
+    def _onchange_salesperson(self):
         if self.is_all_salesperson:
             self.user_id = False
 

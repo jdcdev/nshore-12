@@ -24,7 +24,7 @@ class ResPartner(models.Model):
     user_id = fields.Many2one(
         'res.users', string='Salesperson',
         help='The internal user in charge of this contact.',
-        default=_default_user_id)
+        default=_default_user_id, domain=[('is_salesperson', '=', True)])
 
     @api.multi
     def name_get(self):
@@ -127,7 +127,6 @@ class ResPartner(models.Model):
                 'end_date': final_end_date,
                 'previous_month': previous_month.strftime("%B")
             }
-            print("\n\n\n ctx", ctx)
             partners = partner_obj.browse(partner_list)
             for partner in partners.filtered(lambda l: l.email):
                 partner.sudo().write({
