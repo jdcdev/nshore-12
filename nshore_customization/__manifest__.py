@@ -1,6 +1,6 @@
 {
     'name': 'Nshore Customization',
-    'version': '12.0.1.0.1',
+    'version': '12.0.1.0.2',
     'category': 'Partner',
     'license': 'AGPL-3',
     'author': 'JDC Systems',

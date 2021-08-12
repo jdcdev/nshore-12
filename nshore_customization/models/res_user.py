@@ -8,5 +8,5 @@ class ResUsers(models.Model):
 
     _inherit = 'res.users'
 
-    # added salesperson
+    # added salesperson for domain filter in other fields.
     is_salesperson = fields.Boolean(string="Is Sales Person?")
