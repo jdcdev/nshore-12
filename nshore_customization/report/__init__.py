@@ -7,3 +7,4 @@ from . import report_customer_purchase
 from . import report_customer_purchase_detail
 from . import report_inventory_valuation
 from . import open_po_report
+from . import report_stock_level_forcast_list

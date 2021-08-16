@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<record id="view_stock_level_forecast_tree" model="ir.ui.view">
+        <field name="name">view.stock.level.forecast.tree</field>
+        <field name="model">report.stock.forecast</field>
+        <field name="arch" type="xml">
+            <tree string="Forcast Quantity" create="0" default_order="date">
+                <field name="product_id" type="row"/>
+                <field name="reference"/>
+                <field name="partner_id"/>
+                <field name="date_picking"/>
+                <field name="date" invisible="1"/>
+                <field name="quantity" type="measure"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="stock.action_stock_level_forecast_report_template" model="ir.actions.act_window">
+        <field name="view_mode">tree,graph,pivot</field>
+        <field name="view_id" ref="view_stock_level_forecast_tree"/>
+    </record>
+
+    <record id="stock.action_stock_level_forecast_report_product" model="ir.actions.act_window">
+    	<field name="view_mode">tree,graph,pivot</field>
+    	<field name="view_id" ref="view_stock_level_forecast_tree"/>
+	</record>
+
+</odoo>

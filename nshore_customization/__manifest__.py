@@ -60,7 +60,8 @@
         'views/product_pricelist_view.xml',
         'views/res_company_view.xml',
         'views/account_portal_template_inherit.xml',
-        'views/account_move_line_inherit_view.xml'
+        'views/account_move_line_inherit_view.xml',
+        'report/report_stock_level_forcast_list.xml',
     ],
     'qweb': [
         'static/src/xml/pos.xml',
