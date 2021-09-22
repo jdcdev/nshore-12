@@ -21,18 +21,16 @@
         <xpath expr="//p[@name='note']" position="replace">
         </xpath>
         <xpath expr="//div[hasclass('clearfix')]" position="after">
-            <div id="image_before" class="col-6 position-relative">
-                <h5 class="pt-3" style="font-size: 15px;">
-                    <t t-if="o.digital_signature">
-                        <strong>Signature:</strong>
-                    </t>
-                    <t t-else="">
-                        <strong style="position: absolute;left: 13%;right: 0;top: 50%;">
-                            SIGNATURE</strong>
-                    </t>
-                    <img style="height:122px;width:366px;"
-                         t-att-src="'data:image/png;base64,%s' % to_text(o.digital_signature)"/>
-                </h5>
+            <div t-if="o.digital_signature" class="mt32 ml64 mr4" name="digital_signature">
+                <div class="offset-8">
+                    <strong>Signature</strong>
+                </div>
+                <div class="offset-8">
+                    <img t-att-src="image_data_uri(o.digital_signature)" style="max-height: 5cm; max-width: 15cm;"/>
+                </div>
+                <div class="offset-8 text-center">
+                    <p t-field="o.signed_by"/>
+                </div>
             </div>
         </xpath>
         <xpath expr="//div[@class='page']" position="before">
