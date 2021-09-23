@@ -21,14 +21,14 @@
         <xpath expr="//p[@name='note']" position="replace">
         </xpath>
         <xpath expr="//div[hasclass('clearfix')]" position="after">
-            <div t-if="o.digital_signature" class="mt32 ml64 mr4" name="digital_signature">
-                <div class="offset-8">
+            <div t-if="o.digital_signature" style="margin-top: -100px;" name="digital_signature">
+                <div>
                     <strong>Signature</strong>
                 </div>
-                <div class="offset-8">
+                <div>
                     <img t-att-src="image_data_uri(o.digital_signature)" style="max-height: 5cm; max-width: 15cm;"/>
                 </div>
-                <div class="offset-8 text-center">
+                <div class="text-center">
                     <p t-field="o.signed_by"/>
                 </div>
             </div>
