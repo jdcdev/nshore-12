@@ -258,7 +258,8 @@ class SaleOrderLine(models.Model):
     def product_id_change(self):
 
         """ 
-            Method override for change product uom quantity by default 0 
+            Method override for change product uom quantity by default 0 in So
+            
         """
 
         if not self.product_id:
