@@ -168,4 +168,3 @@ class PurchaseOrderLine(models.Model):
             self.product_uom = seller_min_qty[0].product_uom
         else:
             self.product_qty = 0.0
-
