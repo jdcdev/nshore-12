@@ -13,7 +13,8 @@
 
     # any module necessary for this one to work correctly
     'depends': [
-        'base'
+        'base',
+        'web'
     ],
     # always loaded
     'data': [
