@@ -52,5 +52,19 @@
             </div>
             <br/>
         </xpath>
+        <xpath expr="//tr[@t-foreach='o.order_line']/td[1]" position="replace">
+            <t t-if="line.code_product">
+                <td>
+                    <span t-field="line.product_id.display_name"/>
+                    <br/>
+                    <span t-field="line.code_product"/>
+                </td>
+            </t>
+            <t t-else = "">
+               <td>
+                   <span t-field="line.name"/>
+                </td> 
+            </t>
+        </xpath>
     </template>
 </odoo>
