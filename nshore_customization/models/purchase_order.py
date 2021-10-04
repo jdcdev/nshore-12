@@ -20,7 +20,7 @@ class PurchaseOrder(models.Model):
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
-    code_product = fields.Char('Product Code')
+    code_product = fields.Char('Vendor Product Code')
 
     @api.onchange('product_qty', 'product_uom')
     def _onchange_quantity(self):
