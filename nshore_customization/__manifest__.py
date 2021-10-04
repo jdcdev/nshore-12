@@ -60,6 +60,7 @@
         'views/account_portal_template_inherit.xml',
         'views/account_move_line_inherit_view.xml',
         'report/report_stock_level_forcast_list.xml',
+        'views/product_supplierinfo_view.xml',
 
     ],
     'qweb': [
