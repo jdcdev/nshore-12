@@ -27,6 +27,14 @@
                         position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']"
+                        position="after">
+                    <field name="code_product"/>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='date_planned']"
+                        position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
             </field>
         </record>
 
