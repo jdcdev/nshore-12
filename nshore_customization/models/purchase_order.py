@@ -20,6 +20,8 @@ class PurchaseOrder(models.Model):
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
+    code_product = fields.Char('Vendor Product Code')
+
     @api.onchange('product_qty', 'product_uom')
     def _onchange_quantity(self):
         # Function override to get unit price while qty is in minus.
@@ -52,6 +54,10 @@ class PurchaseOrderLine(models.Model):
         if seller and self.product_uom and seller.product_uom != self.product_uom:
             price_unit = seller.product_uom._compute_price(price_unit, self.product_uom)
         self.price_unit = price_unit
+
+        if seller:
+            # When products code is set on vendor so by default set on that.
+            self.code_product = seller.product_code
 
     @api.multi
     def _prepare_stock_moves(self, picking):
@@ -144,3 +150,19 @@ class PurchaseOrderLine(models.Model):
                     line.price_unit, float(values['price_unit']),)
             msg += "</ul>"
             purchase_order.message_post(body=msg)
+
+    def _suggest_quantity(self):
+        '''
+        Suggest a minimal quantity based on the seller
+        '''
+        # Function override to set product_qty is 0 .
+        if not self.product_id:
+            return
+        seller_min_qty = self.product_id.seller_ids\
+            .filtered(lambda r: r.name == self.order_id.partner_id and (not r.product_id or r.product_id == self.product_id))\
+            .sorted(key=lambda r: r.min_qty)
+        if seller_min_qty:
+            self.product_qty = seller_min_qty[0].min_qty or 0.0
+            self.product_uom = seller_min_qty[0].product_uom
+        else:
+            self.product_qty = 0.0

@@ -173,6 +173,8 @@ class AccountInvoiceLine(models.Model):
     product_net_cost = fields.Float('Product Net Cost', digits=dp.get_precision('Product Price'))
     product_list_price = fields.Float('Product Sales Price', digits=dp.get_precision('Product Price'))
     # new_price = fields.Boolean("New Price")
+    quantity = fields.Float(string='Quantity', digits=dp.get_precision('Product Unit of Measure'),
+        required=True, default=0)
 
     @api.multi
     def write(self, values):
