@@ -1,6 +1,8 @@
-from odoo import fields, models, api, _
-from odoo.exceptions import ValidationError
 from datetime import date
+
+from odoo import fields, models, api, _
+from odoo.exceptions import UserError
+from odoo.exceptions import ValidationError
 
 
 class ReturnOrder(models.Model):
@@ -9,7 +11,6 @@ class ReturnOrder(models.Model):
     _name = 'return.order'
     _description = 'Return Order'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-
 
     # Defined fields
     name = fields.Char(
@@ -26,8 +27,12 @@ class ReturnOrder(models.Model):
         string="Date", required=True,
         default=lambda self: date.today(), track_visibility='always')
     state = fields.Selection([
-        ('draft', 'Draft'), ('confirm', 'Confirm'),
-        ('cancel', 'Cancelled'), ('done', 'Returned')], default='draft',
+        ('draft', 'Draft'),
+        ('confirm', 'Confirm'),
+        ('cancel', 'Cancelled'),
+        ('done', 'Returned'),
+        ('returned_cancel', 'Cancelled'),
+    ], default='draft',
         required=True, track_visibility='always')
     credit_invoice_id = fields.Many2one(
         "account.invoice", string="Credit Invoice", track_visibility='always')
@@ -65,14 +70,13 @@ class ReturnOrder(models.Model):
         """Onchange call for customer pricelist."""
         values = {
             'pricelist_id': self.partner_id.property_product_pricelist and
-            self.partner_id.property_product_pricelist.id or False,
+                            self.partner_id.property_product_pricelist.id or False,
         }
         self.update(values)
 
     def _get_notes(self):
         for ro in self:
             ro.notes = ro.note[0:10] + "..." if ro.note else ''
-                
 
     @api.depends('line_ids.value_before_tax', 'line_ids.price_tax')
     def _amount_all(self):
@@ -116,7 +120,7 @@ class ReturnOrder(models.Model):
                 rec['partner_id'] = sale_order.partner_id.id
                 self.env[
                     'ir.config_parameter'].sudo().set_param(
-                        'sale.order.id', active_id)
+                    'sale.order.id', active_id)
         else:
             self.env['ir.config_parameter'].sudo().set_param(
                 'sale.order.id', '')
@@ -141,15 +145,13 @@ class ReturnOrder(models.Model):
         """Main method to process return according the return option."""
 
         self.check_orderline()
-        if self.type_partner == 'customer':
-            line_ids = self.env['return.order.line'].sudo().search(
-                [('return_id', '=', self.id)])
-            if line_ids:
+        line_ids = self.env['return.order.line'].sudo().search([
+            ('return_id', '=', self.id)
+        ])
+        if line_ids:
+            if self.type_partner == 'customer':
                 self.process_refund_return_customer(lines=line_ids)
-        else:
-            line_ids = self.env['return.order.line'].sudo().search(
-                [('return_id', '=', self.id)])
-            if line_ids:
+            else:
                 self.process_refund_return_vendor(lines=line_ids)
 
     def process_refund_return_vendor(self, lines):
@@ -188,25 +190,24 @@ class ReturnOrder(models.Model):
                         'name': return_line.product_id.name or '',
                         'product_id': return_line.product_id.id or False,
                         'account_id':
-                        return_line.product_id.property_account_income_id.id or
-                        return_line.product_id.categ_id.property_account_income_categ_id.id or False,
+                            return_line.product_id.property_account_income_id.id or
+                            return_line.product_id.categ_id.property_account_income_categ_id.id or False,
                         'quantity': return_line.qty or 0.0,
                         'uom_id':
-                        return_line.product_id.product_tmpl_id.uom_id.id or
-                        False,
-                        'price_unit': return_line.unit_price or 0.0,
+                            return_line.product_id.product_tmpl_id.uom_id.id or
+                            False,
                         'price_unit': return_line.unit_price or 0.0,
                         'invoice_line_tax_ids': [
-                            (6, 0, return_line.tax_id.ids)] or False,
+                                                    (6, 0, return_line.tax_id.ids)] or False,
                         'invoice_id': refund and refund.id or False})
                 # Get picking type and Picking from selected Purchase order
                 picking_type_id_po = self.env['stock.picking.type'].search([
                     ('code', '=', 'incoming')], limit=1)
                 picking_id = self.env['stock.picking'].search(
                     [('group_id', '=', return_line.purchase_order_id.group_id.id),
-                        ('product_id', '=', return_line.product_id.id),
-                        ('picking_type_id', '=', picking_type_id_po.id),
-                        ('state', '=', 'done')], limit=1)
+                     ('product_id', '=', return_line.product_id.id),
+                     ('picking_type_id', '=', picking_type_id_po.id),
+                     ('state', '=', 'done')], limit=1)
                 # Raise warning when selected PO don't have receipt
                 if not picking_id:
                     raise ValidationError(
@@ -217,10 +218,10 @@ class ReturnOrder(models.Model):
                         'name': return_line.product_id.name,
                         'product_id': return_line.product_id.id,
                         'product_uom':
-                        return_line.product_id.product_tmpl_id.uom_id.id,
+                            return_line.product_id.product_tmpl_id.uom_id.id,
                         'product_uom_qty': return_line.qty,
                         'location_id':
-                        picking_type_id_po.default_location_dest_id.id,
+                            picking_type_id_po.default_location_dest_id.id,
                         'location_dest_id': location.id,
                         'partner_id': self.supplier_id.id,
                         'picking_id': picking_return.id,
@@ -247,22 +248,21 @@ class ReturnOrder(models.Model):
                     'name': return_line.product_id.name or '',
                     'product_id': return_line.product_id.id or False,
                     'account_id':
-                    return_line.product_id.property_account_income_id.id or
-                    return_line.product_id.categ_id.property_account_income_categ_id.id or False,
+                        return_line.product_id.property_account_income_id.id or
+                        return_line.product_id.categ_id.property_account_income_categ_id.id or False,
                     'quantity': return_line.qty or 0.0,
                     'uom_id':
-                    return_line.product_id.product_tmpl_id.uom_id.id or False,
-                    'price_unit': return_line.unit_price or 0.0,
+                        return_line.product_id.product_tmpl_id.uom_id.id or False,
                     'price_unit': return_line.unit_price or 0.0,
                     'invoice_line_tax_ids': [
-                        (6, 0, return_line.tax_id.ids)] or False,
+                                                (6, 0, return_line.tax_id.ids)] or False,
                     'invoice_id': refund and refund.id or False})
                 # Stock Move for return
                 self.env['stock.move'].sudo().create({
                     'name': return_line.product_id.name,
                     'product_id': return_line.product_id.id,
                     'product_uom':
-                    return_line.product_id.product_tmpl_id.uom_id.id,
+                        return_line.product_id.product_tmpl_id.uom_id.id,
                     'product_uom_qty': return_line.qty,
                     'location_id': picking_type_id.default_location_src_id.id,
                     'location_dest_id': location.id,
@@ -319,19 +319,19 @@ class ReturnOrder(models.Model):
                         'name': return_line.product_id.name or '',
                         'product_id': return_line.product_id.id or False,
                         'account_id': return_line.product_id.property_account_income_id.id or
-                        return_line.product_id.categ_id.property_account_income_categ_id.id or False,
+                                      return_line.product_id.categ_id.property_account_income_categ_id.id or False,
                         'quantity': return_line.qty or 0.0,
                         'uom_id': return_line.product_id.product_tmpl_id.uom_id.id or False,
                         'price_unit': return_line.unit_price or 0.0,
                         'invoice_line_tax_ids': [
-                            (6, 0, return_line.tax_id.ids)] or False,
+                                                    (6, 0, return_line.tax_id.ids)] or False,
                         'invoice_id': credit_note and credit_note.id or False,
                         'display_type': return_line.display_type})
                 # Get Picking type and create merge picking for return
                 picking_type_id_so = self.env[
                     'stock.picking.type'].sudo().search([
-                        ('code', '=', 'outgoing'),
-                        ('warehouse_id', '=', return_line.sale_order_id.warehouse_id.id)])
+                    ('code', '=', 'outgoing'),
+                    ('warehouse_id', '=', return_line.sale_order_id.warehouse_id.id)])
                 picking_id = self.env['stock.picking'].sudo().search(
                     [('group_id', '=', return_line.sale_order_id.procurement_group_id.id),
                      ('product_id', '=', return_line.product_id.id),
@@ -373,13 +373,13 @@ class ReturnOrder(models.Model):
                     'name': return_line.product_id.name or '',
                     'product_id': return_line.product_id.id or False,
                     'account_id': return_line.product_id.property_account_income_id.id or
-                    return_line.product_id.categ_id.property_account_income_categ_id.id or False,
+                                  return_line.product_id.categ_id.property_account_income_categ_id.id or False,
                     'quantity': return_line.qty or 0.0,
                     'uom_id': return_line.product_id.product_tmpl_id.uom_id.id or False,
                     'price_unit': return_line.unit_price or 0.0,
                     'invoice_line_tax_ids': [(6, 0, return_line.tax_id.ids)] or False,
                     'invoice_id': credit_note and credit_note.id or False,
-                    'display_type': return_line.display_type,}),
+                    'display_type': return_line.display_type, }),
                 # Moves
                 self.env['stock.move'].create({
                     'name': return_line.product_id.name,
@@ -434,6 +434,19 @@ class ReturnOrder(models.Model):
         result = super(ReturnOrder, self).create(vals)
         return result
 
+    @api.multi
+    def action_returned_cancel(self):
+        self.write({'state': 'returned_cancel'})
+        self.account_invoice_ids.action_invoice_cancel()
+        self.stock_move_ids.mapped('move_ids_without_package').write({
+            'state': 'cancel'
+        })
+        for line in self.stock_move_ids.move_line_ids_without_package:
+            line.write({
+                'qty_done': 0
+            })
+        self.stock_move_ids.write({'state': 'cancel'})
+
 
 class ReturnOrderLine(models.Model):
     """Class created to add return order line."""
@@ -471,7 +484,6 @@ class ReturnOrderLine(models.Model):
                     lambda p: p.product_id == line.product_id)
                 line.update({
                     'value': order_line_rec.price_subtotal})
-
 
     # Defined fields
     price_tax = fields.Float(
@@ -530,13 +542,14 @@ class ReturnOrderLine(models.Model):
             if record.return_id.type_partner == 'customer':
                 if record.sale_order_id:
                     record.sale_order_id = False
-                sales_order_line = self.env['sale.order.line'].search(
-                    [('product_id', '=', record.product_id.id),
-                        ('return_order_id', '=', False),
-                        ('order_id.state', '=', 'sale')])
+                sales_order_line = self.env['sale.order.line'].search([
+                    ('product_id', '=', record.product_id.id),
+                    ('return_order_id', '=', False),
+                    ('order_id.state', '=', 'sale')
+                ])
                 order_line_rec = sales_order_line.filtered(
                     lambda x: x.order_id and
-                    x.order_id.partner_id == record.return_id.partner_id)
+                              x.order_id.partner_id == record.return_id.partner_id)
                 sales_order = list(set(
                     [line.order_id.id for line in order_line_rec]))
                 # Value of order line without SO
@@ -544,9 +557,9 @@ class ReturnOrderLine(models.Model):
                     product = record.product_id
                     record.unit_price = self.env[
                         'account.tax']._fix_tax_included_price_company(
-                            self._get_display_price(
-                                product), product.taxes_id,
-                            record.tax_id, self.env.user.company_id)
+                        self._get_display_price(
+                            product), product.taxes_id,
+                        record.tax_id, self.env.user.company_id)
                     taxes = record.product_id.taxes_id
                     record.tax_id = record.return_id.partner_id.property_account_position_id.map_tax(taxes, record.product_id, record.return_id.partner_id)
                 # passed sales order based on products and partner.
@@ -562,11 +575,11 @@ class ReturnOrderLine(models.Model):
                     record.purchase_order_id = False
                 purchase_order_line = self.env['purchase.order.line'].search(
                     [('product_id', '=', record.product_id.id),
-                        ('return_order_id', '=', False),
-                        ('order_id.state', '=', 'purchase')])
+                     ('return_order_id', '=', False),
+                     ('order_id.state', '=', 'purchase')])
                 purchase_order_line_rec = purchase_order_line.filtered(
                     lambda p: p.order_id and
-                    p.order_id.partner_id == record.return_id.supplier_id)
+                              p.order_id.partner_id == record.return_id.supplier_id)
                 purchase_order = list(set(
                     [line.order_id.id for line in purchase_order_line_rec]))
                 # Value when no PO
@@ -594,7 +607,7 @@ class ReturnOrderLine(models.Model):
                     lambda p: p.product_id == record.product_id)
                 total_qty = 0.00
                 if order_line:
-                    for rec in order_line: 
+                    for rec in order_line:
                         total_qty += (rec.product_uom_qty - rec.return_qty)
                         record.unit_price = rec.price_unit
                         record.tax_id = rec.tax_id
@@ -680,7 +693,6 @@ class ReturnOrderLine(models.Model):
 
         return super(ReturnOrderLine, self).create(vals_list)
 
-
     # _sql_constraints = [
     #     ('accountable_required_fields',
     #         "CHECK(display_type IS NOT NULL OR product_id IS NOT NULL)",
@@ -695,7 +707,6 @@ class ReturnOrderLine(models.Model):
         if 'display_type' in values and self.filtered(lambda line: line.display_type != values.get('display_type')):
             raise UserError(_("You cannot change the type of a return order line. Instead you should delete the current line and create a new line of the proper type."))
         return super(ReturnOrderLine, self).write(values)
-        
 
 
 class StockMove(models.Model):
