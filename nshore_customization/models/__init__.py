@@ -18,3 +18,4 @@ from . import ir_filter
 from . import account_move_line
 from . import portal_note
 from . import res_user
+from . import reconciliation_widget
