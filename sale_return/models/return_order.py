@@ -441,10 +441,19 @@ class ReturnOrder(models.Model):
         self.stock_move_ids.mapped('move_ids_without_package').write({
             'state': 'cancel'
         })
+        stock_quant = self.env['stock.quant']
         for line in self.stock_move_ids.move_line_ids_without_package:
-            line.write({
-                'qty_done': 0
-            })
+            quant = stock_quant.search([
+                ('product_id', '=', line.product_id.id),
+                ('location_id', '=', line.location_dest_id.id)
+            ])
+            quant.sudo().quantity -= line.qty_done
+            quant = stock_quant.search([
+                ('product_id', '=', line.product_id.id),
+                ('location_id', '=', line.location_id.id)
+            ])
+            quant.sudo().quantity += line.qty_done
+            line.qty_done = 0
         self.stock_move_ids.write({'state': 'cancel'})
 
 
