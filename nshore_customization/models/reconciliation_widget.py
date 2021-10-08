@@ -8,7 +8,9 @@ class AccountReconciliation(models.AbstractModel):
 
     @api.model
     def get_data_for_manual_reconciliation(self, res_type, res_ids=None, account_type=None):
-        """ Override: to set order based on partner name"""
+        """Override: to set order based on partner name
+        Added only Partner Name in to order by query.
+        """
 
         Account = self.env['account.account']
         Partner = self.env['res.partner']
@@ -83,7 +85,7 @@ class AccountReconciliation(models.AbstractModel):
             is_partner and 'AND l.partner_id = p.id' or ' ',
             aml_ids and 'AND l.id IN %(aml_ids)s' or '',
             is_partner and 'l.partner_id, p.id,' or ' ',
-            is_partner and 'partner_name,' or '',
+            is_partner and 'partner_name ASC,' or '',
             res_alias=res_alias
         ))
         self.env.cr.execute(query, locals())
