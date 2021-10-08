@@ -85,7 +85,7 @@ class AccountReconciliation(models.AbstractModel):
             is_partner and 'AND l.partner_id = p.id' or ' ',
             aml_ids and 'AND l.id IN %(aml_ids)s' or '',
             is_partner and 'l.partner_id, p.id,' or ' ',
-            is_partner and 'partner_name ASC,' or '',
+            is_partner and 'p.name ASC,' or '',
             res_alias=res_alias
         ))
         self.env.cr.execute(query, locals())
