@@ -4,16 +4,20 @@
         <t t-call="web.external_layout">
             <div class="row mt16">
                 <div class="col-8">
-                    <strong>Start Date : </strong><span t-esc="start_date"/>
+                    <strong>Start Date :</strong>
+                    <span t-esc="start_date"/>
                 </div>
                 <div class="col-4 text-right">
-                    <strong>End Date : </strong><span t-esc="end_date"/>
+                    <strong>End Date :</strong>
+                    <span t-esc="end_date"/>
                 </div>
             </div>
             <div class="row">
                 <div class="col-12">
-                    <center><h2>Open Purchase Order Report</h2></center>
-                    <br />
+                    <center>
+                        <h2>Open Purchase Order Report</h2>
+                    </center>
+                    <br/>
                 </div>
             </div>
             <div t-foreach="lines_data" t-as="o">
@@ -61,17 +65,17 @@
                                 <b>Backorder Qty</b>
                             </td>
                         </tr>
-                        <t t-set="i" t-value="1" /> 
+                        <t t-set="i" t-value="1"/>
                         <tr t-foreach="lines_data[o].get('order_line', [])" t-as="move_list">
                             <td class="text-right">
-                                <span t-esc="i"/> 
+                                <span t-esc="i"/>
                                 <t t-set="i" t-value="i+1"/>
                             </td>
                             <td class="text-right">
-                               <span t-esc="move_list.get('date')"/>
+                                <span t-esc="move_list.get('date')"/>
                             </td>
                             <td class="text-left">
-                               <span t-esc="move_list.get('product')"/>
+                                <span t-esc="move_list.get('product')"/>
                             </td>
                             <td class="text-left">
                                 <span t-esc="move_list.get('purchase_order')"/>
@@ -99,7 +103,7 @@
 
     <template id="report_open_po">
         <t t-call="web.html_container">
-            <t t-call="nshore_customization.open_purchase_order_report_template" />
+            <t t-call="nshore_customization.open_purchase_order_report_template"/>
         </t>
     </template>
 </odoo>
