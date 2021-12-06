@@ -434,27 +434,72 @@ class ReturnOrder(models.Model):
         result = super(ReturnOrder, self).create(vals)
         return result
 
+    def process_refund_return_customer_draft(self, lines=None):
+
+        """Function call to refund customer set to draft."""
+        # Picking and location information
+        picking_type_id = self.env['stock.picking.type'].sudo().search([
+            ('code', '=', 'incoming')], limit=1)
+        location = self.env['stock.location'].search(
+            [('usage', '=', 'customer')], limit=1)
+        # Create Credit note
+        credit_note = self.env['account.invoice'].create({
+            'type': 'out_refund',
+            'partner_id': self.partner_id.id,
+            'return_order_id': self.id})
+        # Loop for return order line
+        for return_line in lines.filtered(lambda line: line.product_id):
+            # When Sales order selected in return line
+            if return_line.sale_order_id:
+                # Get Invoice Details
+                invoice_ids = return_line.sale_order_id.invoice_ids.filtered(
+                    lambda m: m.state not in ['draft', 'cancelled'])
+                if not invoice_ids:
+                    raise ValidationError(_('Please Create Invoice or Check state of Invoice for Sales Order %s.' % return_line.sale_order_id.name))
+                if invoice_ids:
+                    self.env['account.invoice.line'].write({
+                        'name': return_line.product_id.name or '',
+                        'product_id': return_line.product_id.id or False,
+                        'account_id': return_line.product_id.property_account_income_id.id or
+                        return_line.product_id.categ_id.property_account_income_categ_id.id or False,
+                        'quantity': return_line.qty or 0.0,
+                        'uom_id': return_line.product_id.product_tmpl_id.uom_id.id or False,
+                        'price_unit': return_line.unit_price or 0.0,
+                        'invoice_line_tax_ids': [
+                            (6, 0, return_line.tax_id.ids)] or False,
+                        'invoice_id': credit_note and credit_note.id or False,
+                        'display_type': return_line.display_type})
+            # When no sales order in return line.
+            if not return_line.sale_order_id:
+                # Credit Note
+                self.env['account.invoice.line'].write({
+                    'name': return_line.product_id.name or '',
+                    'product_id': return_line.product_id.id or False,
+                    'account_id': return_line.product_id.property_account_income_id.id or
+                    return_line.product_id.categ_id.property_account_income_categ_id.id or False,
+                    'quantity': return_line.qty or 0.0,
+                    'uom_id': return_line.product_id.product_tmpl_id.uom_id.id or False,
+                    'price_unit': return_line.unit_price or 0.0,
+                    'invoice_line_tax_ids': [(6, 0, return_line.tax_id.ids)] or False,
+                    'invoice_id': credit_note and credit_note.id or False,
+                    'display_type': return_line.display_type,}),
+            return_line.write({'state': 'done'})
+        # Validate and write in created credit note.
+        if credit_note:
+            credit_note.compute_taxes()
+            credit_note.action_invoice_open()
+            credit_note.write({'return_order_id': self.id})
+        self.write({'state': 'done'})
+
     @api.multi
-    def action_returned_cancel(self):
-        self.write({'state': 'returned_cancel'})
-        self.account_invoice_ids.action_invoice_cancel()
-        self.stock_move_ids.mapped('move_ids_without_package').write({
-            'state': 'cancel'
-        })
-        stock_quant = self.env['stock.quant']
-        for line in self.stock_move_ids.move_line_ids_without_package:
-            quant = stock_quant.search([
-                ('product_id', '=', line.product_id.id),
-                ('location_id', '=', line.location_dest_id.id)
-            ])
-            quant.sudo().quantity -= line.qty_done
-            quant = stock_quant.search([
-                ('product_id', '=', line.product_id.id),
-                ('location_id', '=', line.location_id.id)
-            ])
-            quant.sudo().quantity += line.qty_done
-            line.qty_done = 0
-        self.stock_move_ids.write({'state': 'cancel'})
+    def process_return_back(self):
+        """Main method to process return according the return back option."""
+        self.check_orderline()
+        if self.type_partner == 'customer':
+            line_ids = self.env['return.order.line'].sudo().search(
+                [('return_id', '=', self.id)])
+            if line_ids:
+                self.process_refund_return_customer_draft(lines=line_ids)
 
 
 class ReturnOrderLine(models.Model):
