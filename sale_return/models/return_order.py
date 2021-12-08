@@ -457,7 +457,7 @@ class ReturnOrder(models.Model):
                 if not invoice_ids:
                     raise ValidationError(_('Please Create Invoice or Check state of Invoice for Sales Order %s.' % return_line.sale_order_id.name))
                 if invoice_ids:
-                    self.env['account.invoice.line'].write({
+                    self.env['account.invoice.line'].create({
                         'name': return_line.product_id.name or '',
                         'product_id': return_line.product_id.id or False,
                         'account_id': return_line.product_id.property_account_income_id.id or
@@ -472,7 +472,7 @@ class ReturnOrder(models.Model):
             # When no sales order in return line.
             if not return_line.sale_order_id:
                 # Credit Note
-                self.env['account.invoice.line'].write({
+                self.env['account.invoice.line'].create({
                     'name': return_line.product_id.name or '',
                     'product_id': return_line.product_id.id or False,
                     'account_id': return_line.product_id.property_account_income_id.id or
